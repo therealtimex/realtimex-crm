@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear RealTimeX CRM Storage</title>
+</head>
+<body>
+    <h1>Clear RealTimeX CRM Storage</h1>
+    <button onclick="clearStorage()">Clear All Storage</button>
+    <pre id="output"></pre>
+
+    <script>
+        function clearStorage() {
+            const output = document.getElementById('output');
+
+            // Show what's currently stored
+            output.textContent = 'Before clearing:\n';
+            output.textContent += 'localStorage.realtimex_crm_supabase_config = ' + localStorage.getItem('realtimex_crm_supabase_config') + '\n\n';
+
+            // Clear
+            localStorage.clear();
+            sessionStorage.clear();
+
+            output.textContent += 'After clearing:\n';
+            output.textContent += 'localStorage.realtimex_crm_supabase_config = ' + localStorage.getItem('realtimex_crm_supabase_config') + '\n\n';
+            output.textContent += 'Storage cleared! Reload the app at http://localhost:5173';
+        }
+
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            const output = document.getElementById('output');
+            output.textContent = 'Current storage:\n';
+            output.textContent += 'realtimex_crm_supabase_config = ' + localStorage.getItem('realtimex_crm_supabase_config') + '\n';
+        });
+    </script>
+</body>
+</html>

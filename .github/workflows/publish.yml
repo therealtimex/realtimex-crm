@@ -98,16 +98,26 @@ jobs:
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "New version: $NEW_VERSION"
 
+          # Check if this version already exists as a tag
+          if git ls-remote --tags origin | grep -q "refs/tags/v$NEW_VERSION$"; then
+            echo "skip_publish=true" >> $GITHUB_OUTPUT
+            echo "::warning::Version v$NEW_VERSION already exists. Skipping publish."
+          else
+            echo "skip_publish=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Build
         run: npm run build
 
       - name: Commit version bump
+        if: steps.new_version.outputs.skip_publish != 'true'
         run: |
           git add package.json package-lock.json
           git commit -m "chore: bump version to ${{ steps.new_version.outputs.version }} [skip ci]"
           git tag "v${{ steps.new_version.outputs.version }}"
 
       - name: Push changes
+        if: steps.new_version.outputs.skip_publish != 'true'
         run: |
           git push origin main
           git push origin "v${{ steps.new_version.outputs.version }}"
@@ -123,12 +133,13 @@ jobs:
           fi
 
       - name: Publish to npm
-        if: steps.check_token.outputs.has_token == 'true'
+        if: steps.check_token.outputs.has_token == 'true' && steps.new_version.outputs.skip_publish != 'true'
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create GitHub Release
+        if: steps.new_version.outputs.skip_publish != 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.new_version.outputs.version }}

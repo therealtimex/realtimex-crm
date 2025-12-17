@@ -1,23 +1,24 @@
-# Atomic CRM
+# RealTimeX CRM
 
-A full-featured CRM built with React, shadcn-admin-kit, and Supabase.
+A full-featured CRM built with React, shadcn-admin-kit, and Supabase. Fork of [Atomic CRM](https://github.com/marmelab/atomic-crm) with enhanced "Bring Your Own Database" configuration.
 
 https://github.com/user-attachments/assets/0d7554b5-49ef-41c6-bcc9-a76214fc5c99
 
-Atomic CRM is free and open-source. You can test it online at https://marmelab.com/atomic-crm-demo.
+RealTimeX CRM is free and open-source.
 
 ## Features
 
 - 📇 **Organize Contacts**: Keep all your contacts in one easily accessible place.
 - ⏰ **Create Tasks & Set Reminders**: Never miss a follow-up or deadline.
 - 📝 **Take Notes**: Capture important details and insights effortlessly.
-- ✉️ **Capture Emails**: CC Atomic CRM to automatically save communications as notes.
+- ✉️ **Capture Emails**: CC RealTimeX CRM to automatically save communications as notes.
 - 📊 **Manage Deals**: Visualize and track your sales pipeline in a Kanban board.
 - 🔄 **Import & Export Data**: Easily transfer contacts in and out of the system.
 - 🔐 **Control Access**: Log in with Google, Azure, Keycloak, and Auth0.
 - 📜 **Track Activity History**: View all interactions in aggregated activity logs.
 - 🔗 **Integrate via API**: Connect seamlessly with other systems using our API.
 - 🛠️ **Customize Everything**: Add custom fields, change the theme, and replace any component to fit your needs.
+- 🗄️ **Bring Your Own Database**: Configure Supabase connection via UI or environment variables.
 
 ## Installation
 
@@ -27,16 +28,16 @@ To run this project locally, you will need the following tools installed on your
 - Node 22 LTS
 - Docker (required by Supabase)
 
-Fork the [`marmelab/atomic-crm`](https://github.com/marmelab/atomic-crm) repository to your user/organization, then clone it locally:
+Clone the repository:
 
 ```sh
-git clone https://github.com/[username]/atomic-crm.git
+git clone https://github.com/therealtimex/realtimex-crm.git
+cd realtimex-crm
 ```
 
 Install dependencies:
 
 ```sh
-cd atomic-crm
 make install
 ```
 
@@ -50,9 +51,14 @@ make start
 
 This will start the Vite dev server for the frontend, the local Supabase instance for the API, and a Postgres database (thanks to Docker).
 
-You can then access the app via [http://localhost:5173/](http://localhost:5173/). You will be prompted to create the first user.
+You can then access the app via [http://localhost:5173/](http://localhost:5173/). On first launch, you'll see a setup wizard to configure your Supabase connection, or you can set environment variables in `.env`:
 
-If you need debug the backend, you can access the following services: 
+```env
+VITE_SUPABASE_URL=https://xxxxx.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+If you need to debug the backend, you can access the following services:
 
 - Supabase dashboard: [http://localhost:54323/](http://localhost:54323/)
 - REST API: [http://127.0.0.1:54321](http://127.0.0.1:54321)
@@ -71,9 +77,9 @@ If you need debug the backend, you can access the following services:
 2. [Configuring Inbound Email](./doc/src/content/docs/developers/inbound-email-configuration.mdx) *(optional)*
 3. [Deployment](./doc/src/content/docs/developers/deploy.mdx)
 
-## Customizing Atomic CRM
+## Customizing RealTimeX CRM
 
-To customize Atomic CRM, you will need TypeScript and React programming skills as there is no graphical user interface for customization. Here are some resources to assist you in getting started.
+To customize RealTimeX CRM, you will need TypeScript and React programming skills as there is no graphical user interface for customization. Here are some resources to assist you in getting started.
 
 1. [Customizing the CRM](./doc/src/content/docs/developers/customizing.mdx)
 2. [Creating Migrations](./doc/src/content/docs/developers/migrations.mdx) *(optional)*
@@ -88,17 +94,48 @@ This project contains unit tests. Run them with the following command:
 make test
 ```
 
-You can add your own unit tests powered by Jest anywhere in the `src` directory. The test files should be named `*.test.tsx` or `*.test.ts`.
+You can add your own unit tests powered by Vitest anywhere in the `src` directory. The test files should be named `*.test.tsx` or `*.test.ts`.
+
+## Development Commands
+
+```sh
+make install          # Install dependencies (frontend, backend, local Supabase)
+make start            # Start full stack with real API (Supabase + Vite dev server)
+make stop             # Stop the stack
+make start-demo       # Start full-stack with FakeRest data provider
+make test             # Run unit tests (vitest)
+make typecheck        # Run TypeScript type checking
+make lint             # Run ESLint and Prettier checks
+make build            # Build production bundle
+```
 
 ## Registry
 
-Atomic CRM components are published as a Shadcn Registry file:
+RealTimeX CRM components are published as a Shadcn Registry file:
 - The `registry.json` file is automatically generated by the `scripts/generate-registry.mjs` script as a pre-commit hook.
-- The `http://marmelab.com/atomic-crm/r/atomic-crm.json` file is automatically published by the CI/CD pipeline
+- The registry is automatically published by the CI/CD pipeline
 
-> [!WARNING]  
+> [!WARNING]
 > If the `registry.json` misses some changes you made, you MUST update the `scripts/generate-registry.mjs` to include those changes.
+
+## NPM Package
+
+RealTimeX CRM is available as an npm package:
+
+```bash
+npm install realtimex-crm
+```
+
+The package includes all source code, components, and Supabase migrations for easy integration.
 
 ## License
 
-This project is licensed under the MIT License, courtesy of [Marmelab](https://marmelab.com). See the [LICENSE.md](./LICENSE.md) file for details.
+This project is licensed under the MIT License. Original project courtesy of [RealTimeX](https://realtimex.ai). See the [LICENSE.md](./LICENSE.md) file for details.
+
+## Credits
+
+This project is a fork of [Atomic CRM](https://github.com/marmelab/atomic-crm) by Marmelab, enhanced with:
+- "Bring Your Own Database" UI configuration
+- Simplified deployment workflows
+- NPM package distribution
+- RealTimeX App SDK integration support (planned)

@@ -40,6 +40,7 @@ import {
 } from "./defaultConfiguration";
 import { i18nProvider } from "./i18nProvider";
 import { StartPage } from "../login/StartPage.tsx";
+import { DatabaseHealthCheck } from "./DatabaseHealthCheck";
 
 export type CRMProps = {
   dataProvider?: DataProvider;
@@ -155,14 +156,16 @@ export const CRM = ({
           <Route path={SettingsPage.path} element={<SettingsPage />} />
           <Route path={DatabasePage.path} element={<DatabasePage />} />
         </CustomRoutes>
-        <Resource name="deals" {...deals} />
-        <Resource name="contacts" {...contacts} />
-        <Resource name="companies" {...companies} />
-        <Resource name="contactNotes" />
-        <Resource name="dealNotes" />
-        <Resource name="tasks" />
-        <Resource name="sales" {...sales} />
-        <Resource name="tags" />
+        <DatabaseHealthCheck>
+          <Resource name="deals" {...deals} />
+          <Resource name="contacts" {...contacts} />
+          <Resource name="companies" {...companies} />
+          <Resource name="contactNotes" />
+          <Resource name="dealNotes" />
+          <Resource name="tasks" />
+          <Resource name="sales" {...sales} />
+          <Resource name="tags" />
+        </DatabaseHealthCheck>
       </Admin>
     </ConfigurationProvider>
   );

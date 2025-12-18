@@ -65,6 +65,7 @@
     "prettier": "prettier --config ./.prettierrc.json --check \"**/*.{js,json,ts,tsx,css,md,html}\"",
     "registry:build": "npx shadcn build",
     "registry:gen": "node ./scripts/generate-registry.mjs",
+    "setup:gen": "cat supabase/migrations/*.sql > public/setup.sql && echo 'Generated public/setup.sql from migrations'",
     "ghpages:deploy": "node ./scripts/ghpages-deploy.mjs",
     "supabase:remote:init": "node ./scripts/supabase-remote-init.mjs",
     "prepare": "husky"

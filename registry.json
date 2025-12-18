@@ -105,6 +105,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/settings/DatabasePage.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/sales/index.ts",
           "type": "registry:component"
         },

@@ -7,7 +7,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Database, CheckCircle, XCircle, Settings, Trash2 } from "lucide-react";
 import {
@@ -37,16 +36,9 @@ export function DatabaseSettings() {
     <>
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Database className="h-5 w-5" />
-              <CardTitle>Database Connection</CardTitle>
-            </div>
-            {config && (
-              <Badge variant={source === "ui" ? "default" : "secondary"}>
-                {source === "ui" ? "UI Configured" : "Environment Variables"}
-              </Badge>
-            )}
+          <div className="flex items-center gap-2">
+            <Database className="h-5 w-5" />
+            <CardTitle>Database Connection</CardTitle>
           </div>
           <CardDescription>
             Manage your Supabase database connection settings

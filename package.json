@@ -13,8 +13,12 @@
       "require": "./dist/index.js"
     }
   },
+  "bin": {
+    "create-realtimex-crm": "./bin/create-realtimex-crm.js"
+  },
   "files": [
     "dist",
+    "bin",
     "src",
     "supabase",
     "public",

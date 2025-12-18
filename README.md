@@ -20,7 +20,29 @@ RealTimeX CRM is free and open-source.
 - 🛠️ **Customize Everything**: Add custom fields, change the theme, and replace any component to fit your needs.
 - 🗄️ **Bring Your Own Database**: Configure Supabase connection via UI or environment variables.
 
-## Installation
+## Quick Start
+
+### Option 1: Use the CLI (Recommended)
+
+Create a new CRM project in seconds:
+
+```bash
+npx create-realtimex-crm@latest
+```
+
+The CLI will guide you through:
+1. Choosing a template (standalone app, RealTimeX Local App, or component)
+2. Configuring Supabase (optional)
+3. Setting up your project structure
+
+Then:
+```bash
+cd my-crm
+npm install
+npm run dev
+```
+
+### Option 2: Clone and Customize
 
 To run this project locally, you will need the following tools installed on your computer:
 
@@ -117,6 +139,31 @@ RealTimeX CRM components are published as a Shadcn Registry file:
 
 > [!WARNING]
 > If the `registry.json` misses some changes you made, you MUST update the `scripts/generate-registry.mjs` to include those changes.
+
+## CLI Templates
+
+The `create-realtimex-crm` CLI provides three templates:
+
+### 1. Standalone App
+A complete CRM application ready to deploy:
+- Full Vite + React setup
+- TypeScript configuration
+- Production build scripts
+- Environment-based configuration
+
+### 2. RealTimeX Local App
+CRM integrated with RealTimeX.ai platform:
+- `@realtimex/app-sdk` integration
+- Auto-scoped data by user
+- Parent-child user support
+- Platform authentication
+- See `LOCAL_APP.md` in generated project for details
+
+### 3. Component Integration
+Use RealTimeX CRM as a component in your existing app:
+- Install via npm
+- Import and configure
+- Example integration code included
 
 ## NPM Package
 

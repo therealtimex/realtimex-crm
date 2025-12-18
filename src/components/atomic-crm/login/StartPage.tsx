@@ -19,9 +19,7 @@ export const StartPage = () => {
     isPending: isCheckingHealth,
   } = useQuery({
     queryKey: ["database-health"],
-    queryFn: async () => {
-      return checkDatabaseHealth(dataProvider);
-    },
+    queryFn: checkDatabaseHealth,
   });
 
   // Then check if initialized (only if database is healthy)

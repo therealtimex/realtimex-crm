@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useDataProvider } from "ra-core";
 import { checkDatabaseHealth, DatabaseHealthStatus } from "@/lib/database-health-check";
 import { getSupabaseConfig } from "@/lib/supabase-config";
 import { DatabaseSetupGuide } from "../setup/DatabaseSetupGuide";
@@ -9,7 +8,6 @@ interface DatabaseHealthCheckProps {
 }
 
 export function DatabaseHealthCheck({ children }: DatabaseHealthCheckProps) {
-  const dataProvider = useDataProvider();
   const [healthStatus, setHealthStatus] = useState<DatabaseHealthStatus | null>(null);
   const [isChecking, setIsChecking] = useState(true);
 
@@ -18,7 +16,7 @@ export function DatabaseHealthCheck({ children }: DatabaseHealthCheckProps) {
 
     async function checkHealth() {
       try {
-        const status = await checkDatabaseHealth(dataProvider);
+        const status = await checkDatabaseHealth();
         if (!cancelled) {
           setHealthStatus(status);
           setIsChecking(false);
@@ -36,7 +34,7 @@ export function DatabaseHealthCheck({ children }: DatabaseHealthCheckProps) {
     return () => {
       cancelled = true;
     };
-  }, [dataProvider]);
+  }, []);
 
   // Show loading state
   if (isChecking) {

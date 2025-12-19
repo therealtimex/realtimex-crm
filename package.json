@@ -1,6 +1,6 @@
 {
   "name": "realtimex-crm",
-  "version": "0.7.5",
+  "version": "0.7.6",
   "description": "RealTimeX CRM - A full-featured CRM built with React, shadcn-admin-kit, and Supabase. Fork of Atomic CRM with RealTimeX App SDK integration.",
   "type": "module",
   "main": "./dist/index.js",

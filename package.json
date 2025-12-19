@@ -21,7 +21,7 @@
     "dist",
     "bin",
     "src",
-    "supabase",
+    "supabase/",
     "public",
     "README.md",
     "LICENSE"

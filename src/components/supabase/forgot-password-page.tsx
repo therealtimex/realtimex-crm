@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { Form, required, useNotify, useTranslate, useLogin } from "ra-core";
+import { Form, required, useNotify, useTranslate } from "ra-core";
 import { Layout } from "@/components/supabase/layout";
 import type { FieldValues, SubmitHandler } from "react-hook-form";
 import { TextInput } from "@/components/admin/text-input";
 import { Button } from "@/components/ui/button";
 import { OtpInput } from "@/components/supabase/otp-input";
 import { supabase } from "@/components/atomic-crm/providers/supabase/supabase";
-import { useNavigate } from "react-router";
 
 interface EmailFormData {
   email: string;

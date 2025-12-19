@@ -30,7 +30,7 @@ const Header = () => {
     false;
 
   return (
-    <header className="bg-secondary sticky top-0 z-50 border-b border-border">
+    <header className="bg-secondary fixed top-0 left-0 right-0 z-50 border-b border-border">
       <div className="px-4">
         <div className="flex justify-between items-center flex-1">
           <Logo darkLogo={darkModeLogo} lightLogo={lightModeLogo} title={title} />

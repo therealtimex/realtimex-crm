@@ -23,10 +23,16 @@ async function main() {
 ╘═══════════════════════════════════════╝
 `);
 
-  // Parse command line arguments for port
+  // --- Argument and Environment Variable Parsing ---
   const args = process.argv.slice(2);
-  let port = 6173; // Default port
+  const nonInteractiveYes = args.includes('-y');
+  const nonInteractiveNo = args.includes('-n');
 
+  const supabaseUrlFromEnv = process.env.SUPABASE_URL;
+  const supabaseAnonKeyFromEnv = process.env.SUPABASE_ANON_KEY;
+
+  // --- Port Configuration ---
+  let port = 6173; // Default port
   const portIndex = args.indexOf("--port");
   if (portIndex !== -1 && args[portIndex + 1]) {
     const customPort = parseInt(args[portIndex + 1], 10);
@@ -46,48 +52,66 @@ async function main() {
     process.exit(1);
   }
 
-  // Prompt for Supabase configuration
-  console.log("\n📝 Supabase Configuration\n");
-  console.log(
-    "You can configure Supabase now or later via Settings → Database in the app.\n",
-  );
+  // --- Determine if Supabase configuration should run ---
+  let configureNow;
+  if (nonInteractiveNo) {
+    configureNow = false;
+  } else if (nonInteractiveYes || supabaseUrlFromEnv) {
+    configureNow = true;
+  } else {
+    console.log("\n📝 Supabase Configuration\n");
+    console.log(
+      "You can configure Supabase now or later via Settings → Database in the app.\n",
+    );
+    configureNow = await confirm({
+      message: "Configure Supabase now?",
+      default: false,
+    });
+  }
 
-  const configureNow = await confirm({
-    message: "Configure Supabase now?",
-    default: false,
-  });
 
   if (configureNow) {
-    console.log("First, ensure you are logged in to the Supabase CLI.");
-    console.log("Run `npx supabase login` if you haven't already.");
+    // --- Get Supabase Credentials ---
+    let supabaseUrl = supabaseUrlFromEnv;
+    let supabaseAnonKey = supabaseAnonKeyFromEnv;
 
-    const supabaseUrl = await input({
-      message: "Supabase URL:",
-      validate: (value) => {
-        if (!value.trim()) return "Supabase URL is required";
-        if (!value.includes("supabase.co") && !value.includes("localhost"))
-          return "URL should be a valid Supabase project URL";
-        return true;
-      },
-    });
+    if (!supabaseUrl || !supabaseAnonKey) {
+        console.log("\n📝 Supabase Configuration\n");
+        console.log("First, ensure you are logged in to the Supabase CLI.");
+        console.log("Run `npx supabase login` if you haven't already.\n");
+    }
 
-    const supabaseAnonKey = await input({
-      message: "Supabase Publishable API Key (anon key):",
-      validate: (value) => {
-        if (!value.trim()) return "Supabase Publishable API Key is required";
-        return true;
-      },
-    });
+    if (!supabaseUrl) {
+      supabaseUrl = await input({
+        message: "Supabase URL:",
+        validate: (value) => {
+          if (!value.trim()) return "Supabase URL is required";
+          if (!value.includes("supabase.co") && !value.includes("localhost"))
+            return "URL should be a valid Supabase project URL";
+          return true;
+        },
+      });
+    } else {
+        console.log(`Using SUPABASE_URL from environment.`);
+    }
 
-    // Create a temporary .env file in the dist directory
-    // Note: This is a workaround since the built app expects env vars at build time
-    // The app will fall back to localStorage configuration if these aren't available
+    if (!supabaseAnonKey) {
+      supabaseAnonKey = await input({
+        message: "Supabase Publishable API Key (anon key):",
+        validate: (value) => {
+          if (!value.trim()) return "Supabase Publishable API Key is required";
+          return true;
+        },
+      });
+    } else {
+        console.log(`Using SUPABASE_ANON_KEY from environment.`);
+    }
+
+    // --- Save Configuration ---
     console.log("\n✅ Configuration saved!");
     console.log(
       "Note: You can update configuration anytime via Settings → Database in the app.\n",
     );
-
-    // Save config to a temp location that the user can reference
     const configPath = join(tmpdir(), "realtimex-crm-config.txt");
     const configContent = `Supabase Configuration:
 URL: ${supabaseUrl}
@@ -101,7 +125,8 @@ To configure the app:
     await writeFile(configPath, configContent);
     console.log(`Configuration details saved to: ${configPath}\n`);
 
-    // Helper to run supabase commands
+
+    // --- Supabase CLI Commands ---
     const runSupabaseCommand = async (command, message) => {
       const packageRoot = join(__dirname, '..');
       console.log(`\n${message} (from package root: ${packageRoot})`);
@@ -128,18 +153,20 @@ To configure the app:
       });
     };
 
-    // Link the project
     const projectRefMatch = supabaseUrl.match(/https:\/\/([a-zA-Z0-9_-]+)\.supabase\.co/);
     if (projectRefMatch && projectRefMatch[1]) {
       const projectRef = projectRefMatch[1];
       try {
         await runSupabaseCommand(["link", "--project-ref", projectRef], `🔗 Linking to Supabase project '${projectRef}'...`);
 
-        const runDbPush = await confirm({
-          message: "Run `npx supabase db push` to apply migrations?",
-          default: false,
-        });
-
+        let runDbPush = nonInteractiveYes;
+        if (!nonInteractiveYes && !nonInteractiveNo) {
+            runDbPush = await confirm({
+              message: "Run `npx supabase db push` to apply migrations?",
+              default: false,
+            });
+        }
+        
         if (runDbPush) {
           try {
             await runSupabaseCommand(["db", "push"], "🚀 Running `npx supabase db push`...");
@@ -148,10 +175,13 @@ To configure the app:
           }
         }
 
-        const runFunctionsDeploy = await confirm({
-          message: "Run `npx supabase functions deploy` to deploy functions?",
-          default: false,
-        });
+        let runFunctionsDeploy = nonInteractiveYes;
+        if (!nonInteractiveYes && !nonInteractiveNo) {
+            runFunctionsDeploy = await confirm({
+              message: "Run `npx supabase functions deploy` to deploy functions?",
+              default: false,
+            });
+        }
 
         if (runFunctionsDeploy) {
           try {
@@ -168,6 +198,7 @@ To configure the app:
     }
   }
 
+  // --- Start Production Server ---
   console.log("\n🚀 Starting production server...\n");
   console.log(`   Local:   http://localhost:${port}`);
   console.log(`   Network: http://127.0.0.1:${port}\n`);
@@ -180,7 +211,6 @@ To configure the app:
 
   console.log("Press Ctrl+C to stop the server.\n");
 
-  // Start the server using the serve package
   const serveProcess = spawn(
     "npx",
     ["serve", "-s", DIST_PATH, "-l", `tcp://127.0.0.1:${port}`, "--no-clipboard"],
@@ -190,7 +220,6 @@ To configure the app:
     },
   );
 
-  // Handle process termination
   process.on("SIGINT", () => {
     console.log("\n\n👋 Stopping server...");
     serveProcess.kill();

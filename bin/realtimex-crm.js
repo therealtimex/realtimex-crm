@@ -97,6 +97,57 @@ To configure the app:
 `;
     await writeFile(configPath, configContent);
     console.log(`Configuration details saved to: ${configPath}\n`);
+
+    // Helper to run supabase commands
+    const runSupabaseCommand = async (command, message) => {
+      console.log(`\n${message}`);
+      const proc = spawn("npx", ["supabase", ...command], {
+        stdio: "inherit",
+        shell: true,
+      });
+
+      return new Promise((resolve, reject) => {
+        proc.on("close", (code) => {
+          if (code === 0) {
+            console.log(`✅ Supabase command 'supabase ${command.join(' ')}' completed successfully.`);
+            resolve();
+          } else {
+            console.error(`❌ Supabase command 'supabase ${command.join(' ')}' failed with code ${code}.`);
+            reject(new Error(`Supabase command failed with code ${code}`));
+          }
+        });
+        proc.on("error", (err) => {
+          console.error(`❌ Failed to start Supabase command 'supabase ${command.join(' ')}': ${err.message}`);
+          reject(err);
+        });
+      });
+    };
+
+    const runDbPush = await confirm({
+      message: "Run `npx supabase db push` to apply migrations?",
+      default: false,
+    });
+
+    if (runDbPush) {
+      try {
+        await runSupabaseCommand(["db", "push"], "🚀 Running `npx supabase db push`...");
+      } catch (error) {
+        console.error("Continuing without successful db push.");
+      }
+    }
+
+    const runFunctionsDeploy = await confirm({
+      message: "Run `npx supabase functions deploy` to deploy functions?",
+      default: false,
+    });
+
+    if (runFunctionsDeploy) {
+      try {
+        await runSupabaseCommand(["functions", "deploy"], "🚀 Running `npx supabase functions deploy`...");
+      } catch (error) {
+        console.error("Continuing without successful functions deploy.");
+      }
+    }
   }
 
   console.log("\n🚀 Starting production server...\n");

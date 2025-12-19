@@ -31,7 +31,7 @@ const Header = () => {
   }
 
   return (
-    <nav className="flex-grow">
+    <nav>
       <header className="bg-secondary sticky top-0 z-50">
         <div className="px-4">
           <div className="flex justify-between items-center flex-1">

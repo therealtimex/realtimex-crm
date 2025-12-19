@@ -106,11 +106,10 @@ const SettingsForm = ({
   });
   if (!identity) return null;
 
-  const handleClickOpenPasswordChange = () => {
-    // Redirect to forgot-password page which uses OTP flow
-    navigate('/forgot-password');
-  };
-
+      const handleClickOpenPasswordChange = () => {
+        // Navigate directly to the change password page for authenticated users
+        navigate('/change-password');
+      };
   const handleAvatarUpdate = async (values: any) => {
     mutateSale(values);
   };

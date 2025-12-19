@@ -6,6 +6,7 @@ import { TextInput } from "@/components/admin/text-input";
 import { Button } from "@/components/ui/button";
 import { OtpInput } from "@/components/supabase/otp-input";
 import { supabase } from "@/components/atomic-crm/providers/supabase/supabase";
+import { Link } from "react-router";
 
 interface EmailFormData {
   email: string;
@@ -175,6 +176,14 @@ export const ForgotPasswordPage = () => {
               })}
             </Button>
           </Form>
+          <div className="text-center">
+            <Link
+              to="/"
+              className="text-sm text-muted-foreground hover:text-primary underline-offset-4 hover:underline"
+            >
+              Back to login
+            </Link>
+          </div>
         </>
       ) : (
         <>
@@ -220,7 +229,28 @@ export const ForgotPasswordPage = () => {
               >
                 Resend code
               </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                className="cursor-pointer w-full"
+                disabled={loading}
+                onClick={() => {
+                  setStep('email');
+                  setOtp('');
+                  setOtpError(false);
+                }}
+              >
+                ← Back to email
+              </Button>
             </div>
+          </div>
+          <div className="text-center">
+            <Link
+              to="/"
+              className="text-sm text-muted-foreground hover:text-primary underline-offset-4 hover:underline"
+            >
+              Back to login
+            </Link>
           </div>
         </>
       )}

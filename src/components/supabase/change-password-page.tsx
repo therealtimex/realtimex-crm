@@ -5,7 +5,7 @@ import type { FieldValues, SubmitHandler } from "react-hook-form";
 import { TextInput } from "@/components/admin/text-input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/components/atomic-crm/providers/supabase/supabase";
-import { useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router";
 
 interface FormData {
   password: string;
@@ -112,6 +112,14 @@ export const ChangePasswordPage = () => {
           {loading ? "Updating..." : "Update password"}
         </Button>
       </Form>
+      <div className="text-center">
+        <Link
+          to="/"
+          className="text-sm text-muted-foreground hover:text-primary underline-offset-4 hover:underline"
+        >
+          Back to login
+        </Link>
+      </div>
     </Layout>
   );
 };

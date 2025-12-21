@@ -10,37 +10,77 @@ This architecture addresses the challenge of running advanced AI (ASR/LLM) on lo
 
 ### 1.1 System Boundary & Responsibilities
 
-This specification covers the **RealTimeX CRM** component. The system operates as part of a larger architecture:
+This specification covers the **RealTimeX CRM** component. The system uses a simplified time-based work stealing architecture:
 
 **RealTimeX CRM Responsibilities (This Codebase):**
 *   Accept webhooks from external providers (Twilio, Postmark, Gmail, etc.)
 *   Validate requests via `IngestionGuard` security layer
 *   Normalize provider-specific payloads into standardized schema
 *   Store as `raw` activities in Supabase `activities` table
-*   Expose `claim_next_pending_activity(sales_id)` RPC for work distribution
+*   Auto-link activities to contacts via email/phone matching
+*   Expose work claiming RPCs:
+    *   `claim_next_pending_activity(sales_id)` - claim my own work
+    *   `claim_stale_activity()` - claim anyone's stale work (>5 min old)
+    *   `unlock_stale_locks()` - cleanup crashed processing attempts
 *   Display activities in UI with realtime updates
-*   Persist processed results returned by the RealTimeX App
 
-**RealTimeX App Responsibilities (Parent Platform):**
-*   Run local processing agent (background polling loop)
-*   Call `claim_next_pending_activity()` to fetch work
-*   Execute AI pipeline using on-device models:
-    *   ASR (Speech-to-Text) for audio/call recordings
-    *   LLM summarization and fact extraction
-*   Push results back to CRM via Supabase client update:
-    ```typescript
-    await supabase
-      .from('activities')
-      .update({
+**RealTimeX App Responsibilities (Electron Desktop App):**
+*   Host multiple Local Apps (including RealTimeX CRM) as embedded iframes/webviews
+*   **Run MCP/A2A-compliant processing agent** with priority-based claiming:
+    1. **Priority 1:** Claim my own fresh work (any age)
+    2. **Priority 2:** Claim anyone's stale work (>5 minutes old)
+*   Process activities using local AI models (Whisper, Claude, etc.)
+*   Update results back to `activities` table
+*   Provide shared AI services (ASR, LLM) for all Local Apps
+
+**Integration Flow (Time-Based Work Stealing):**
+```typescript
+// RealTimeX Agent (Electron) - Simple priority-based loop
+async function processingLoop() {
+  const mySalesId = await getMySalesId();
+
+  while (true) {
+    let activity = null;
+
+    // Priority 1: My own work (fresh or stale)
+    const { data: myWork } = await supabase.rpc('claim_next_pending_activity', {
+      p_agent_sales_id: mySalesId
+    });
+    activity = myWork?.[0];
+
+    // Priority 2: Anyone's stale work (timeout fallback)
+    if (!activity) {
+      const { data: staleWork } = await supabase.rpc('claim_stale_activity');
+      activity = staleWork?.[0];
+    }
+
+    // Process if found
+    if (activity) {
+      const result = await processWithAI(activity.raw_data);
+
+      await supabase.from('activities').update({
         processing_status: 'completed',
-        processed_data: { transcript, summary, facts },
+        processed_data: result,
         locked_by: null,
         locked_at: null
-      })
-      .eq('id', activity_id)
-    ```
+      }).eq('id', activity.id);
+    }
 
-**Integration Point:** The RealTimeX App runs as the host environment, with RealTimeX CRM embedded as a "Local App" component.
+    await sleep(5000);
+  }
+}
+```
+
+**Why Time-Based Instead of Coordination Table:**
+- ✅ Self-healing: Stale work (>5 min) automatically becomes eligible for stealing
+- ✅ Simpler: No coordination table, no heartbeat, no toggle
+- ✅ Resilient: Handles offline/crashed agents gracefully
+- ✅ Efficient: No unnecessary database writes
+
+**Work Stealing Scenarios:**
+1. **Both users online:** Each agent processes their own work (no stealing)
+2. **User offline:** Their work sits for 5 minutes, then becomes available to any agent
+3. **Agent crashes:** Locked activities get unlocked after 5 minutes via `unlock_stale_locks()`
 
 ## 2. Database Schema Design
 
@@ -84,6 +124,27 @@ Stores secure credentials and configuration for inbound channels.
 | `sales_id` | `bigint` | References `sales(id)`. Default owner for activities from this channel. If `NULL`, creates Global/Unassigned activities. |
 | `ingestion_key` | `text` | **Unique**. Secret URL parameter used in webhook URLs: `/ingest-activity?key={ingestion_key}`. Acts as authentication token. |
 | `created_at` | `timestamp` | Record creation time. |
+
+### D. The `crm_processing_nodes` Table
+Tracks processing node status for the CRM application across multiple devices.
+
+**Purpose:** In a multi-app platform (RealTimeX), each Local App reports its own processing capacity. This table tracks which CRM instances are online and ready to process activities.
+
+| Column | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `uuid` | Primary Key. |
+| `sales_id` | `bigint` | References `sales(id)`. The user running this processing node. |
+| `app_name` | `text` | Always `'atomic-crm'`. Distinguishes from other Local Apps in RealTimeX. |
+| `device_name` | `text` | Device identifier (e.g., "MacBook Pro", "Windows Desktop"). From `navigator.platform`. |
+| `status` | `text` | `ready`, `processing`, `offline`. Current node state. |
+| `current_activity_id` | `uuid` | References `activities(id)`. The activity currently being processed (if any). |
+| `processed_count` | `integer` | Total activities processed by this node (session counter). |
+| `last_heartbeat` | `timestamp` | Last status update. Nodes without heartbeat for >2 minutes are considered offline. |
+| `created_at` | `timestamp` | When this node first came online. |
+
+**Unique Constraint:** `(sales_id, app_name, device_name)` - One node per user per device.
+
+**Heartbeat Frequency:** Nodes update every 10 seconds while enabled.
 
 ## 3. Ingestion Security (`IngestionGuard`)
 A centralized logic layer within the `ingest-activity` Edge Function that validates requests before database insertion.

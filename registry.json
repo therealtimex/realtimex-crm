@@ -413,6 +413,14 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/integrations/IngestionChannelsTab.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/integrations/CreateChannelDialog.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/integrations/CreateApiKeyDialog.tsx",
           "type": "registry:component"
         },
@@ -694,6 +702,14 @@
         },
         {
           "path": "src/components/atomic-crm/activity/ActivityLog.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/activities/ProcessingStatusIndicator.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/activities/ActivityFeed.tsx",
           "type": "registry:component"
         },
         {

@@ -1,6 +1,6 @@
 # Deployment Guide: API & Webhooks Setup
 
-This guide walks you through deploying the database tables and Edge Functions for the Atomic CRM API and webhooks system on a new Supabase instance.
+This guide walks you through deploying the database tables and Edge Functions for the RealTimeX CRM API and webhooks system on a new Supabase instance.
 
 ## Table of Contents
 

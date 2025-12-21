@@ -24,7 +24,7 @@ If you're receiving magic links (URLs) in emails instead of 6-digit codes, follo
 4. Replace the entire template with:
 
 ```html
-<h2>Login to Atomic CRM</h2>
+<h2>Login to RealTimeX CRM</h2>
 
 <p>Here is your login code:</p>
 
@@ -56,7 +56,7 @@ Some Supabase projects may not have a separate Email OTP template. In this case:
 4. Replace with this dual-purpose template:
 
 ```html
-<h2>Login to Atomic CRM</h2>
+<h2>Login to RealTimeX CRM</h2>
 
 {{#if .Token}}
 <!-- OTP Flow -->
@@ -167,7 +167,7 @@ Before testing, ensure:
 
 ### Correct OTP Email:
 ```
-Subject: Login to Atomic CRM
+Subject: Login to RealTimeX CRM
 
 Here is your login code:
 

@@ -13,8 +13,6 @@ import { useUserMenu } from "@/hooks/user-menu-context";
 
 import { useConfigurationContext } from "../root/ConfigurationContext";
 
-import { ProcessingStatusIndicator } from "@/components/atomic-crm/activities/ProcessingStatusIndicator";
-
 const Header = () => {
   const { darkModeLogo, lightModeLogo, title } = useConfigurationContext();
   const location = useLocation();
@@ -61,7 +59,6 @@ const Header = () => {
           </nav>
 
           <div className="flex items-center">
-            <ProcessingStatusIndicator />
             <ThemeModeToggle />
             <RefreshButton />
             <UserMenu>

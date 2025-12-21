@@ -9,6 +9,7 @@ import { NoteCreate, NotesIterator } from "../notes";
 import type { Contact } from "../types";
 import { Avatar } from "./Avatar";
 import { ContactAside } from "./ContactAside";
+import { ActivityFeed } from "../activities/ActivityFeed";
 
 export const ContactShow = () => (
   <ShowBase>
@@ -57,6 +58,14 @@ const ContactShowContent = () => {
                 </ReferenceField>
               </div>
             </div>
+            
+            {/* New Activity Feed replaces legacy Notes */}
+            <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-4">Activity Timeline</h3>
+                <ActivityFeed contactId={record.id as number} />
+            </div>
+
+            {/* Legacy Notes (Hidden/Removed)
             <ReferenceManyField
               target="contact_id"
               reference="contactNotes"
@@ -67,6 +76,7 @@ const ContactShowContent = () => {
             >
               <NotesIterator reference="contacts" showStatus />
             </ReferenceManyField>
+            */}
           </CardContent>
         </Card>
       </div>

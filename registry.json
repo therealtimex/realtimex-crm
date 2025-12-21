@@ -405,6 +405,22 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/integrations/WebhooksTab.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/integrations/IntegrationsPage.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/integrations/CreateApiKeyDialog.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/integrations/ApiKeysTab.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/filters/FilterCategory.tsx",
           "type": "registry:component"
         },

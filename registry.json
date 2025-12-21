@@ -705,11 +705,11 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/atomic-crm/activities/ProcessingStatusIndicator.tsx",
+          "path": "src/components/atomic-crm/activities/ActivityFeed.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/atomic-crm/activities/ActivityFeed.tsx",
+          "path": "src/components/atomic-crm/activities/ActivitiesPage.tsx",
           "type": "registry:component"
         },
         {

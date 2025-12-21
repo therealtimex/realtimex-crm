@@ -289,6 +289,197 @@ async function startAgent() {
 startAgent();
 ```
 
+## Realtime Notifications (Event-Driven Processing)
+
+Instead of polling every 5 seconds, the RealTimeX App can use **Supabase Realtime** for instant push notifications when new activities arrive.
+
+### Architecture: CRM Provides Config via postMessage
+
+The CRM sends its Supabase configuration to the parent Electron app, which then subscribes directly to Realtime channels.
+
+### CRM Side: Share Supabase Config
+
+Add this to CRM initialization (e.g., `src/components/atomic-crm/root/CRM.tsx`):
+
+```typescript
+import { useEffect } from 'react';
+import { getSupabaseConfig } from "@/lib/supabase-config";
+
+export const CRM = (props) => {
+  // ... existing code ...
+
+  // Send Supabase config to parent on mount
+  useEffect(() => {
+    if (window.parent !== window) {
+      const config = getSupabaseConfig();
+
+      if (config) {
+        window.parent.postMessage({
+          type: 'SUPABASE_CONFIG',
+          payload: {
+            appName: 'atomic-crm',
+            url: config.url,
+            anonKey: config.anonKey,
+            tables: ['activities'],
+            filters: {
+              activities: 'processing_status=eq.raw'
+            }
+          }
+        }, '*');
+      }
+    }
+  }, []);
+
+  // ... rest of component ...
+};
+```
+
+### RealTimeX App: Subscribe to Realtime Channels
+
+```typescript
+import { createClient } from '@supabase/supabase-js';
+
+const appConfigs = new Map();
+let processing = false;
+
+// Listen for Supabase config from Local Apps
+window.addEventListener('message', async (event) => {
+  if (event.data.type === 'SUPABASE_CONFIG') {
+    const { appName, url, anonKey, filters } = event.data.payload;
+
+    // Store config
+    appConfigs.set(appName, { url, anonKey });
+
+    // Initialize Supabase client
+    const supabase = createClient(url, anonKey);
+
+    // Get current user's sales_id
+    const mySalesId = await getMySalesId(supabase);
+
+    console.log(`[${appName}] Subscribed to Realtime for sales_id: ${mySalesId}`);
+
+    // Subscribe to new activities (instant processing)
+    supabase
+      .channel(`${appName}-new-activities`)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'activities',
+        filter: filters.activities
+      }, async (payload) => {
+        console.log(`[${appName}] New activity detected:`, payload.new.id);
+
+        if (!processing) {
+          processing = true;
+          await tryClaimAndProcess(supabase, mySalesId);
+          processing = false;
+        }
+      })
+      .subscribe();
+
+    // Polling fallback (every 30s to catch missed events)
+    setInterval(async () => {
+      if (!processing) {
+        processing = true;
+        await tryClaimAndProcess(supabase, mySalesId);
+        processing = false;
+      }
+    }, 30000);
+  }
+});
+
+async function getMySalesId(supabase): Promise<number> {
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data } = await supabase
+    .from('sales')
+    .select('id')
+    .eq('user_id', user.id)
+    .single();
+  return data.id;
+}
+
+async function tryClaimAndProcess(supabase, mySalesId: number) {
+  // Priority 1: My work
+  let activity = await claimMyWork(supabase, mySalesId);
+
+  // Priority 2: Stale work
+  if (!activity) {
+    activity = await claimStaleWork(supabase);
+  }
+
+  if (activity) {
+    await processActivity(activity);
+  }
+}
+
+async function claimMyWork(supabase, salesId: number) {
+  const { data } = await supabase.rpc('claim_next_pending_activity', {
+    p_agent_sales_id: salesId
+  });
+  return data?.[0] || null;
+}
+
+async function claimStaleWork(supabase) {
+  const { data } = await supabase.rpc('claim_stale_activity');
+  return data?.[0] || null;
+}
+```
+
+### Benefits of Realtime Approach
+
+**Compared to polling every 5 seconds:**
+
+| Metric | Polling (5s) | Realtime + Fallback (30s) |
+|--------|--------------|---------------------------|
+| **Processing delay** | 0-5 seconds | ~Instant (100-500ms) |
+| **Database queries/min** | 12 per agent | 2 per agent |
+| **Network overhead** | High | Low |
+| **Scalability** | Limited | Excellent |
+
+**Additional benefits:**
+- ✅ Instant processing (no polling delay)
+- ✅ 83% fewer database queries
+- ✅ Lower network usage
+- ✅ Polling fallback ensures resilience
+- ✅ Multi-app ready (each app sends its own config)
+
+### postMessage API Specification
+
+**Message: `SUPABASE_CONFIG`**
+
+Sent from CRM (iframe) to RealTimeX App (parent) on mount.
+
+```typescript
+{
+  type: 'SUPABASE_CONFIG',
+  payload: {
+    appName: string,        // 'atomic-crm'
+    url: string,            // Supabase project URL
+    anonKey: string,        // Supabase anon key
+    tables: string[],       // Tables to monitor
+    filters: {              // Optional filters per table
+      [tableName: string]: string  // Supabase filter syntax
+    }
+  }
+}
+```
+
+**Example:**
+```typescript
+{
+  type: 'SUPABASE_CONFIG',
+  payload: {
+    appName: 'atomic-crm',
+    url: 'https://xxxxx.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+    tables: ['activities'],
+    filters: {
+      activities: 'processing_status=eq.raw'
+    }
+  }
+}
+```
+
 ## Multi-User Scenarios
 
 ### Scenario 1: User A Online, User B Offline

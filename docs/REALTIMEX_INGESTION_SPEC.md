@@ -82,6 +82,90 @@ async function processingLoop() {
 2. **User offline:** Their work sits for 5 minutes, then becomes available to any agent
 3. **Agent crashes:** Locked activities get unlocked after 5 minutes via `unlock_stale_locks()`
 
+### 1.2 Realtime Notifications (Recommended)
+
+For production deployments, use **Supabase Realtime** instead of polling for instant processing.
+
+#### postMessage API: `SUPABASE_CONFIG`
+
+CRM sends its Supabase configuration to RealTimeX App on mount:
+
+**Message Format:**
+```typescript
+{
+  type: 'SUPABASE_CONFIG',
+  payload: {
+    appName: 'atomic-crm',
+    url: string,            // Supabase project URL
+    anonKey: string,        // Supabase anon key
+    tables: ['activities'], // Tables to monitor
+    filters: {
+      activities: 'processing_status=eq.raw'  // Only raw activities
+    }
+  }
+}
+```
+
+**CRM Implementation:**
+```typescript
+// In CRM initialization (e.g., src/components/atomic-crm/root/CRM.tsx)
+useEffect(() => {
+  if (window.parent !== window) {
+    const config = getSupabaseConfig();
+
+    window.parent.postMessage({
+      type: 'SUPABASE_CONFIG',
+      payload: {
+        appName: 'atomic-crm',
+        url: config.url,
+        anonKey: config.anonKey,
+        tables: ['activities'],
+        filters: { activities: 'processing_status=eq.raw' }
+      }
+    }, '*');
+  }
+}, []);
+```
+
+**RealTimeX App Implementation:**
+```typescript
+window.addEventListener('message', async (event) => {
+  if (event.data.type === 'SUPABASE_CONFIG') {
+    const { url, anonKey, filters } = event.data.payload;
+    const supabase = createClient(url, anonKey);
+
+    // Subscribe to new activities
+    supabase
+      .channel('atomic-crm-activities')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'activities',
+        filter: filters.activities
+      }, async (payload) => {
+        await tryClaimAndProcess(supabase, mySalesId);
+      })
+      .subscribe();
+
+    // Polling fallback every 30s
+    setInterval(() => tryClaimAndProcess(supabase, mySalesId), 30000);
+  }
+});
+```
+
+**Performance Comparison:**
+
+| Approach | Processing Delay | DB Queries/min | Network Usage |
+|----------|------------------|----------------|---------------|
+| Polling (5s) | 0-5 seconds | 12 per agent | High |
+| Realtime + Fallback (30s) | ~Instant (100-500ms) | 2 per agent | Low |
+
+**Benefits:**
+- ✅ 83% fewer database queries
+- ✅ Instant processing (<500ms vs 0-5s delay)
+- ✅ Better scalability for multiple agents
+- ✅ Polling fallback ensures resilience
+
 ## 2. Database Schema Design
 
 ### A. The `activities` Table (Unified Event Store)

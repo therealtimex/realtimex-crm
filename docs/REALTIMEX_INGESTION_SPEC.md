@@ -673,7 +673,7 @@ Before deploying to production, ensure:
 - [ ] Add indexes on `activities(contact_id)`, `activities(sales_id)`, `activities(created_at)`
 - [ ] Set up `pg_cron` for stale lock recovery
 - [ ] Configure RLS policies based on team structure (Section 2.D recommended additions)
-- [ ] Enable Supabase Realtime for `activities` table
+- [x] Enable Supabase Realtime for `activities` table
 - [ ] Set up database backups and point-in-time recovery
 
 ### 10.3 Monitoring

@@ -2,7 +2,15 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
+function Textarea({
+  className,
+  helperText: _helperText,
+  alwaysOn: _alwaysOn,
+  ...props
+}: React.ComponentProps<"textarea"> & {
+  helperText?: string;
+  alwaysOn?: boolean;
+}) {
   return (
     <textarea
       data-slot="textarea"

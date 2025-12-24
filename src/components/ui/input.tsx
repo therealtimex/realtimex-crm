@@ -2,7 +2,16 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-function Input({ className, type, helperText, alwaysOn, ...props }: React.ComponentProps<"input"> & { helperText?: string; alwaysOn?: boolean }) {
+function Input({
+  className,
+  type,
+  helperText: _helperText,
+  alwaysOn: _alwaysOn,
+  ...props
+}: React.ComponentProps<"input"> & {
+  helperText?: string;
+  alwaysOn?: boolean;
+}) {
   return (
     <input
       type={type}

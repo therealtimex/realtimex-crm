@@ -23,6 +23,7 @@ export const CompanyListFilter = () => {
       <FilterCategory icon={<Building className="h-4 w-4" />} label="Size">
         {sizes.map((size) => (
           <ToggleFilterButton
+            key={size.id}
             className="w-full justify-between"
             label={size.name}
             value={{ size: size.id }}
@@ -33,6 +34,7 @@ export const CompanyListFilter = () => {
       <FilterCategory icon={<Truck className="h-4 w-4" />} label="Sector">
         {sectors.map((sector) => (
           <ToggleFilterButton
+            key={sector.id}
             className="w-full justify-between"
             label={sector.name}
             value={{ sector: sector.id }}

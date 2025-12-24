@@ -31,6 +31,15 @@ DROP INDEX IF EXISTS idx_activities_pending_storage;
 -- Remove the CHECK constraint on payload_storage_status to allow NULL and 'in_storage' only
 -- First drop the constraint, then add a new one
 ALTER TABLE activities DROP CONSTRAINT IF EXISTS activities_payload_storage_status_check;
+
+-- Clean up any existing data that doesn't match the new constraint
+-- Convert 'pending_move' or any other status to 'in_storage'
+UPDATE activities
+SET payload_storage_status = 'in_storage'
+WHERE payload_storage_status IS NOT NULL
+  AND payload_storage_status != 'in_storage';
+
+-- Now add the constraint
 ALTER TABLE activities ADD CONSTRAINT activities_payload_storage_status_check
   CHECK (payload_storage_status IS NULL OR payload_storage_status = 'in_storage');
 

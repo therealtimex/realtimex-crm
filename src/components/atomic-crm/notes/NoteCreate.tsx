@@ -20,6 +20,7 @@ import { getCurrentDate } from "./utils";
 const foreignKeyMapping = {
   contacts: "contact_id",
   deals: "deal_id",
+  companies: "company_id",
 };
 
 export const NoteCreate = ({
@@ -27,7 +28,7 @@ export const NoteCreate = ({
   showStatus,
   className,
 }: {
-  reference: "contacts" | "deals";
+  reference: "contacts" | "deals" | "companies";
   showStatus?: boolean;
   className?: string;
 }) => {
@@ -53,7 +54,7 @@ const NoteCreateButton = ({
   reference,
   record,
 }: {
-  reference: "contacts" | "deals";
+  reference: "contacts" | "deals" | "companies";
   record: RaRecord<Identifier>;
 }) => {
   const [update] = useUpdate();
@@ -82,9 +83,15 @@ const NoteCreateButton = ({
   const handleSuccess = (data: any) => {
     reset(resetValues, { keepValues: false });
     refetch();
+
+    const updateData: any = { last_seen: new Date().toISOString() };
+    if (reference === "contacts") {
+      updateData.status = data.status;
+    }
+
     update(reference, {
       id: (record && record.id) as unknown as Identifier,
-      data: { last_seen: new Date().toISOString(), status: data.status },
+      data: updateData,
       previousData: record,
     });
     notify("Note added");

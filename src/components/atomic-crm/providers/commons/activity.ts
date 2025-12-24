@@ -2,6 +2,7 @@ import type { DataProvider, Identifier } from "ra-core";
 
 import {
   COMPANY_CREATED,
+  COMPANY_NOTE_CREATED,
   CONTACT_CREATED,
   CONTACT_NOTE_CREATED,
   DEAL_CREATED,
@@ -10,6 +11,7 @@ import {
 import type {
   Activity,
   Company,
+  CompanyNote,
   Contact,
   ContactNote,
   Deal,
@@ -37,14 +39,15 @@ export async function getActivityLog(
     filter["sales_id@in"] = `(${salesId})`;
   }
 
-  const [newCompanies, newContactsAndNotes, newDealsAndNotes] =
+  const [newCompanies, newContactsAndNotes, newDealsAndNotes, newCompanyNotes] =
     await Promise.all([
       getNewCompanies(dataProvider, companyFilter),
       getNewContactsAndNotes(dataProvider, filter),
       getNewDealsAndNotes(dataProvider, filter),
+      getNewCompanyNotes(dataProvider, filter),
     ]);
   return (
-    [...newCompanies, ...newContactsAndNotes, ...newDealsAndNotes]
+    [...newCompanies, ...newContactsAndNotes, ...newDealsAndNotes, ...newCompanyNotes]
       // sort by date desc
       .sort((a, b) =>
         a.date && b.date ? a.date.localeCompare(b.date) * -1 : 0,
@@ -171,4 +174,37 @@ async function getNewDealsAndNotes(
   }));
 
   return [...newDeals, ...newDealNotes];
+}
+
+async function getNewCompanyNotes(
+  dataProvider: DataProvider,
+  filter: any,
+): Promise<Activity[]> {
+  const recentCompanyNotesFilter = {} as any;
+
+  if (filter.sales_id) {
+    recentCompanyNotesFilter.sales_id = filter.sales_id;
+  }
+  if (filter.company_id) {
+    recentCompanyNotesFilter.company_id = filter.company_id;
+  }
+
+  const { data: companyNotes } = await dataProvider.getList<CompanyNote>(
+    "companyNotes",
+    {
+      filter: recentCompanyNotesFilter,
+      pagination: { page: 1, perPage: 250 },
+      sort: { field: "date", order: "DESC" },
+    },
+  );
+
+  const newCompanyNotes = companyNotes.map((companyNote) => ({
+    id: `companyNote.${companyNote.id}.created`,
+    type: COMPANY_NOTE_CREATED,
+    sales_id: companyNote.sales_id,
+    companyNote,
+    date: companyNote.date,
+  }));
+
+  return newCompanyNotes;
 }

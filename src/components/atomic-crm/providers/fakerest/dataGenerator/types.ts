@@ -1,5 +1,6 @@
 import type {
   Company,
+  CompanyNote,
   Contact,
   ContactNote,
   Deal,
@@ -11,6 +12,7 @@ import type {
 
 export interface Db {
   companies: Required<Company>[];
+  companyNotes: CompanyNote[];
   contacts: Required<Contact>[];
   contactNotes: ContactNote[];
   deals: Deal[];

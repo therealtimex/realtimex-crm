@@ -52,29 +52,45 @@ export const DealsChart = memo(() => {
         won: dealsByMonth[month]
           .filter((deal: Deal) => deal.stage === "won")
           .reduce((acc: number, deal: Deal) => {
-            acc += deal.amount;
+            const amount = deal.amount ?? 0;
+            if (!isNaN(amount)) {
+              acc += amount;
+            }
             return acc;
           }, 0),
         pending: dealsByMonth[month]
           .filter((deal: Deal) => !["won", "lost"].includes(deal.stage))
           .reduce((acc: number, deal: Deal) => {
+            const amount = deal.amount ?? 0;
             // @ts-expect-error - multiplier type issue
-            acc += deal.amount * multiplier[deal.stage];
+            const mult = multiplier[deal.stage] ?? 0;
+            if (!isNaN(amount) && !isNaN(mult)) {
+              acc += amount * mult;
+            }
             return acc;
           }, 0),
         lost: dealsByMonth[month]
           .filter((deal: Deal) => deal.stage === "lost")
           .reduce((acc: number, deal: Deal) => {
-            acc -= deal.amount;
+            const amount = deal.amount ?? 0;
+            if (!isNaN(amount)) {
+              acc -= amount;
+            }
             return acc;
           }, 0),
       };
     });
 
-    return amountByMonth;
+    // Filter out any months with NaN values
+    return amountByMonth.filter(
+      (month) =>
+        !isNaN(month.won) && !isNaN(month.pending) && !isNaN(month.lost),
+    );
   }, [data]);
 
   if (isPending) return null; // FIXME return skeleton instead
+  if (months.length === 0) return null; // No data to display
+
   const range = months.reduce(
     (acc, month) => {
       acc.min = Math.min(acc.min, month.lost);
@@ -83,6 +99,13 @@ export const DealsChart = memo(() => {
     },
     { min: 0, max: 0 },
   );
+
+  // Ensure we have a valid range for the chart
+  const chartRange = {
+    min: range.min === 0 && range.max === 0 ? -100 : range.min * 1.2,
+    max: range.min === 0 && range.max === 0 ? 100 : range.max * 1.2,
+  };
+
   return (
     <div className="flex flex-col">
       <div className="flex items-center mb-4">
@@ -103,8 +126,8 @@ export const DealsChart = memo(() => {
           padding={0.3}
           valueScale={{
             type: "linear",
-            min: range.min * 1.2,
-            max: range.max * 1.2,
+            min: chartRange.min,
+            max: chartRange.max,
           }}
           indexScale={{ type: "band", round: true }}
           enableGridX={true}

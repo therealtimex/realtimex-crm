@@ -24,6 +24,8 @@ import { Avatar } from "../contacts/Avatar";
 import { TagsList } from "../contacts/TagsList";
 import { findDealLabel } from "../deals/deal";
 import { Status } from "../misc/Status";
+import { NoteCreate } from "../notes/NoteCreate";
+import { NotesIterator } from "../notes/NotesIterator";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import type { Company, Contact, Deal } from "../types";
 import { CompanyAside } from "./CompanyAside";
@@ -64,7 +66,7 @@ const CompanyShowContent = () => {
               <h5 className="text-xl ml-2 flex-1">{record.name}</h5>
             </div>
             <Tabs defaultValue={currentTab} onValueChange={handleTabChange}>
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="activity">Activity</TabsTrigger>
                 <TabsTrigger value="contacts">
                   {record.nb_contacts
@@ -72,6 +74,13 @@ const CompanyShowContent = () => {
                       ? "1 Contact"
                       : `${record.nb_contacts} Contacts`
                     : "No Contacts"}
+                </TabsTrigger>
+                <TabsTrigger value="notes">
+                  {record.nb_notes
+                    ? record.nb_notes === 1
+                      ? "1 Note"
+                      : `${record.nb_notes} Notes`
+                    : "Notes"}
                 </TabsTrigger>
                 {record.nb_deals ? (
                   <TabsTrigger value="deals">
@@ -110,6 +119,16 @@ const CompanyShowContent = () => {
                     </div>
                   </div>
                 )}
+              </TabsContent>
+              <TabsContent value="notes">
+                <ReferenceManyField
+                  reference="companyNotes"
+                  target="company_id"
+                  sort={{ field: "date", order: "DESC" }}
+                  empty={<NoteCreate reference="companies" className="mt-4" />}
+                >
+                  <NotesIterator reference="companies" />
+                </ReferenceManyField>
               </TabsContent>
               <TabsContent value="deals">
                 {record.nb_deals ? (

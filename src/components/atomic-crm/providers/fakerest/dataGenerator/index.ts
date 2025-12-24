@@ -1,4 +1,5 @@
 import { generateCompanies } from "./companies";
+import { generateCompanyNotes } from "./companyNotes";
 import { generateContactNotes } from "./contactNotes";
 import { generateContacts } from "./contacts";
 import { generateDealNotes } from "./dealNotes";
@@ -14,6 +15,7 @@ export default (): Db => {
   db.sales = generateSales(db);
   db.tags = generateTags(db);
   db.companies = generateCompanies(db);
+  db.companyNotes = generateCompanyNotes(db);
   db.contacts = generateContacts(db);
   db.contactNotes = generateContactNotes(db);
   db.deals = generateDeals(db);

@@ -69,6 +69,8 @@ export type Company = {
   context_links?: string[];
   nb_contacts?: number;
   nb_deals?: number;
+  nb_notes?: number;
+  last_seen?: string;
 } & Pick<RaRecord, "id">;
 
 export type EmailAndType = {
@@ -138,6 +140,17 @@ export type DealNote = {
   status?: undefined;
 } & Pick<RaRecord, "id">;
 
+export type CompanyNote = {
+  company_id: Identifier;
+  text: string;
+  date: string;
+  sales_id: Identifier;
+  attachments?: AttachmentNote[];
+
+  // This is defined for compatibility with `ContactNote`
+  status?: undefined;
+} & Pick<RaRecord, "id">;
+
 export type Tag = {
   name: string;
   color: string;
@@ -190,6 +203,13 @@ export type ActivityDealNoteCreated = {
   date: string;
 };
 
+export type ActivityCompanyNoteCreated = {
+  type: typeof COMPANY_NOTE_CREATED;
+  sales_id?: Identifier;
+  companyNote: CompanyNote;
+  date: string;
+};
+
 export type Activity = RaRecord &
   (
     | ActivityCompanyCreated
@@ -197,6 +217,7 @@ export type Activity = RaRecord &
     | ActivityContactNoteCreated
     | ActivityDealCreated
     | ActivityDealNoteCreated
+    | ActivityCompanyNoteCreated
   );
 
 export interface RAFile {

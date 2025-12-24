@@ -22,14 +22,14 @@ Admin should manually notify the user (via email, Slack, etc.):
 
 **Sample message:**
 ```
-Subject: Your Atomic CRM Account
+Subject: Your RealTimeX CRM Account
 
 Hi [Name],
 
-An account has been created for you in Atomic CRM.
+An account has been created for you in RealTimeX CRM.
 
 To get started:
-1. Open the Atomic CRM application
+1. Open the RealTimeX CRM application
 2. Click "Login with email code (OTP)"
 3. Enter your email: [user@example.com]
 4. Check your email for a 6-digit code
@@ -144,7 +144,7 @@ If you want to send automated welcome emails:
 await sendWelcomeEmail({
   to: email,
   name: first_name,
-  subject: 'Welcome to Atomic CRM',
+  subject: 'Welcome to RealTimeX CRM',
   body: `
     Hi ${first_name},
 

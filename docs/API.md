@@ -1,8 +1,8 @@
-# Atomic CRM API Documentation
+# RealTimeX CRM API Documentation
 
 ## Overview
 
-The Atomic CRM API allows you to programmatically manage contacts, companies, deals, and activities. This REST API uses API keys for authentication and supports webhooks for event notifications.
+The RealTimeX CRM API allows you to programmatically manage contacts, companies, deals, and activities. This REST API uses API keys for authentication and supports webhooks for event notifications.
 
 **Base URL**: `https://your-project.supabase.co/functions/v1`
 
@@ -16,7 +16,7 @@ Authorization: Bearer ak_live_your_api_key_here
 
 ### Creating an API Key
 
-1. Navigate to **Integrations** in the Atomic CRM dashboard
+1. Navigate to **Integrations** in the RealTimeX CRM dashboard
 2. Click **Create API Key**
 3. Enter a name and select the required scopes
 4. Copy the generated key (it will only be shown once)
@@ -407,7 +407,7 @@ Example payload for `deal.stage_changed`:
 
 ### Signature Verification
 
-All webhook requests include an `X-Webhook-Signature` header containing an HMAC-SHA256 signature. You should verify this signature to ensure the webhook came from Atomic CRM.
+All webhook requests include an `X-Webhook-Signature` header containing an HMAC-SHA256 signature. You should verify this signature to ensure the webhook came from RealTimeX CRM.
 
 **Node.js example**:
 
@@ -475,7 +475,7 @@ def webhook():
 
 ### Webhook Retries
 
-If your webhook endpoint returns a non-2xx status code, Atomic CRM will retry delivery:
+If your webhook endpoint returns a non-2xx status code, RealTimeX CRM will retry delivery:
 
 - **Retry 1**: After 1 minute
 - **Retry 2**: After 5 minutes

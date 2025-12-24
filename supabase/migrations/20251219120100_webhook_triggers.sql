@@ -5,7 +5,7 @@ create or replace function enqueue_webhook_event(
 ) returns void
 language plpgsql
 security definer
-set search_path = ''
+set search_path = public
 as $$
 begin
     -- Find all active webhooks that listen to this event
@@ -26,7 +26,7 @@ create or replace function trigger_contact_webhooks()
 returns trigger
 language plpgsql
 security definer
-set search_path = ''
+set search_path = public
 as $$
 declare
     event_type text;
@@ -58,7 +58,7 @@ create or replace function trigger_company_webhooks()
 returns trigger
 language plpgsql
 security definer
-set search_path = ''
+set search_path = public
 as $$
 declare
     event_type text;
@@ -90,7 +90,7 @@ create or replace function trigger_deal_webhooks()
 returns trigger
 language plpgsql
 security definer
-set search_path = ''
+set search_path = public
 as $$
 declare
     event_type text;
@@ -142,7 +142,7 @@ create or replace function trigger_task_webhooks()
 returns trigger
 language plpgsql
 security definer
-set search_path = ''
+set search_path = public
 as $$
 begin
     if (TG_OP = 'UPDATE' and OLD.done_date is null and NEW.done_date is not null) then
@@ -169,3 +169,8 @@ create trigger deal_webhook_trigger
 create trigger task_webhook_trigger
     after update on public.tasks
     for each row execute function trigger_task_webhooks();
+
+-- Grant execute permissions on webhook functions
+grant execute on function enqueue_webhook_event(text, jsonb) to authenticated;
+grant execute on function enqueue_webhook_event(text, jsonb) to service_role;
+grant execute on function enqueue_webhook_event(text, jsonb) to anon;

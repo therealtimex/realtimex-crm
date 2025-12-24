@@ -1,6 +1,6 @@
 # Deployment Guide: API & Webhooks Setup
 
-This guide walks you through deploying the database tables and Edge Functions for the Atomic CRM API and webhooks system on a new Supabase instance.
+This guide walks you through deploying the database tables and Edge Functions for the RealTimeX CRM API and webhooks system on a new Supabase instance.
 
 ## Table of Contents
 
@@ -104,6 +104,52 @@ WHERE table_schema = 'public'
   AND table_name IN ('api_keys', 'webhooks', 'api_logs', 'webhook_queue');
 ```
 
+### 1.4 Enable Extensions and Configure Cron (Critical)
+
+The webhook system relies on `pg_cron` and `pg_net` extensions to dispatch events. These are automatically enabled by migration `20251222075019_enable_extensions_and_configure_cron.sql`, but you need to configure the cron dispatcher settings.
+
+**Option A: Using the Configuration Helper (Recommended)**
+
+Run this command to generate ready-to-run SQL with your project's values:
+
+```bash
+npm run supabase:configure:cron
+```
+
+This helper will:
+- Read your linked Supabase project reference
+- Fetch your service role key from the Supabase CLI
+- Generate the SQL command with your actual values
+- Provide a direct link to your project's SQL Editor
+
+Copy the generated SQL and paste it into your Supabase Dashboard SQL Editor.
+
+**Option B: Manual Configuration via SQL**
+
+If the automated script doesn't work, run this SQL in your Supabase Dashboard SQL Editor:
+
+```sql
+-- Configure using the helper function (replace with your actual values!)
+SELECT configure_webhook_cron_settings(
+  'your-project-ref.supabase.co',
+  'your-service-role-key-here'
+);
+```
+
+Find your values in: **Supabase Dashboard → Settings → API**
+- **Project URL**: Copy without `https://`
+- **Service Role Key**: Copy the `service_role` key
+
+**Verify Configuration:**
+
+```sql
+SELECT
+  current_setting('app.settings.supabase_url', true) as url,
+  left(current_setting('app.settings.service_role_key', true), 20) || '...' as key;
+```
+
+> **Note:** Without this step, webhooks will remain in "pending" status indefinitely.
+
 ---
 
 ## Step 2: Deploy Edge Functions
@@ -119,6 +165,7 @@ The API consists of five Edge Functions that need to be deployed.
 | `api-v1-deals` | Deal CRUD operations | `/functions/v1/api-v1-deals/{id}` |
 | `api-v1-activities` | Create notes and tasks | `/functions/v1/api-v1-activities` |
 | `webhook-dispatcher` | Async webhook delivery | `/functions/v1/webhook-dispatcher` |
+| `ingest-activity` | Accepts activity ingestion with file uploads | `/functions/v1/ingest-activity` |
 
 ### 2.2 Deploy All Functions
 
@@ -131,6 +178,7 @@ npx supabase functions deploy api-v1-contacts --no-verify-jwt && \
 npx supabase functions deploy api-v1-companies --no-verify-jwt && \
 npx supabase functions deploy api-v1-deals --no-verify-jwt && \
 npx supabase functions deploy api-v1-activities --no-verify-jwt && \
+npx supabase functions deploy ingest-activity --no-verify-jwt && \
 npx supabase functions deploy webhook-dispatcher --no-verify-jwt
 ```
 
@@ -471,11 +519,13 @@ npx supabase db reset
 Before going live, ensure:
 
 - [ ] All migrations applied successfully (`npx supabase migration list`)
-- [ ] All Edge Functions deployed with `--no-verify-jwt` flag
+- [ ] All Edge Functions deployed
+- [ ] Cron settings configured (`npm run supabase:configure:cron`)
 - [ ] Test API key created with appropriate scopes
 - [ ] API tested with GET, POST, PATCH, DELETE operations
 - [ ] Rate limiting verified (100 req/min)
 - [ ] Webhooks tested with real endpoint
+- [ ] File upload handling tested (multipart uploads)
 - [ ] API documentation reviewed (docs/API.md)
 - [ ] Environment variables configured in production
 - [ ] API keys stored securely (never in version control)
@@ -500,7 +550,11 @@ npx supabase functions deploy api-v1-contacts --no-verify-jwt && \
 npx supabase functions deploy api-v1-companies --no-verify-jwt && \
 npx supabase functions deploy api-v1-deals --no-verify-jwt && \
 npx supabase functions deploy api-v1-activities --no-verify-jwt && \
+npx supabase functions deploy ingest-activity --no-verify-jwt && \
 npx supabase functions deploy webhook-dispatcher --no-verify-jwt
+
+# Configure cron settings
+npm run supabase:configure:cron
 
 # List deployed functions
 npx supabase functions list
@@ -515,10 +569,12 @@ curl "https://your-project-ref.supabase.co/functions/v1/api-v1-contacts/1" \
 ## Next Steps
 
 - Review the [API Documentation](./API.md) for complete endpoint reference
+- Understand [File Upload Storage](./LARGE_PAYLOAD_HANDLING.md) for file upload best practices
 - Set up webhooks for your integrations
 - Implement webhook signature verification in your webhook receivers
 - Monitor API logs via the Supabase dashboard
 - Set up monitoring and alerts for webhook failures
+- Configure file retention policies if needed
 
 ---
 

@@ -9,6 +9,7 @@ import { NoteCreate, NotesIterator } from "../notes";
 import type { Contact } from "../types";
 import { Avatar } from "./Avatar";
 import { ContactAside } from "./ContactAside";
+import { ActivityFeed } from "../activities/ActivityFeed";
 
 export const ContactShow = () => (
   <ShowBase>
@@ -57,16 +58,33 @@ const ContactShowContent = () => {
                 </ReferenceField>
               </div>
             </div>
-            <ReferenceManyField
-              target="contact_id"
-              reference="contactNotes"
-              sort={{ field: "date", order: "DESC" }}
-              empty={
-                <NoteCreate reference="contacts" showStatus className="mt-4" />
-              }
-            >
-              <NotesIterator reference="contacts" showStatus />
-            </ReferenceManyField>
+
+            {/* Activity Timeline - Shows processing status (temporary) */}
+            <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-4">Activity Timeline</h3>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Real-time processing status of incoming activities
+                </p>
+                <ActivityFeed contactId={record.id as number} />
+            </div>
+
+            {/* Notes - Permanent record of outcomes */}
+            <div className="mt-8">
+                <h3 className="text-lg font-semibold mb-4">Notes</h3>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Permanent record of interactions and outcomes
+                </p>
+                <ReferenceManyField
+                  target="contact_id"
+                  reference="contactNotes"
+                  sort={{ field: "date", order: "DESC" }}
+                  empty={
+                    <NoteCreate reference="contacts" showStatus className="mt-4" />
+                  }
+                >
+                  <NotesIterator reference="contacts" showStatus />
+                </ReferenceManyField>
+            </div>
           </CardContent>
         </Card>
       </div>

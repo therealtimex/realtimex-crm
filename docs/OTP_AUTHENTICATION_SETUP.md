@@ -1,6 +1,6 @@
 # Email OTP Authentication Setup Guide
 
-This guide explains how to configure Supabase email templates to work with the Email OTP (One-Time Password) authentication system in Atomic CRM.
+This guide explains how to configure Supabase email templates to work with the Email OTP (One-Time Password) authentication system in RealTimeX CRM.
 
 ## Overview
 
@@ -103,7 +103,7 @@ This template is used for OTP login and password reset flows.
 
 **Updated Template (OTP-based):**
 ```html
-<h2>Login to Atomic CRM</h2>
+<h2>Login to RealTimeX CRM</h2>
 
 <p>Here is your login code:</p>
 
@@ -127,15 +127,15 @@ If you want to send a welcome email when admins create new users, update this te
 
 **Recommended Template:**
 ```html
-<h2>Welcome to Atomic CRM</h2>
+<h2>Welcome to RealTimeX CRM</h2>
 
 <p>Hello {{ .Email }},</p>
 
-<p>An administrator has created an account for you in Atomic CRM.</p>
+<p>An administrator has created an account for you in RealTimeX CRM.</p>
 
 <p>To get started:</p>
 <ol>
-  <li>Open the Atomic CRM application</li>
+  <li>Open the RealTimeX CRM application</li>
   <li>Click "Login with email code (OTP)"</li>
   <li>Enter your email: <strong>{{ .Email }}</strong></li>
   <li>You'll receive a 6-digit code via email</li>
@@ -341,4 +341,4 @@ For issues with OTP authentication:
 For more information, see:
 - [Supabase Auth Documentation](https://supabase.com/docs/guides/auth)
 - [Supabase OTP Documentation](https://supabase.com/docs/guides/auth/auth-email-otp)
-- [Atomic CRM Documentation](../README.md)
+- [RealTimeX CRM Documentation](../README.md)

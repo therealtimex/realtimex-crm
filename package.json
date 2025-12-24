@@ -68,6 +68,7 @@
     "registry:gen": "node ./scripts/generate-registry.mjs",
     "ghpages:deploy": "node ./scripts/ghpages-deploy.mjs",
     "supabase:remote:init": "node ./scripts/supabase-remote-init.mjs",
+    "supabase:configure:cron": "bash ./scripts/configure-webhook-cron.sh",
     "prepare": "husky"
   },
   "dependencies": {

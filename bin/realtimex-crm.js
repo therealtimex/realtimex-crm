@@ -25,8 +25,8 @@ async function main() {
 
   // --- Argument and Environment Variable Parsing ---
   const args = process.argv.slice(2);
-  const nonInteractiveYes = args.includes('-y');
-  const nonInteractiveNo = args.includes('-n');
+  const nonInteractiveYes = args.includes("-y");
+  const nonInteractiveNo = args.includes("-n");
 
   const supabaseUrlFromEnv = process.env.SUPABASE_URL;
   const supabaseAnonKeyFromEnv = process.env.SUPABASE_ANON_KEY;
@@ -69,16 +69,15 @@ async function main() {
     });
   }
 
-
   if (configureNow) {
     // --- Get Supabase Credentials ---
     let supabaseUrl = supabaseUrlFromEnv;
     let supabaseAnonKey = supabaseAnonKeyFromEnv;
 
     if (!supabaseUrl || !supabaseAnonKey) {
-        console.log("\n📝 Supabase Configuration\n");
-        console.log("First, ensure you are logged in to the Supabase CLI.");
-        console.log("Run `npx supabase login` if you haven't already.\n");
+      console.log("\n📝 Supabase Configuration\n");
+      console.log("First, ensure you are logged in to the Supabase CLI.");
+      console.log("Run `npx supabase login` if you haven't already.\n");
     }
 
     if (!supabaseUrl) {
@@ -92,7 +91,7 @@ async function main() {
         },
       });
     } else {
-        console.log(`Using SUPABASE_URL from environment.`);
+      console.log(`Using SUPABASE_URL from environment.`);
     }
 
     if (!supabaseAnonKey) {
@@ -104,7 +103,7 @@ async function main() {
         },
       });
     } else {
-        console.log(`Using SUPABASE_ANON_KEY from environment.`);
+      console.log(`Using SUPABASE_ANON_KEY from environment.`);
     }
 
     // --- Save Configuration ---
@@ -125,10 +124,9 @@ To configure the app:
     await writeFile(configPath, configContent);
     console.log(`Configuration details saved to: ${configPath}\n`);
 
-
     // --- Supabase CLI Commands ---
     const runSupabaseCommand = async (command, message) => {
-      const packageRoot = join(__dirname, '..');
+      const packageRoot = join(__dirname, "..");
       console.log(`\n${message} (from package root: ${packageRoot})`);
       const proc = spawn("npx", ["supabase", ...command], {
         stdio: "inherit",
@@ -139,37 +137,51 @@ To configure the app:
       return new Promise((resolve, reject) => {
         proc.on("close", (code) => {
           if (code === 0) {
-            console.log(`✅ Supabase command 'supabase ${command.join(' ')}' completed successfully.`);
+            console.log(
+              `✅ Supabase command 'supabase ${command.join(" ")}' completed successfully.`,
+            );
             resolve();
           } else {
-            console.error(`❌ Supabase command 'supabase ${command.join(' ')}' failed with code ${code}.`);
+            console.error(
+              `❌ Supabase command 'supabase ${command.join(" ")}' failed with code ${code}.`,
+            );
             reject(new Error(`Supabase command failed with code ${code}`));
           }
         });
         proc.on("error", (err) => {
-          console.error(`❌ Failed to start Supabase command 'supabase ${command.join(' ')}': ${err.message}`);
+          console.error(
+            `❌ Failed to start Supabase command 'supabase ${command.join(" ")}': ${err.message}`,
+          );
           reject(err);
         });
       });
     };
 
-    const projectRefMatch = supabaseUrl.match(/https:\/\/([a-zA-Z0-9_-]+)\.supabase\.co/);
+    const projectRefMatch = supabaseUrl.match(
+      /https:\/\/([a-zA-Z0-9_-]+)\.supabase\.co/,
+    );
     if (projectRefMatch && projectRefMatch[1]) {
       const projectRef = projectRefMatch[1];
       try {
-        await runSupabaseCommand(["link", "--project-ref", projectRef], `🔗 Linking to Supabase project '${projectRef}'...`);
+        await runSupabaseCommand(
+          ["link", "--project-ref", projectRef],
+          `🔗 Linking to Supabase project '${projectRef}'...`,
+        );
 
         let runDbPush = nonInteractiveYes;
         if (!nonInteractiveYes && !nonInteractiveNo) {
-            runDbPush = await confirm({
-              message: "Run `npx supabase db push` to apply migrations?",
-              default: false,
-            });
+          runDbPush = await confirm({
+            message: "Run `npx supabase db push` to apply migrations?",
+            default: false,
+          });
         }
-        
+
         if (runDbPush) {
           try {
-            await runSupabaseCommand(["db", "push"], "🚀 Running `npx supabase db push`...");
+            await runSupabaseCommand(
+              ["db", "push"],
+              "🚀 Running `npx supabase db push`...",
+            );
           } catch (error) {
             console.error("Continuing without successful db push.");
           }
@@ -177,24 +189,31 @@ To configure the app:
 
         let runFunctionsDeploy = nonInteractiveYes;
         if (!nonInteractiveYes && !nonInteractiveNo) {
-            runFunctionsDeploy = await confirm({
-              message: "Run `npx supabase functions deploy` to deploy functions?",
-              default: false,
-            });
+          runFunctionsDeploy = await confirm({
+            message: "Run `npx supabase functions deploy` to deploy functions?",
+            default: false,
+          });
         }
 
         if (runFunctionsDeploy) {
           try {
-            await runSupabaseCommand(["functions", "deploy"], "🚀 Running `npx supabase functions deploy`...");
+            await runSupabaseCommand(
+              ["functions", "deploy"],
+              "🚀 Running `npx supabase functions deploy`...",
+            );
           } catch (error) {
             console.error("Continuing without successful functions deploy.");
           }
         }
       } catch (error) {
-        console.error("Could not link to Supabase project. Skipping db push and functions deploy.");
+        console.error(
+          "Could not link to Supabase project. Skipping db push and functions deploy.",
+        );
       }
     } else {
-      console.warn("Could not extract project reference from Supabase URL. Skipping link, db push, and functions deploy.");
+      console.warn(
+        "Could not extract project reference from Supabase URL. Skipping link, db push, and functions deploy.",
+      );
     }
   }
 
@@ -213,7 +232,14 @@ To configure the app:
 
   const serveProcess = spawn(
     "npx",
-    ["serve", "-s", DIST_PATH, "-l", `tcp://127.0.0.1:${port}`, "--no-clipboard"],
+    [
+      "serve",
+      "-s",
+      DIST_PATH,
+      "-l",
+      `tcp://127.0.0.1:${port}`,
+      "--no-clipboard",
+    ],
     {
       stdio: "inherit",
       shell: true,
@@ -233,9 +259,7 @@ To configure the app:
 
   serveProcess.on("error", (error) => {
     console.error("\n❌ Error starting server:", error.message);
-    console.error(
-      '\nPlease ensure "serve" is installed: npm install -g serve',
-    );
+    console.error('\nPlease ensure "serve" is installed: npm install -g serve');
     process.exit(1);
   });
 

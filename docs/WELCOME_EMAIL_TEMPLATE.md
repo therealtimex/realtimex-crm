@@ -20,18 +20,18 @@ When admins create new users, the system automatically sends a welcome email wit
 Replace the entire template with the following:
 
 ```html
-<h2>Welcome to Atomic CRM</h2>
+<h2>Welcome to RealTimeX CRM</h2>
 
 <p>Hi there,</p>
 
-<p>Your account has been created in Atomic CRM! We're excited to have you on board.</p>
+<p>Your account has been created in RealTimeX CRM! We're excited to have you on board.</p>
 
 <h3>How to Access Your Account</h3>
 
 <p>Follow these simple steps to log in:</p>
 
 <ol style="line-height: 1.8;">
-  <li>Open the Atomic CRM application</li>
+  <li>Open the RealTimeX CRM application</li>
   <li>Click <strong>"Login with email code (OTP)"</strong></li>
   <li>Enter your email address: <strong>{{ .Email }}</strong></li>
   <li>Check your email for a 6-digit verification code</li>
@@ -139,7 +139,7 @@ You can customize the email design to match your brand:
 </head>
 <body>
   <div class="header">
-    <h1>Welcome to Atomic CRM</h1>
+    <h1>Welcome to RealTimeX CRM</h1>
   </div>
   <div class="content">
     <p>Hi there,</p>
@@ -149,7 +149,7 @@ You can customize the email design to match your brand:
     <div class="steps">
       <h3>Login Steps:</h3>
       <ol>
-        <li>Open the Atomic CRM application</li>
+        <li>Open the RealTimeX CRM application</li>
         <li>Click "Login with email code (OTP)"</li>
         <li>Enter your email: <strong>{{ .Email }}</strong></li>
         <li>Check your email for a 6-digit code</li>

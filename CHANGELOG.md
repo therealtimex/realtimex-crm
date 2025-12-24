@@ -5,6 +5,12 @@ All notable changes to Atomic CRM will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.3] - 2025-12-24
+
+### Fixed
+
+- **Webhook System**: Fixed "function enqueue_webhook_event does not exist" error by explicitly defining the function in the public schema and updating triggers to use the fully qualified name.
+
 ## [0.9.0] - 2025-12-19
 
 ### Added

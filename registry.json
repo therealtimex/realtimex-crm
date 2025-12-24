@@ -705,6 +705,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/activities/FileUpload.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/activities/ActivityFeed.tsx",
           "type": "registry:component"
         },

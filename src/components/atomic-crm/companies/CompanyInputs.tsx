@@ -6,6 +6,9 @@ import { ArrayInput } from "@/components/admin/array-input";
 import { SimpleFormIterator } from "@/components/admin/simple-form-iterator";
 import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 
 import ImageEditorField from "../misc/ImageEditorField";
 import { isLinkedinUrl } from "../misc/isLinkedInUrl";
@@ -41,6 +44,8 @@ export const CompanyInputs = () => {
           <CompanyAccountManagerInput />
         </div>
       </div>
+      <Separator className="my-4" />
+      <CompanyAdvancedSettings />
     </div>
   );
 };
@@ -74,21 +79,74 @@ const CompanyContactInputs = () => {
       <h6 className="text-lg font-semibold">Contact</h6>
       <TextInput source="email" helperText={false} type="email" />
       <TextInput source="website" helperText={false} validate={isUrl} />
-      <TextInput
-        source="linkedin_url"
-        helperText={false}
-        validate={isLinkedinUrl}
-      />
       <TextInput source="phone_number" helperText={false} />
+
+      <div className="mt-2">
+        <p className="text-sm font-medium mb-2">Social Profiles</p>
+        <div className="flex flex-col gap-3 ml-2">
+          <TextInput
+            source="linkedin_url"
+            label="LinkedIn"
+            helperText={false}
+            validate={isLinkedinUrl}
+          />
+          <TextInput
+            source="social_profiles.x"
+            label="Twitter/X"
+            helperText={false}
+            validate={isUrl}
+          />
+          <TextInput
+            source="social_profiles.facebook"
+            label="Facebook"
+            helperText={false}
+            validate={isUrl}
+          />
+          <TextInput
+            source="social_profiles.github"
+            label="GitHub"
+            helperText={false}
+            validate={isUrl}
+          />
+        </div>
+      </div>
+
+      <TextInput source="logo_url" label="Logo URL" helperText={false} validate={isUrl} />
     </div>
   );
 };
 
 const CompanyContextInputs = () => {
-  const { companySectors } = useConfigurationContext();
+  const {
+    companySectors,
+    companyLifecycleStages,
+    companyTypes,
+    companyRevenueRanges,
+  } = useConfigurationContext();
+
   return (
     <div className="flex flex-col gap-4">
       <h6 className="text-lg font-semibold">Context</h6>
+
+      {/* Classification */}
+      {companyLifecycleStages && (
+        <SelectInput
+          source="lifecycle_stage"
+          label="Lifecycle Stage"
+          choices={companyLifecycleStages}
+          helperText={false}
+        />
+      )}
+      {companyTypes && (
+        <SelectInput
+          source="company_type"
+          label="Company Type"
+          choices={companyTypes}
+          helperText={false}
+        />
+      )}
+
+      {/* Industry & Sector */}
       <SelectInput
         source="sector"
         choices={companySectors.map((sector) => ({
@@ -97,8 +155,23 @@ const CompanyContextInputs = () => {
         }))}
         helperText={false}
       />
+      <TextInput source="industry" helperText={false} />
+
+      {/* Size & Revenue */}
       <SelectInput source="size" choices={sizes} helperText={false} />
+      <TextInput source="employee_count" label="Employee Count" helperText={false} type="number" />
       <TextInput source="revenue" helperText={false} />
+      {companyRevenueRanges && (
+        <SelectInput
+          source="revenue_range"
+          label="Revenue Range"
+          choices={companyRevenueRanges}
+          helperText={false}
+        />
+      )}
+
+      {/* Additional */}
+      <TextInput source="founded_year" label="Founded Year" helperText={false} type="number" />
       <TextInput source="tax_identifier" helperText={false} />
     </div>
   );
@@ -159,3 +232,56 @@ const CompanyAccountManagerInput = () => {
 
 const saleOptionRenderer = (choice: Sale) =>
   `${choice.first_name} ${choice.last_name}`;
+
+const CompanyAdvancedSettings = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const { companyQualificationStatuses } = useConfigurationContext();
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <CollapsibleTrigger className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+        <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+        Advanced Settings
+      </CollapsibleTrigger>
+      <CollapsibleContent className="mt-4">
+        <div className="flex flex-col gap-6 pl-6 border-l-2 border-muted">
+          {/* External System Integration */}
+          <div className="flex flex-col gap-4">
+            <h6 className="text-sm font-semibold text-muted-foreground">External System Integration</h6>
+            <TextInput
+              source="external_id"
+              label="External ID"
+              helperText={false}
+              placeholder="e.g., Salesforce Account ID"
+            />
+            <SelectInput
+              source="external_system"
+              label="External System"
+              choices={[
+                { id: 'salesforce', name: 'Salesforce' },
+                { id: 'hubspot', name: 'HubSpot' },
+                { id: 'clearbit', name: 'Clearbit' },
+                { id: 'apollo', name: 'Apollo' },
+                { id: 'zoominfo', name: 'ZoomInfo' },
+              ]}
+              helperText={false}
+            />
+          </div>
+
+          {/* Data Quality */}
+          {companyQualificationStatuses && (
+            <div className="flex flex-col gap-4">
+              <h6 className="text-sm font-semibold text-muted-foreground">Data Quality</h6>
+              <SelectInput
+                source="qualification_status"
+                label="Qualification Status"
+                choices={companyQualificationStatuses}
+                helperText={false}
+              />
+            </div>
+          )}
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+};

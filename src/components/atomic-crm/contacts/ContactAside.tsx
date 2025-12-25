@@ -21,6 +21,7 @@ import { SaleName } from "../sales/SaleName";
 import type { Contact } from "../types";
 import { ContactMergeButton } from "./ContactMergeButton";
 import { ExportVCardButton } from "./ExportVCardButton";
+import { ContactHealthCard } from "./ContactHealthCard";
 
 export const ContactAside = ({ link = "edit" }: { link?: "edit" | "show" }) => {
   const { contactGender } = useConfigurationContext();
@@ -36,6 +37,8 @@ export const ContactAside = ({ link = "edit" }: { link?: "edit" | "show" }) => {
           <ShowButton label="Show Contact" />
         )}
       </div>
+
+      <ContactHealthCard />
 
       <AsideSection title="Personal info">
         <ArrayField source="email_jsonb">

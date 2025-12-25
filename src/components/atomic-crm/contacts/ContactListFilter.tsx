@@ -1,5 +1,5 @@
 import { endOfYesterday, startOfMonth, startOfWeek, subMonths } from "date-fns";
-import { CheckSquare, Clock, Tag, TrendingUp, Users } from "lucide-react";
+import { Activity, CheckSquare, Clock, HeartPulse, Tag, TrendingUp, Users } from "lucide-react";
 import { FilterLiveForm, useGetIdentity, useGetList } from "ra-core";
 import { ToggleFilterButton } from "@/components/admin/toggle-filter-button";
 import { SearchInput } from "@/components/admin/search-input";
@@ -66,6 +66,52 @@ export const ContactListFilter = () => {
               1,
             ).toISOString(),
           }}
+        />
+      </FilterCategory>
+
+      <FilterCategory label="Engagement" icon={<Activity />}>
+        <ToggleFilterButton
+          className="w-full justify-between"
+          label="Strong"
+          value={{ internal_heartbeat_status: "strong" }}
+        />
+        <ToggleFilterButton
+          className="w-full justify-between"
+          label="Active"
+          value={{ internal_heartbeat_status: "active" }}
+        />
+        <ToggleFilterButton
+          className="w-full justify-between"
+          label="Cooling"
+          value={{ internal_heartbeat_status: "cooling" }}
+        />
+        <ToggleFilterButton
+          className="w-full justify-between"
+          label="Cold"
+          value={{ internal_heartbeat_status: "cold" }}
+        />
+        <ToggleFilterButton
+          className="w-full justify-between"
+          label="Dormant"
+          value={{ internal_heartbeat_status: "dormant" }}
+        />
+      </FilterCategory>
+
+      <FilterCategory label="Validation" icon={<HeartPulse />}>
+        <ToggleFilterButton
+          className="w-full justify-between"
+          label="Valid Email"
+          value={{ email_validation_status: "valid" }}
+        />
+        <ToggleFilterButton
+          className="w-full justify-between"
+          label="Risky Email"
+          value={{ email_validation_status: "risky" }}
+        />
+        <ToggleFilterButton
+          className="w-full justify-between"
+          label="Invalid Email"
+          value={{ email_validation_status: "invalid" }}
         />
       </FilterCategory>
 

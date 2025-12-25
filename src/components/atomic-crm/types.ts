@@ -142,6 +142,26 @@ export type Contact = {
   phone_jsonb: PhoneNumberAndType[];
   nb_tasks?: number;
   company_name?: string;
+
+  // Internal Heartbeat
+  internal_heartbeat_score?: number;
+  internal_heartbeat_status?: string; // 'strong' | 'active' | 'cooling' | 'cold' | 'dormant'
+  internal_heartbeat_updated_at?: string;
+
+  // External Heartbeat
+  external_heartbeat_status?: string; // 'valid' | 'warning' | 'invalid' | 'unknown'
+  external_heartbeat_checked_at?: string;
+  email_validation_status?: string; // 'valid' | 'risky' | 'invalid' | 'unknown'
+  email_last_bounced_at?: string;
+  linkedin_profile_status?: string; // 'active' | 'inactive' | 'not_found' | 'unknown'
+  employment_verified_at?: string;
+
+  // View-computed fields
+  nb_completed_tasks?: number;
+  task_completion_rate?: number;
+  last_note_date?: string;
+  last_task_activity?: string;
+  days_since_last_activity?: number;
 } & Pick<RaRecord, "id">;
 
 export type ContactNote = {

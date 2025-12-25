@@ -5,6 +5,8 @@ import {
   name,
   phone,
   random,
+  date,
+  datatype,
 } from "faker/locale/en_US";
 
 import {
@@ -75,6 +77,38 @@ export const generateContacts = (db: Db, size = 500): Required<Contact>[] => {
     const first_seen = randomDate(new Date(company.created_at)).toISOString();
     const last_seen = first_seen;
 
+    // Heartbeat generation
+    const daysInactive = datatype.number({ min: 0, max: 365 });
+    
+    const computeScore = (days: number): number => {
+      if (days <= 7) return datatype.number({ min: 80, max: 100 });
+      if (days <= 30) return datatype.number({ min: 60, max: 79 });
+      if (days <= 90) return datatype.number({ min: 40, max: 59 });
+      if (days <= 180) return datatype.number({ min: 20, max: 39 });
+      return datatype.number({ min: 0, max: 19 });
+    };
+
+    const score = computeScore(daysInactive);
+    
+    // Internal heartbeat (70% populated)
+    const internalHeartbeat = Math.random() > 0.3 ? {
+      internal_heartbeat_score: score,
+      internal_heartbeat_status:
+        score >= 80 ? 'strong' :
+        score >= 60 ? 'active' :
+        score >= 40 ? 'cooling' :
+        score >= 20 ? 'cold' : 'dormant',
+      internal_heartbeat_updated_at: date.recent(7).toISOString(),
+    } : {};
+
+    // External heartbeat (50% populated)
+    const externalHeartbeat = Math.random() > 0.5 ? {
+      external_heartbeat_status: random.arrayElement(['valid', 'warning', 'invalid', 'unknown']),
+      external_heartbeat_checked_at: date.recent(30).toISOString(),
+      email_validation_status: random.arrayElement(['valid', 'risky', 'invalid', 'unknown']),
+      linkedin_profile_status: random.arrayElement(['active', 'inactive', 'not_found', 'unknown']),
+    } : {};
+
     return {
       id,
       first_name,
@@ -98,6 +132,9 @@ export const generateContacts = (db: Db, size = 500): Required<Contact>[] => {
       sales_id: company.sales_id,
       nb_tasks: 0,
       linkedin_url: null,
+      ...internalHeartbeat,
+      ...externalHeartbeat,
+      days_since_last_activity: daysInactive,
     };
   });
 };

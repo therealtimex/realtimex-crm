@@ -657,6 +657,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/companies/CompanyHealthCard.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/companies/CompanyEmpty.tsx",
           "type": "registry:component"
         },

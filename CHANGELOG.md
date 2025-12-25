@@ -5,6 +5,12 @@ All notable changes to Atomic CRM will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.2] - 2025-12-25
+
+### Added
+
+- **Company**: Added Company Health card for company show page.
+
 ## [0.9.7] - 2025-12-24
 
 ### Fixed

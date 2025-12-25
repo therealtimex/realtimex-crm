@@ -14,6 +14,7 @@ import { SaleName } from "../sales/SaleName";
 import type { Company } from "../types";
 import { sizes } from "./sizes";
 import { CompanyMergeButton } from "./CompanyMergeButton";
+import { CompanyHealthCard } from "./CompanyHealthCard";
 
 interface CompanyAsideProps {
   link?: string;
@@ -32,6 +33,8 @@ export const CompanyAside = ({ link = "edit" }: CompanyAsideProps) => {
           <ShowButton label="Show Company" />
         )}
       </div>
+
+      <CompanyHealthCard />
 
       <CompanyInfo record={record} />
 
@@ -168,7 +171,7 @@ const AdditionalInfo = ({ record }: { record: Company }) => {
       {record.description && (
         <p className="text-sm  mb-1">{record.description}</p>
       )}
-      {record.context_links && (
+      {record.context_links && Array.isArray(record.context_links) && (
         <div className="flex flex-col">
           {record.context_links.map((link, index) =>
             link ? (

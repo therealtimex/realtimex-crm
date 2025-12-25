@@ -1,3 +1,14 @@
+# This workflow automatically publishes a new version to npm on every push to main.
+#
+# Release Trigger Guide:
+# ---------------------
+# - Patch (0.13.x -> 0.13.y): Use 'fix: ...' prefix (e.g., fix: resolve bug)
+# - Minor (0.13.x -> 0.14.0): Use 'feat: ...' prefix (e.g., feat: add feature)
+# - Major (0.13.x -> 1.0.0):  Use 'feat!: ...' or include 'BREAKING CHANGE:' in body
+#
+# Skip Release: Add '[skip ci]' to the commit message.
+# Manual Release: Go to Actions -> Publish to npm -> Run workflow.
+
 name: Publish to npm
 
 on:

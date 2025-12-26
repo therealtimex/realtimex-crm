@@ -89,8 +89,9 @@ export const Task = ({
             <Link
               to={`/tasks/${task.id}/show`}
               className="block hover:text-primary transition-colors"
+              title={task.text}
             >
-              <div className="text-sm">
+              <div className="text-sm line-clamp-2">
                 {task.type && task.type !== "None" && (
                   <>
                     <span className="font-semibold text-sm">{task.type}</span>

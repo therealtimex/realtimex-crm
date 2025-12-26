@@ -16,7 +16,7 @@ export const TaskListTable = () => {
         className="w-[35%]"
         cellClassName="max-w-md"
         render={(record: Task) => (
-          <div className="truncate" title={record.text}>
+          <div className="line-clamp-2" title={record.text}>
             {record.type && record.type !== "None" && (
               <span className="font-semibold">{record.type}: </span>
             )}

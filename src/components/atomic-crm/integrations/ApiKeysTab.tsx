@@ -7,6 +7,7 @@ import { Plus, Trash2, Copy } from "lucide-react";
 import { CreateApiKeyDialog } from "./CreateApiKeyDialog";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import { decryptValue } from "@/lib/encryption-utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -135,9 +136,18 @@ const ApiKeyCard = ({
 }) => {
   const notify = useNotify();
 
-  const copyKey = () => {
-    navigator.clipboard.writeText(apiKey.key_prefix + "••••••••");
-    notify("Key prefix copied (full key only shown once at creation)");
+  const copyFullKey = async () => {
+    try {
+      if (apiKey.encrypted_key) {
+        const fullKey = await decryptValue(apiKey.encrypted_key);
+        await navigator.clipboard.writeText(fullKey);
+        notify("Full API key copied to clipboard");
+      } else {
+        notify("API key not available for copying", { type: "warning" });
+      }
+    } catch (error) {
+      notify("Failed to copy API key", { type: "error" });
+    }
   };
 
   return (
@@ -163,11 +173,16 @@ const ApiKeyCard = ({
         </div>
       </CardHeader>
       <CardContent className="space-y-2">
-        <div className="flex items-center gap-2 font-mono text-sm bg-muted p-2 rounded">
-          <span>{apiKey.key_prefix}••••••••••••••••••••</span>
-          <Button variant="ghost" size="icon" onClick={copyKey}>
-            <Copy className="h-4 w-4" />
-          </Button>
+        <div>
+          <div className="flex items-center gap-2 font-mono text-sm bg-muted p-2 rounded">
+            <span className="flex-1">{apiKey.key_prefix}••••••••••••••••••••</span>
+            <Button variant="ghost" size="icon" onClick={copyFullKey}>
+              <Copy className="h-4 w-4" />
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            Click copy to get the full unmasked key
+          </p>
         </div>
         <div className="text-xs text-muted-foreground space-y-1">
           <p>Created: {format(new Date(apiKey.created_at), "PPP")}</p>

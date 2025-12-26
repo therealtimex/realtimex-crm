@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDataProvider, useNotify, useGetIdentity } from "ra-core";
 import { generateApiKey, hashApiKey } from "@/lib/api-key-utils";
+import { encryptValue } from "@/lib/encryption-utils";
 import {
   Dialog,
   DialogContent,
@@ -56,12 +57,14 @@ export const CreateApiKeyDialog = ({
       const apiKey = generateApiKey();
       const keyHash = await hashApiKey(apiKey);
       const keyPrefix = apiKey.substring(0, 12);
+      const encryptedKey = await encryptValue(apiKey);
 
       const { data } = await dataProvider.create("api_keys", {
         data: {
           name: values.name,
           key_hash: keyHash,
           key_prefix: keyPrefix,
+          encrypted_key: encryptedKey,
           scopes: values.scopes,
           is_active: true,
           expires_at: values.expires_at || null,

@@ -57,7 +57,7 @@ const ContactIdentityInputs = () => {
         defaultValue={contactGender[0].value}
       />
       <TextInput source="first_name" validate={required()} helperText={false} />
-      <TextInput source="last_name" validate={required()} helperText={false} />
+      <TextInput source="last_name" helperText={false} />
     </div>
   );
 };

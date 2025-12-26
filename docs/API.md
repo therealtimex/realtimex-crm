@@ -463,9 +463,17 @@ Create a note attached to a contact, company, deal, or task.
   "type": "contact_note",
   "contact_id": 1,
   "text": "Follow-up call scheduled for next week",
-  "status": "cold"
+  "status": "cold",
+  "attachments": [
+    {
+      "url": "https://storage.example.com/meeting-notes.pdf",
+      "name": "meeting-notes.pdf",
+      "type": "application/pdf"
+    }
+  ]
 }
 ```
+*Note: `attachments` field is optional*
 
 **Request body for company note**:
 ```json
@@ -495,7 +503,9 @@ Create a note attached to a contact, company, deal, or task.
 }
 ```
 
-**Including attachments** (supported for all note types):
+**Attachments support**: All note types support an optional `attachments` field containing an array of attachment objects with `url`, `name`, and `type` properties.
+
+**Example with multiple attachments**:
 ```json
 {
   "type": "contact_note",

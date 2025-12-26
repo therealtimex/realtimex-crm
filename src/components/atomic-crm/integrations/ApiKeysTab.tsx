@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useDataProvider, useNotify, useGetIdentity } from "ra-core";
+import { useDataProvider, useNotify } from "ra-core";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2, Copy } from "lucide-react";

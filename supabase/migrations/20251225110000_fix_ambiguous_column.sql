@@ -1,4 +1,6 @@
 -- Fix ambiguous column reference in compute_company_internal_heartbeat by renaming parameter
+-- This fix is moved earlier in the migration sequence to ensure it's available 
+-- before the tasks enhancement migration runs its updates.
 
 DROP FUNCTION IF EXISTS compute_company_internal_heartbeat(bigint);
 

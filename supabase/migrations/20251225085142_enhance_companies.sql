@@ -110,7 +110,7 @@ CREATE TRIGGER set_internal_heartbeat_timestamp
 -- Phase 5: Internal Heartbeat Computation Function
 -- ============================================================================
 
-CREATE OR REPLACE FUNCTION compute_company_internal_heartbeat(company_id bigint)
+CREATE OR REPLACE FUNCTION compute_company_internal_heartbeat(p_company_id bigint)
 RETURNS void AS $$
 DECLARE
   score integer := 0;
@@ -131,7 +131,7 @@ BEGIN
   LEFT JOIN deals d ON c.id = d.company_id
   LEFT JOIN contacts co ON c.id = co.company_id
   LEFT JOIN tasks t ON co.id = t.contact_id
-  WHERE c.id = company_id;
+  WHERE c.id = p_company_id;
 
   -- Scoring algorithm (simple recency-based, 0-100 scale)
   score := 100;
@@ -166,7 +166,7 @@ BEGIN
     internal_heartbeat_score = score,
     internal_heartbeat_status = status,
     internal_heartbeat_updated_at = now()
-  WHERE id = company_id;
+  WHERE id = p_company_id;
 END;
 $$ LANGUAGE plpgsql;
 

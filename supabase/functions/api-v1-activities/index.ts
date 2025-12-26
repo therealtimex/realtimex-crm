@@ -72,7 +72,7 @@ async function createActivity(apiKey: any, req: Request) {
 
   const contentType = req.headers.get("content-type") || "";
   let noteData: any;
-  let uploadedFiles: any[] = [];
+  const uploadedFiles: any[] = [];
 
   // Check if multipart/form-data (with file uploads)
   if (contentType.includes("multipart/form-data")) {

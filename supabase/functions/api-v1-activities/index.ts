@@ -73,7 +73,8 @@ async function createActivity(apiKey: any, req: Request) {
   const body = await req.json();
   const { type, ...activityData } = body;
 
-  // Map activity type to table and validate
+  // Map note type to table and validate
+  // Note: Tasks are now handled by /api-v1-tasks endpoint
   let tableName: string;
   let responseType: string;
 
@@ -95,18 +96,14 @@ async function createActivity(apiKey: any, req: Request) {
       tableName = "taskNotes";
       responseType = "task_note";
       break;
-    case "task":
-      tableName = "tasks";
-      responseType = "task";
-      break;
     default:
       return createErrorResponse(
         400,
-        "Invalid activity type. Must be 'contact_note', 'company_note', 'deal_note', 'task_note', or 'task'"
+        "Invalid note type. Must be 'contact_note', 'company_note', 'deal_note', or 'task_note'. For tasks, use /api-v1-tasks endpoint."
       );
   }
 
-  // Insert activity
+  // Insert note
   const { data, error } = await supabaseAdmin
     .from(tableName)
     .insert({

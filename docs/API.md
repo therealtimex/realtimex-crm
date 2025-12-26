@@ -29,7 +29,9 @@ Authorization: Bearer ak_live_your_api_key_here
 - `companies:write` - Create, update, and delete companies
 - `deals:read` - Read deal information
 - `deals:write` - Create, update, and delete deals
-- `activities:write` - Create notes and tasks
+- `tasks:read` - Read task information
+- `tasks:write` - Create, update, and delete tasks
+- `activities:write` - Create notes (contact, company, deal, task notes)
 - `*` - Wildcard access to all resources (use with caution)
 
 ## Rate Limits
@@ -302,20 +304,158 @@ Delete a deal.
 
 ---
 
-### Activities
+### Tasks
+
+#### GET /api-v1-tasks
+
+List or search tasks.
+
+**Required scope**: `tasks:read`
+
+**Parameters**:
+- `contact_id` (query, optional): Filter tasks by contact ID
+- `company_id` (query, optional): Filter tasks by company ID
+- `deal_id` (query, optional): Filter tasks by deal ID
+- `status` (query, optional): Filter tasks by status (todo, in_progress, blocked, done, cancelled)
+
+**Response**:
+```json
+{
+  "data": [
+    {
+      "id": 42,
+      "text": "Send proposal document",
+      "type": "Email",
+      "contact_id": 1,
+      "due_date": "2025-12-30",
+      "status": "todo",
+      "priority": "high",
+      ...
+    }
+  ]
+}
+```
+
+#### GET /api-v1-tasks/{id}
+
+Get a single task by ID.
+
+**Required scope**: `tasks:read`
+
+**Parameters**:
+- `id` (path, required): Task ID
+
+**Response**:
+```json
+{
+  "data": {
+    "id": 42,
+    "text": "Send proposal document",
+    "type": "Email",
+    "contact_id": 1,
+    "company_id": 5,
+    "deal_id": 10,
+    "due_date": "2025-12-30",
+    "status": "todo",
+    "priority": "high",
+    "sales_id": 2,
+    "created_at": "2025-12-26T10:00:00Z"
+  }
+}
+```
+
+#### POST /api-v1-tasks
+
+Create a new task.
+
+**Required scope**: `tasks:write`
+
+**Request body**:
+```json
+{
+  "text": "Follow up on proposal",
+  "type": "Call",
+  "contact_id": 1,
+  "due_date": "2025-12-30",
+  "priority": "high",
+  "status": "todo"
+}
+```
+
+**Response** (201 Created):
+```json
+{
+  "data": {
+    "id": 43,
+    "text": "Follow up on proposal",
+    "type": "Call",
+    "contact_id": 1,
+    "due_date": "2025-12-30",
+    "priority": "high",
+    "status": "todo",
+    "sales_id": 2,
+    "created_at": "2025-12-26T10:30:00Z"
+  }
+}
+```
+
+#### PATCH /api-v1-tasks/{id}
+
+Update an existing task.
+
+**Required scope**: `tasks:write`
+
+**Parameters**:
+- `id` (path, required): Task ID
+
+**Request body**:
+```json
+{
+  "status": "done",
+  "done_date": "2025-12-26"
+}
+```
+
+**Response**:
+```json
+{
+  "data": {
+    "id": 42,
+    "status": "done",
+    "done_date": "2025-12-26",
+    ...
+  }
+}
+```
+
+#### DELETE /api-v1-tasks/{id}
+
+Delete a task.
+
+**Required scope**: `tasks:write`
+
+**Parameters**:
+- `id` (path, required): Task ID
+
+**Response** (204 No Content)
+
+---
+
+### Activities (Notes)
 
 #### POST /api-v1-activities
 
-Create an activity (note or task).
+Create a note attached to a contact, company, deal, or task.
 
 **Required scope**: `activities:write`
 
-**Supported activity types**:
+**Supported note types**:
 - `contact_note` - Note attached to a contact
 - `company_note` - Note attached to a company
 - `deal_note` - Note attached to a deal
 - `task_note` - Note attached to a task
-- `task` - A task (to-do item)
+
+**Note**: For creating tasks (to-do items), use the `/api-v1-tasks` endpoint instead.
 
 **Request body for contact note**:
 ```json
@@ -352,17 +492,6 @@ Create an activity (note or task).
   "type": "task_note",
   "task_id": 42,
   "text": "Blocked by infrastructure team - waiting for API access"
-}
-```
-
-**Request body for task**:
-```json
-{
-  "type": "task",
-  "contact_id": 1,
-  "text": "Send proposal document",
-  "type_task": "Email",
-  "due_date": "2025-12-25"
 }
 ```
 
@@ -680,6 +809,16 @@ For issues or questions:
 - Documentation: https://github.com/therealtimex/realtimex-crm
 
 ## Changelog
+
+### v1.3.0 (2025-12-26)
+- **New Tasks endpoint** (`/api-v1-tasks`):
+  - Full CRUD operations for tasks (GET, POST, PATCH, DELETE)
+  - List/filter tasks by contact_id, company_id, deal_id, or status
+  - New scopes: `tasks:read` and `tasks:write`
+- **Activities endpoint** (`/api-v1-activities`):
+  - Now focused exclusively on notes (contact, company, deal, task notes)
+  - Task creation moved to dedicated `/api-v1-tasks` endpoint
+  - Improved error message directs users to tasks endpoint
 
 ### v1.2.0 (2025-12-26)
 - **Activities endpoint enhancements**:

@@ -1,11 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDataProvider, useNotify, useGetIdentity } from "ra-core";
 import { useForm } from "react-hook-form";
 import { generateApiKey } from "@/lib/api-key-utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Trash2, Power, PowerOff } from "lucide-react";
+import { Plus, Trash2, Power, PowerOff, Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import {
@@ -61,6 +61,7 @@ const AVAILABLE_EVENTS = [
 
 export const WebhooksTab = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [webhookToEdit, setWebhookToEdit] = useState<any | null>(null);
   const [webhookToDelete, setWebhookToDelete] = useState<number | null>(null);
   const dataProvider = useDataProvider();
   const notify = useNotify();
@@ -133,6 +134,7 @@ export const WebhooksTab = () => {
             <WebhookCard
               key={webhook.id}
               webhook={webhook}
+              onEdit={() => setWebhookToEdit(webhook)}
               onDelete={() => setWebhookToDelete(webhook.id)}
               onToggle={() =>
                 toggleMutation.mutate({
@@ -158,6 +160,12 @@ export const WebhooksTab = () => {
       <CreateWebhookDialog
         open={showCreateDialog}
         onClose={() => setShowCreateDialog(false)}
+      />
+
+      <EditWebhookDialog
+        open={!!webhookToEdit}
+        webhook={webhookToEdit}
+        onClose={() => setWebhookToEdit(null)}
       />
 
       <AlertDialog
@@ -191,10 +199,12 @@ export const WebhooksTab = () => {
 
 const WebhookCard = ({
   webhook,
+  onEdit,
   onDelete,
   onToggle,
 }: {
   webhook: any;
+  onEdit: () => void;
   onDelete: () => void;
   onToggle: () => void;
 }) => {
@@ -225,6 +235,9 @@ const WebhookCard = ({
             </div>
           </div>
           <div className="flex gap-2">
+            <Button variant="ghost" size="icon" onClick={onEdit}>
+              <Pencil className="h-4 w-4" />
+            </Button>
             <Button variant="ghost" size="icon" onClick={onToggle}>
               {webhook.is_active ? (
                 <PowerOff className="h-4 w-4" />
@@ -402,6 +415,166 @@ const CreateWebhookDialog = ({
               </Button>
               <Button type="submit" disabled={createMutation.isPending}>
                 Create
+              </Button>
+            </div>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const EditWebhookDialog = ({
+  open,
+  webhook,
+  onClose,
+}: {
+  open: boolean;
+  webhook: any | null;
+  onClose: () => void;
+}) => {
+  const dataProvider = useDataProvider();
+  const notify = useNotify();
+  const queryClient = useQueryClient();
+
+  const { register, handleSubmit, watch, setValue, reset } = useForm({
+    defaultValues: {
+      name: webhook?.name || "",
+      url: webhook?.url || "",
+      events: webhook?.events || ([] as string[]),
+    },
+  });
+
+  // Update form when webhook changes
+  React.useEffect(() => {
+    if (webhook) {
+      setValue("name", webhook.name);
+      setValue("url", webhook.url);
+      setValue("events", webhook.events || []);
+    }
+  }, [webhook, setValue]);
+
+  const updateMutation = useMutation({
+    mutationFn: async (values: any) => {
+      await dataProvider.update("webhooks", {
+        id: webhook.id,
+        data: {
+          name: values.name,
+          url: values.url,
+          events: values.events,
+        },
+        previousData: webhook,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["webhooks"] });
+      notify("Webhook updated successfully");
+      reset();
+      onClose();
+    },
+    onError: () => {
+      notify("Failed to update webhook", { type: "error" });
+    },
+  });
+
+  const toggleEvent = (event: string) => {
+    const currentEvents = watch("events");
+    if (currentEvents.includes(event)) {
+      setValue(
+        "events",
+        currentEvents.filter((e) => e !== event)
+      );
+    } else {
+      setValue("events", [...currentEvents, event]);
+    }
+  };
+
+  const handleClose = () => {
+    reset();
+    onClose();
+  };
+
+  // Group events by category
+  const eventsByCategory = AVAILABLE_EVENTS.reduce((acc, event) => {
+    if (!acc[event.category]) {
+      acc[event.category] = [];
+    }
+    acc[event.category].push(event);
+    return acc;
+  }, {} as Record<string, typeof AVAILABLE_EVENTS>);
+
+  if (!webhook) return null;
+
+  return (
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Edit Webhook</DialogTitle>
+          <DialogDescription>
+            Update webhook configuration
+          </DialogDescription>
+        </DialogHeader>
+
+        <form
+          onSubmit={handleSubmit((values) => updateMutation.mutate(values))}
+        >
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-name">Name</Label>
+              <Input
+                id="edit-name"
+                placeholder="e.g., Slack Notifications"
+                {...register("name", { required: true })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="edit-url">Webhook URL</Label>
+              <Input
+                id="edit-url"
+                type="url"
+                placeholder="https://example.com/webhook"
+                {...register("url", { required: true })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Events to Subscribe</Label>
+              <div className="space-y-3 max-h-60 overflow-y-auto border rounded-md p-3">
+                {Object.entries(eventsByCategory).map(([category, events]) => (
+                  <div key={category}>
+                    <p className="text-sm font-semibold mb-2">{category}</p>
+                    <div className="space-y-2 ml-2">
+                      {events.map((event) => (
+                        <div
+                          key={event.value}
+                          className="flex items-center space-x-2"
+                        >
+                          <Checkbox
+                            id={`edit-${event.value}`}
+                            checked={watch("events").includes(event.value)}
+                            onCheckedChange={() => toggleEvent(event.value)}
+                          />
+                          <label
+                            htmlFor={`edit-${event.value}`}
+                            className="text-sm cursor-pointer"
+                          >
+                            {event.label}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <Button type="button" variant="outline" onClick={handleClose}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={updateMutation.isPending}>
+                Update
               </Button>
             </div>
           </div>

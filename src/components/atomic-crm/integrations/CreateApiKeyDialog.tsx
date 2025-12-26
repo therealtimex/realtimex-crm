@@ -30,7 +30,9 @@ const AVAILABLE_SCOPES = [
   { value: "companies:write", label: "Companies: Write" },
   { value: "deals:read", label: "Deals: Read" },
   { value: "deals:write", label: "Deals: Write" },
-  { value: "activities:write", label: "Activities: Write" },
+  { value: "tasks:read", label: "Tasks: Read" },
+  { value: "tasks:write", label: "Tasks: Write" },
+  { value: "activities:write", label: "Activities: Write (Notes)" },
 ];
 
 export const CreateApiKeyDialog = ({

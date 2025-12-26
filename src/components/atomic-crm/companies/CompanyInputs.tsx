@@ -122,6 +122,7 @@ const CompanyContextInputs = () => {
     companyLifecycleStages,
     companyTypes,
     companyRevenueRanges,
+    companyQualificationStatuses,
   } = useConfigurationContext();
 
   return (
@@ -142,6 +143,14 @@ const CompanyContextInputs = () => {
           source="company_type"
           label="Company Type"
           choices={companyTypes}
+          helperText={false}
+        />
+      )}
+      {companyQualificationStatuses && (
+        <SelectInput
+          source="qualification_status"
+          label="Qualification Status"
+          choices={companyQualificationStatuses}
           helperText={false}
         />
       )}
@@ -235,7 +244,6 @@ const saleOptionRenderer = (choice: Sale) =>
 
 const CompanyAdvancedSettings = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { companyQualificationStatuses } = useConfigurationContext();
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -267,19 +275,6 @@ const CompanyAdvancedSettings = () => {
               helperText={false}
             />
           </div>
-
-          {/* Data Quality */}
-          {companyQualificationStatuses && (
-            <div className="flex flex-col gap-4">
-              <h6 className="text-sm font-semibold text-muted-foreground">Data Quality</h6>
-              <SelectInput
-                source="qualification_status"
-                label="Qualification Status"
-                choices={companyQualificationStatuses}
-                helperText={false}
-              />
-            </div>
-          )}
         </div>
       </CollapsibleContent>
     </Collapsible>

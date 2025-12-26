@@ -99,6 +99,10 @@ export type CRMProps = {
 export const CRM = ({
   contactGender = defaultContactGender,
   companySectors = defaultCompanySectors,
+  companyLifecycleStages,
+  companyTypes,
+  companyQualificationStatuses,
+  companyRevenueRanges,
   dealCategories = defaultDealCategories,
   dealPipelineStatuses = defaultDealPipelineStatuses,
   dealStages = defaultDealStages,
@@ -109,6 +113,8 @@ export const CRM = ({
   taskPriorities = defaultTaskPriorities,
   taskStatuses = defaultTaskStatuses,
   title = defaultTitle,
+  externalHeartbeatStatuses,
+  internalHeartbeatStatuses,
   dataProvider = defaultDataProvider,
   authProvider = defaultAuthProvider,
   disableTelemetry,
@@ -132,6 +138,10 @@ export const CRM = ({
     <ConfigurationProvider
       contactGender={contactGender}
       companySectors={companySectors}
+      companyLifecycleStages={companyLifecycleStages}
+      companyTypes={companyTypes}
+      companyQualificationStatuses={companyQualificationStatuses}
+      companyRevenueRanges={companyRevenueRanges}
       dealCategories={dealCategories}
       dealPipelineStatuses={dealPipelineStatuses}
       dealStages={dealStages}
@@ -142,6 +152,8 @@ export const CRM = ({
       taskPriorities={taskPriorities}
       taskStatuses={taskStatuses}
       title={title}
+      externalHeartbeatStatuses={externalHeartbeatStatuses}
+      internalHeartbeatStatuses={internalHeartbeatStatuses}
     >
       <DatabaseHealthCheck dataProvider={dataProvider}>
         <Admin

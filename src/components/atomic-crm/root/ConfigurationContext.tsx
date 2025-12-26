@@ -19,6 +19,10 @@ import {
 // Define types for the context value
 export interface ConfigurationContextValue {
   companySectors: string[];
+  companyLifecycleStages?: { id: string; name: string }[];
+  companyTypes?: { id: string; name: string }[];
+  companyQualificationStatuses?: { id: string; name: string }[];
+  companyRevenueRanges?: { id: string; name: string }[];
   dealCategories: string[];
   dealPipelineStatuses: string[];
   dealStages: DealStage[];
@@ -30,6 +34,8 @@ export interface ConfigurationContextValue {
   darkModeLogo: string;
   lightModeLogo: string;
   contactGender: ContactGender[];
+  externalHeartbeatStatuses?: { id: string; name: string; color: string }[];
+  internalHeartbeatStatuses?: { id: string; name: string; color: string }[];
 }
 
 export interface ConfigurationProviderProps extends ConfigurationContextValue {
@@ -55,6 +61,10 @@ export const ConfigurationContext = createContext<ConfigurationContextValue>({
 export const ConfigurationProvider = ({
   children,
   companySectors,
+  companyLifecycleStages,
+  companyTypes,
+  companyQualificationStatuses,
+  companyRevenueRanges,
   dealCategories,
   dealPipelineStatuses,
   dealStages,
@@ -66,10 +76,16 @@ export const ConfigurationProvider = ({
   taskStatuses,
   title,
   contactGender,
+  externalHeartbeatStatuses,
+  internalHeartbeatStatuses,
 }: ConfigurationProviderProps) => (
   <ConfigurationContext.Provider
     value={{
       companySectors,
+      companyLifecycleStages,
+      companyTypes,
+      companyQualificationStatuses,
+      companyRevenueRanges,
       dealCategories,
       dealPipelineStatuses,
       dealStages,
@@ -81,6 +97,8 @@ export const ConfigurationProvider = ({
       taskPriorities,
       taskStatuses,
       contactGender,
+      externalHeartbeatStatuses,
+      internalHeartbeatStatuses,
     }}
   >
     {children}

@@ -25,7 +25,6 @@ export const ApiKeysTab = () => {
   const dataProvider = useDataProvider();
   const notify = useNotify();
   const queryClient = useQueryClient();
-  const { identity: _identity } = useGetIdentity();
 
   const { data: apiKeys, isLoading } = useQuery({
     queryKey: ["api_keys"],
@@ -145,7 +144,7 @@ const ApiKeyCard = ({
       } else {
         notify("API key not available for copying", { type: "warning" });
       }
-    } catch (_error) {
+    } catch {
       notify("Failed to copy API key", { type: "error" });
     }
   };

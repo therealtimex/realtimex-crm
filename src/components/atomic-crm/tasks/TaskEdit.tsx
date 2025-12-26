@@ -3,6 +3,7 @@ import { DeleteButton } from "@/components/admin/delete-button";
 import { TextInput } from "@/components/admin/text-input";
 import { DateInput } from "@/components/admin/date-input";
 import { SelectInput } from "@/components/admin/select-input";
+import { ReferenceInput } from "@/components/admin/reference-input";
 import { SaveButton } from "@/components/admin/form";
 import {
   Dialog,
@@ -23,7 +24,7 @@ export const TaskEdit = ({
   open: boolean;
   close: () => void;
 }) => {
-  const { taskTypes } = useConfigurationContext();
+  const { taskTypes, taskPriorities, taskStatuses } = useConfigurationContext();
   const notify = useNotify();
   return (
     <Dialog open={open} onOpenChange={close}>
@@ -71,6 +72,24 @@ export const TaskEdit = ({
                   helperText={false}
                   validate={required()}
                 />
+                <SelectInput
+                  source="priority"
+                  choices={taskPriorities}
+                  helperText={false}
+                />
+                <SelectInput
+                  source="status"
+                  choices={taskStatuses}
+                  helperText={false}
+                />
+                <ReferenceInput source="assigned_to" reference="sales">
+                  <SelectInput
+                    optionText={(record) =>
+                      `${record.first_name} ${record.last_name}`
+                    }
+                    label="Assigned To"
+                  />
+                </ReferenceInput>
               </div>
               <DialogFooter className="w-full sm:justify-between gap-4">
                 <DeleteButton

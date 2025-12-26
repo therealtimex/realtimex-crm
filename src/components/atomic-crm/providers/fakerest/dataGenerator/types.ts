@@ -8,6 +8,8 @@ import type {
   Sale,
   Tag,
   Task,
+  TaskNote,
+  TaskActivity,
 } from "../../../types";
 
 export interface Db {
@@ -20,4 +22,6 @@ export interface Db {
   sales: Sale[];
   tags: Tag[];
   tasks: Task[];
+  taskNotes: TaskNote[];
+  taskActivity: TaskActivity[];
 }

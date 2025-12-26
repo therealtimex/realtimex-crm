@@ -216,6 +216,15 @@ export type Tag = {
   color: string;
 } & Pick<RaRecord, "id">;
 
+export type TaskPriority = "low" | "medium" | "high" | "urgent";
+
+export type TaskStatus =
+  | "todo"
+  | "in_progress"
+  | "blocked"
+  | "done"
+  | "cancelled";
+
 export type Task = {
   contact_id: Identifier;
   type: string;
@@ -223,6 +232,47 @@ export type Task = {
   due_date: string;
   done_date?: string | null;
   sales_id?: Identifier;
+  priority?: TaskPriority;
+  assigned_to?: Identifier;
+  status?: TaskStatus;
+  created_at?: string;
+  updated_at?: string;
+  archived?: boolean;
+  archived_at?: string;
+} & Pick<RaRecord, "id">;
+
+export type TaskSummary = Task & {
+  contact_first_name?: string;
+  contact_last_name?: string;
+  contact_email?: string;
+  company_id?: Identifier;
+  company_name?: string;
+  assigned_first_name?: string;
+  assigned_last_name?: string;
+  creator_first_name?: string;
+  creator_last_name?: string;
+  nb_notes?: number;
+  last_note_date?: string;
+};
+
+export type TaskNote = {
+  task_id: Identifier;
+  text: string;
+  date: string;
+  sales_id: Identifier;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+} & Pick<RaRecord, "id">;
+
+export type TaskActivity = {
+  task_id: Identifier;
+  sales_id: Identifier;
+  action: string;
+  field_name?: string;
+  old_value?: string;
+  new_value?: string;
+  created_at: string;
 } & Pick<RaRecord, "id">;
 
 export type ActivityCompanyCreated = {

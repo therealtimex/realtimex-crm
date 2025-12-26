@@ -23,6 +23,7 @@ const Header = () => {
     { path: "/contacts", pattern: "/contacts/*" },
     { path: "/companies", pattern: "/companies/*" },
     { path: "/deals", pattern: "/deals/*" },
+    { path: "/tasks", pattern: "/tasks/*" },
   ];
 
   const currentPath =
@@ -55,6 +56,11 @@ const Header = () => {
               label="Deals"
               to="/deals"
               isActive={currentPath === "/deals"}
+            />
+            <NavigationTab
+              label="Tasks"
+              to="/tasks"
+              isActive={currentPath === "/tasks"}
             />
           </nav>
 

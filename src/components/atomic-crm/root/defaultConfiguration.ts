@@ -57,6 +57,21 @@ export const defaultTaskTypes = [
   "Call",
 ];
 
+export const defaultTaskPriorities = [
+  { id: "low", name: "Low" },
+  { id: "medium", name: "Medium" },
+  { id: "high", name: "High" },
+  { id: "urgent", name: "Urgent" },
+];
+
+export const defaultTaskStatuses = [
+  { id: "todo", name: "To Do" },
+  { id: "in_progress", name: "In Progress" },
+  { id: "blocked", name: "Blocked" },
+  { id: "done", name: "Done" },
+  { id: "cancelled", name: "Cancelled" },
+];
+
 export const defaultContactGender = [
   { value: "male", label: "He/Him", icon: Mars },
   { value: "female", label: "She/Her", icon: Venus },

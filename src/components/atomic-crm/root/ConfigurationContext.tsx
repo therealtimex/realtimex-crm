@@ -10,6 +10,8 @@ import {
   defaultDealStages,
   defaultLightModeLogo,
   defaultNoteStatuses,
+  defaultTaskPriorities,
+  defaultTaskStatuses,
   defaultTaskTypes,
   defaultTitle,
 } from "./defaultConfiguration";
@@ -22,6 +24,8 @@ export interface ConfigurationContextValue {
   dealStages: DealStage[];
   noteStatuses: NoteStatus[];
   taskTypes: string[];
+  taskPriorities: { id: string; name: string }[];
+  taskStatuses: { id: string; name: string }[];
   title: string;
   darkModeLogo: string;
   lightModeLogo: string;
@@ -40,6 +44,8 @@ export const ConfigurationContext = createContext<ConfigurationContextValue>({
   dealStages: defaultDealStages,
   noteStatuses: defaultNoteStatuses,
   taskTypes: defaultTaskTypes,
+  taskPriorities: defaultTaskPriorities,
+  taskStatuses: defaultTaskStatuses,
   title: defaultTitle,
   darkModeLogo: defaultDarkModeLogo,
   lightModeLogo: defaultLightModeLogo,
@@ -56,6 +62,8 @@ export const ConfigurationProvider = ({
   lightModeLogo,
   noteStatuses,
   taskTypes,
+  taskPriorities,
+  taskStatuses,
   title,
   contactGender,
 }: ConfigurationProviderProps) => (
@@ -70,6 +78,8 @@ export const ConfigurationProvider = ({
       noteStatuses,
       title,
       taskTypes,
+      taskPriorities,
+      taskStatuses,
       contactGender,
     }}
   >

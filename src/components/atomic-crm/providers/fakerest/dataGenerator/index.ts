@@ -7,6 +7,8 @@ import { generateDeals } from "./deals";
 import { finalize } from "./finalize";
 import { generateSales } from "./sales";
 import { generateTags } from "./tags";
+import { generateTaskActivity } from "./taskActivity";
+import { generateTaskNotes } from "./taskNotes";
 import { generateTasks } from "./tasks";
 import type { Db } from "./types";
 
@@ -21,6 +23,8 @@ export default (): Db => {
   db.deals = generateDeals(db);
   db.dealNotes = generateDealNotes(db);
   db.tasks = generateTasks(db);
+  db.taskNotes = generateTaskNotes(db);
+  db.taskActivity = generateTaskActivity(db);
   finalize(db);
 
   return db;

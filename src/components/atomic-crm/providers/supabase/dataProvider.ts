@@ -90,6 +90,9 @@ const dataProviderWithCustomMethods = {
     if (resource === "contacts") {
       return baseDataProvider.getList("contacts_summary", params);
     }
+    if (resource === "tasks") {
+      return baseDataProvider.getList("tasks_summary", params);
+    }
 
     return baseDataProvider.getList(resource, params);
   },
@@ -100,8 +103,36 @@ const dataProviderWithCustomMethods = {
     if (resource === "contacts") {
       return baseDataProvider.getOne("contacts_summary", params);
     }
+    if (resource === "tasks") {
+      return baseDataProvider.getOne("tasks_summary", params);
+    }
 
     return baseDataProvider.getOne(resource, params);
+  },
+
+  async update(resource: string, params: any) {
+    if (resource === "tasks") {
+      const {
+        contact_first_name,
+        contact_last_name,
+        contact_email,
+        company_id,
+        company_name,
+        assigned_first_name,
+        assigned_last_name,
+        creator_first_name,
+        creator_last_name,
+        nb_notes,
+        last_note_date,
+        ...data
+      } = params.data;
+
+      return baseDataProvider.update(resource, {
+        ...params,
+        data,
+      });
+    }
+    return baseDataProvider.update(resource, params);
   },
 
   async signUp({ email, password, first_name, last_name }: SignUpData) {
@@ -369,6 +400,12 @@ export const dataProvider = withLifecycleCallbacks(
       resource: "contacts_summary",
       beforeGetList: async (params) => {
         return applyFullTextSearch(["first_name", "last_name"])(params);
+      },
+    },
+    {
+      resource: "tasks",
+      beforeGetList: async (params) => {
+        return applyFullTextSearch(["text", "contact_first_name"])(params);
       },
     },
     {

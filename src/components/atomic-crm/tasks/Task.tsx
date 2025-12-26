@@ -2,6 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { MoreVertical } from "lucide-react";
 import { useDeleteWithUndoController, useNotify, useUpdate } from "ra-core";
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import { ReferenceField } from "@/components/admin/reference-field";
 import { DateField } from "@/components/admin/date-field";
 import { Button } from "@/components/ui/button";
@@ -85,15 +86,20 @@ export const Task = ({
             className="mt-1"
           />
           <div className={`flex-grow ${task.done_date ? "line-through" : ""}`}>
-            <div className="text-sm">
-              {task.type && task.type !== "None" && (
-                <>
-                  <span className="font-semibold text-sm">{task.type}</span>
-                  &nbsp;
-                </>
-              )}
-              {task.text}
-            </div>
+            <Link
+              to={`/tasks/${task.id}/show`}
+              className="block hover:text-primary transition-colors"
+            >
+              <div className="text-sm">
+                {task.type && task.type !== "None" && (
+                  <>
+                    <span className="font-semibold text-sm">{task.type}</span>
+                    &nbsp;
+                  </>
+                )}
+                {task.text}
+              </div>
+            </Link>
             <div className="text-sm text-muted-foreground">
               due&nbsp;
               <DateField source="due_date" record={task} />
@@ -133,6 +139,11 @@ export const Task = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            <DropdownMenuItem asChild>
+              <Link to={`/tasks/${task.id}/show`} className="cursor-pointer">
+                Show Details
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => {

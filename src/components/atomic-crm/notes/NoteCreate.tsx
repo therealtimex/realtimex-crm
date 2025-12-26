@@ -21,6 +21,7 @@ const foreignKeyMapping = {
   contacts: "contact_id",
   deals: "deal_id",
   companies: "company_id",
+  tasks: "task_id",
 };
 
 export const NoteCreate = ({
@@ -28,7 +29,7 @@ export const NoteCreate = ({
   showStatus,
   className,
 }: {
-  reference: "contacts" | "deals" | "companies";
+  reference: "contacts" | "deals" | "companies" | "tasks";
   showStatus?: boolean;
   className?: string;
 }) => {
@@ -54,7 +55,7 @@ const NoteCreateButton = ({
   reference,
   record,
 }: {
-  reference: "contacts" | "deals" | "companies";
+  reference: "contacts" | "deals" | "companies" | "tasks";
   record: RaRecord<Identifier>;
 }) => {
   const [update] = useUpdate();

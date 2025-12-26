@@ -10,7 +10,8 @@ import {
 import { Create } from "@/components/admin/create";
 import { SaveButton } from "@/components/admin/form";
 import { FormToolbar } from "@/components/admin/simple-form";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@/components/ui/visually-hidden";
 
 import type { Deal } from "../types";
 import { DealInputs } from "./DealInputs";
@@ -75,6 +76,9 @@ export const DealCreate = ({ open }: { open: boolean }) => {
   return (
     <Dialog open={open} onOpenChange={() => handleClose()}>
       <DialogContent className="lg:max-w-4xl overflow-y-auto max-h-9/10 top-1/20 translate-y-0">
+        <VisuallyHidden>
+          <DialogTitle>Create Deal</DialogTitle>
+        </VisuallyHidden>
         <Create resource="deals" mutationOptions={{ onSuccess }}>
           <Form
             defaultValues={{

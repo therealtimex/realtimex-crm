@@ -27,6 +27,7 @@ import sales from "../sales";
 import { DatabasePage } from "../settings/DatabasePage";
 import { SettingsPage } from "../settings/SettingsPage";
 import { IntegrationsPage } from "../integrations/IntegrationsPage";
+import tasks from "../tasks";
 import type { ConfigurationContextValue } from "./ConfigurationContext";
 import { ConfigurationProvider } from "./ConfigurationContext";
 import {
@@ -38,6 +39,8 @@ import {
   defaultDealStages,
   defaultLightModeLogo,
   defaultNoteStatuses,
+  defaultTaskPriorities,
+  defaultTaskStatuses,
   defaultTaskTypes,
   defaultTitle,
 } from "./defaultConfiguration";
@@ -68,6 +71,8 @@ export type CRMProps = {
  * @param {string} logo - The logo used in the CRM application.
  * @param {NoteStatus[]} noteStatuses - The statuses of notes used in the application.
  * @param {string[]} taskTypes - The types of tasks used in the application.
+ * @param {Object[]} taskPriorities - The priorities of tasks used in the application.
+ * @param {Object[]} taskStatuses - The statuses of tasks used in the application.
  * @param {string} title - The title of the CRM application.
  *
  * @returns {JSX.Element} The rendered CRM application.
@@ -101,6 +106,8 @@ export const CRM = ({
   lightModeLogo = defaultLightModeLogo,
   noteStatuses = defaultNoteStatuses,
   taskTypes = defaultTaskTypes,
+  taskPriorities = defaultTaskPriorities,
+  taskStatuses = defaultTaskStatuses,
   title = defaultTitle,
   dataProvider = defaultDataProvider,
   authProvider = defaultAuthProvider,
@@ -132,6 +139,8 @@ export const CRM = ({
       lightModeLogo={lightModeLogo}
       noteStatuses={noteStatuses}
       taskTypes={taskTypes}
+      taskPriorities={taskPriorities}
+      taskStatuses={taskStatuses}
       title={title}
     >
       <DatabaseHealthCheck dataProvider={dataProvider}>
@@ -172,7 +181,9 @@ export const CRM = ({
           <Resource name="companyNotes" />
           <Resource name="contactNotes" />
           <Resource name="dealNotes" />
-          <Resource name="tasks" />
+          <Resource name="taskNotes" />
+          <Resource name="task_activity" />
+          <Resource name="tasks" {...tasks} />
           <Resource name="sales" {...sales} />
           <Resource name="tags" />
         </Admin>

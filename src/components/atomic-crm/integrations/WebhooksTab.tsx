@@ -46,7 +46,17 @@ const AVAILABLE_EVENTS = [
   },
   { value: "deal.won", label: "Deal Won", category: "Deals" },
   { value: "deal.lost", label: "Deal Lost", category: "Deals" },
+  { value: "task.created", label: "Task Created", category: "Tasks" },
+  { value: "task.updated", label: "Task Updated", category: "Tasks" },
+  { value: "task.assigned", label: "Task Assigned", category: "Tasks" },
   { value: "task.completed", label: "Task Completed", category: "Tasks" },
+  {
+    value: "task.priority_changed",
+    label: "Task Priority Changed",
+    category: "Tasks",
+  },
+  { value: "task.archived", label: "Task Archived", category: "Tasks" },
+  { value: "task.deleted", label: "Task Deleted", category: "Tasks" },
 ];
 
 export const WebhooksTab = () => {

@@ -590,7 +590,11 @@ Webhooks allow you to receive real-time notifications when events occur in your 
 - `deal.lost` - Deal marked as lost
 
 #### Task Events
+- `task.created` - New task created
+- `task.updated` - Task updated
+- `task.deleted` - Task deleted
 - `task.completed` - Task marked as done
+- `task.status_changed` - Task status changed
 
 ### Webhook Payload
 

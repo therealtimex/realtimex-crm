@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Setup Wizard**: Fixed migration progress not streaming to UI - `/api/migrate` endpoint now correctly sends Server-Sent Events (SSE) format instead of plain text
+
 ### Changed
 - **Migration UI**: Streamlined the "Database Migration Required" dialog for better UX:
   - Removed manual migration instructions tab (automatic migration is the primary flow)
@@ -14,6 +17,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Simplified troubleshooting section by removing logout instructions
   - Added automatic page reload on successful migration completion
   - Modal now focuses exclusively on the one-click automatic migration experience
+- **Migration Script**: Enhanced `migrate.sh` to bundle migrations directly into the build:
+  - Migrations and script are now bundled into `dist/` during build
+  - Script auto-detects bundled context and uses local migrations (no GitHub download)
+  - **Fixes local development**: Uses uncommitted/unpushed migrations from local codebase
+  - **Faster migrations**: No network latency from GitHub downloads
+  - **Offline-capable**: Works without internet connection
+  - **Version consistency**: Migrations always match the exact app version they were built with
+  - **Works everywhere**: Local dev, npx, and RealTimeX Desktop all use bundled migrations
 
 ## [0.48.22] - 2026-02-07
 

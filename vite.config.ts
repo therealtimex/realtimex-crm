@@ -5,7 +5,7 @@ import react from "@vitejs/plugin-react";
 import { visualizer } from "rollup-plugin-visualizer";
 import createHtmlPlugin from "vite-plugin-simple-html";
 import { execSync, spawn } from "child_process";
-import { copyFileSync } from "fs";
+import { copyFileSync, mkdirSync, readdirSync, existsSync } from "fs";
 import packageJson from "./package.json";
 
 
@@ -86,6 +86,46 @@ export default defineConfig(({ mode }) => {
             } catch (e) {
               console.warn("⚠️ Failed to sync CHANGELOG.md:", e);
             }
+          }
+        },
+      },
+      {
+        name: "bundle-migrations",
+        closeBundle() {
+          try {
+            // Copy supabase/ directory to dist/
+            const copyDir = (src: string, dest: string) => {
+              mkdirSync(dest, { recursive: true });
+              const entries = readdirSync(src, { withFileTypes: true });
+
+              for (const entry of entries) {
+                const srcPath = path.join(src, entry.name);
+                const destPath = path.join(dest, entry.name);
+
+                if (entry.isDirectory()) {
+                  copyDir(srcPath, destPath);
+                } else {
+                  copyFileSync(srcPath, destPath);
+                }
+              }
+            };
+
+            // Copy migrations
+            if (existsSync("supabase")) {
+              copyDir("supabase", "dist/supabase");
+              console.log("📦 Bundled supabase/ migrations to dist/");
+            }
+
+            // Copy migration script
+            if (existsSync("scripts")) {
+              mkdirSync("dist/scripts", { recursive: true });
+              if (existsSync("scripts/migrate.sh")) {
+                copyFileSync("scripts/migrate.sh", "dist/scripts/migrate.sh");
+                console.log("📦 Bundled scripts/migrate.sh to dist/");
+              }
+            }
+          } catch (e) {
+            console.warn("⚠️ Failed to bundle migrations:", e);
           }
         },
       },
@@ -382,15 +422,18 @@ export default defineConfig(({ mode }) => {
                 return;
               }
 
-              // Set up streaming response
+              // Set up SSE streaming response
               res.writeHead(200, {
-                "Content-Type": "text/plain",
-                "Transfer-Encoding": "chunked",
+                "Content-Type": "text/event-stream",
                 "Cache-Control": "no-cache",
-                "X-Content-Type-Options": "nosniff",
+                "Connection": "keep-alive",
               });
 
-              const log = (msg) => res.write(`${msg}\n`);
+              const sendEvent = (type, data) => {
+                res.write(`data: ${JSON.stringify({ type, data })}\n\n`);
+              };
+
+              const log = (msg) => sendEvent("info", msg);
 
               log("🚀 Starting migration (Development Mode)...");
               log("");
@@ -459,10 +502,10 @@ export default defineConfig(({ mode }) => {
                       line.toLowerCase().includes("error") ||
                       line.toLowerCase().includes("failed")
                     ) {
-                      log(`❌ ${line}`);
+                      sendEvent("error", `❌ ${line}`);
                       hasError = true;
                     } else {
-                      log(`⚠️  ${line}`);
+                      sendEvent("info", `⚠️  ${line}`);
                     }
                   }
                 });
@@ -475,12 +518,12 @@ export default defineConfig(({ mode }) => {
                 log("");
 
                 if (code === 0 && !hasError) {
-                  log("✅ Migration completed successfully!");
+                  sendEvent("success", "✅ Migration completed successfully!");
                   log("");
                   log("🎉 Your database is now ready to use.");
                   log("📝 The application will reload automatically...");
                 } else {
-                  log(`❌ Migration failed with exit code: ${code}`);
+                  sendEvent("error", `❌ Migration failed with exit code: ${code}`);
                   log("");
                   log("💡 Troubleshooting tips:");
                   log("   1. Verify your Supabase credentials are correct");
@@ -503,7 +546,7 @@ export default defineConfig(({ mode }) => {
               // Handle errors
               migrationProcess.on("error", (error) => {
                 log("");
-                log(`❌ Failed to start migration: ${error.message}`);
+                sendEvent("error", `❌ Failed to start migration: ${error.message}`);
                 log("");
                 log("💡 Common causes:");
                 log("   - Bash shell not available");
@@ -535,7 +578,7 @@ export default defineConfig(({ mode }) => {
                   }),
                 );
               } else {
-                res.write(`\n❌ Unexpected error: ${error.message}\n`);
+                res.write(`data: ${JSON.stringify({ type: "error", data: `❌ Unexpected error: ${error.message}` })}\n\n`);
                 res.end();
               }
             }

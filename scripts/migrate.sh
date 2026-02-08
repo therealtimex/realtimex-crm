@@ -78,39 +78,48 @@ if [ -z "$SUPABASE_PROJECT_ID" ]; then
 fi
 
 # ------------------------------------------------------------------------------
-# 3. PREPARE TEMPORARY WORKSPACE
+# 3. DETECT BUNDLED OR LOCAL CONTEXT
 # ------------------------------------------------------------------------------
 
-# Create a safe, random directory in the system temp folder (e.g., /tmp/tmp.XyZ123)
-# This ensures we don't mess with existing files on the user's desktop.
-WORK_DIR=$(mktemp -d)
-echo "🧹 Working in temporary system directory..."
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Define a cleanup function that runs automatically when the script exits
-# (Whether it finishes successfully or crashes)
-cleanup() {
-    rm -rf "$WORK_DIR"
-    echo "🧹 Temporary files cleaned up."
-}
-trap cleanup EXIT
+# Check if we're running from a bundled context (dist/scripts/) or local repo
+if [ -d "$SCRIPT_DIR/../supabase/migrations" ]; then
+    # Bundled context (dist/scripts/migrate.sh) or local dev (scripts/migrate.sh)
+    echo "✅ Detected bundled migrations. Using local files."
+    WORK_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+    USE_LOCAL=true
+
+    # No cleanup needed for local/bundled files
+    cleanup() {
+        echo "✅ Migration complete (used bundled migrations)."
+    }
+    trap cleanup EXIT
+else
+    # Standalone script mode - download from GitHub
+    echo "📥 No local migrations found. Downloading from GitHub..."
+    WORK_DIR=$(mktemp -d)
+    USE_LOCAL=false
+
+    cleanup() {
+        rm -rf "$WORK_DIR"
+        echo "🧹 Temporary files cleaned up."
+    }
+    trap cleanup EXIT
+
+    echo "📥 Downloading latest source from GitHub ($BRANCH)..."
+    curl -L -s "https://github.com/$GITHUB_ORG/$REPO_NAME/archive/refs/heads/$BRANCH.tar.gz" -o "$WORK_DIR/repo.tar.gz"
+
+    echo "📦 Extracting configuration files..."
+    tar -xzf "$WORK_DIR/repo.tar.gz" -C "$WORK_DIR" --strip-components=1
+fi
 
 # ------------------------------------------------------------------------------
-# 4. DOWNLOAD & EXTRACT LATEST CODE
+# 4. EXECUTE MIGRATION
 # ------------------------------------------------------------------------------
 
-echo "📥 Downloading latest source from GitHub ($BRANCH)..."
-# Download the repository archive as a compressed file
-curl -L -s "https://github.com/$GITHUB_ORG/$REPO_NAME/archive/refs/heads/$BRANCH.tar.gz" -o "$WORK_DIR/repo.tar.gz"
-
-echo "📦 Extracting configuration files..."
-# Extract the files, stripping the root folder so they sit directly in WORK_DIR
-tar -xzf "$WORK_DIR/repo.tar.gz" -C "$WORK_DIR" --strip-components=1
-
-# ------------------------------------------------------------------------------
-# 5. EXECUTE MIGRATION
-# ------------------------------------------------------------------------------
-
-# Move into the temp directory to run Supabase commands
+# Move into the working directory to run Supabase commands
 cd "$WORK_DIR"
 
 echo "---------------------------------------------------------"

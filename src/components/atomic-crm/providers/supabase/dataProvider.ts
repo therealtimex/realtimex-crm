@@ -119,6 +119,43 @@ const dataProviderWithCustomMethods = {
       return baseDataProvider.getOne("invoices_summary", params);
     }
 
+    // Special handling for business_profile (singleton table)
+    // NOTE: The ra-supabase-core adapter has issues with singleton tables where
+    // the response format doesn't match react-admin's expectations. This direct
+    // query approach is more reliable and is the recommended pattern for single-row tables.
+    if (resource === "business_profile") {
+      const { data, error } = await supabase
+        .from("business_profile")
+        .select("*")
+        .eq("id", params.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("[DataProvider] business_profile query error:", error);
+        throw new Error(`Failed to fetch business profile: ${error.message}`);
+      }
+
+      // If no data exists, create a default record (safe for singleton tables)
+      // This ensures the app works even if migrations haven't been run yet
+      if (!data) {
+        console.warn("[DataProvider] business_profile record missing, creating default...");
+        const { data: newData, error: insertError } = await supabase
+          .from("business_profile")
+          .insert({ id: 1, name: "My Company" })
+          .select()
+          .single();
+
+        if (insertError) {
+          console.error("[DataProvider] Failed to create business_profile:", insertError);
+          throw new Error(`Failed to create business profile: ${insertError.message}`);
+        }
+
+        return { data: newData };
+      }
+
+      return { data };
+    }
+
     return baseDataProvider.getOne(resource, params);
   },
   async create(resource: string, params: any) {

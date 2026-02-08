@@ -19,6 +19,9 @@ export const TasksListFilter = ({
   const { identity } = useGetIdentity();
   const translate = useTranslate();
 
+  // PERFORMANCE FIX: Reduced from 100 to 10 tasks per filter
+  // Dashboard shows 5 tasks initially, so 10 is more than enough
+  // User can click "Load more" to fetch additional tasks if needed
   const {
     data: tasks,
     total,
@@ -26,7 +29,7 @@ export const TasksListFilter = ({
   } = useGetList(
     "tasks",
     {
-      pagination: { page: 1, perPage: 100 },
+      pagination: { page: 1, perPage: 10 }, // Reduced from 100
       sort: { field: "due_date", order: "ASC" },
       filter: {
         ...filter,

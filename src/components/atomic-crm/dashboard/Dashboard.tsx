@@ -16,8 +16,11 @@ export const Dashboard = () => {
   const translate = useTranslate();
   const { identity, isPending: isPendingIdentity } = useGetIdentity();
 
-  const { data: businessProfile, isPending: isPendingProfile } =
-    useGetOne<BusinessProfile>("business_profile", { id: 1 });
+  const {
+    data: businessProfile,
+    isPending: isPendingProfile,
+    error: errorProfile,
+  } = useGetOne<BusinessProfile>("business_profile", { id: 1 });
 
   const {
     data: dataContact,
@@ -48,6 +51,12 @@ export const Dashboard = () => {
 
   if (isPending) {
     return null;
+  }
+
+  // Handle business_profile errors gracefully
+  if (errorProfile) {
+    console.error("[Dashboard] Failed to load business profile:", errorProfile);
+    // Continue rendering dashboard even if business profile fails
   }
 
   // Only show onboarding to administrators if not completed

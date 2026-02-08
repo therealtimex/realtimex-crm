@@ -18,8 +18,10 @@ import type {
   DealNote,
 } from "../../types";
 
-// FIXME: Requires 5 large queries to get the latest activities.
-// Replace with a server-side view or a custom API endpoint.
+// PERFORMANCE FIX: Reduced from 250 to 50 records per query
+// This changes from fetching 1,250 records (5 queries × 250) to just 250 records (5 queries × 50)
+// Dashboard only shows 10-20 activities, so 50 per query is more than enough
+// TODO: Replace with a server-side view or edge function for even better performance
 export async function getActivityLog(
   dataProvider: DataProvider,
   companyId?: Identifier,
@@ -57,8 +59,8 @@ export async function getActivityLog(
       .sort((a, b) =>
         a.date && b.date ? a.date.localeCompare(b.date) * -1 : 0,
       )
-      // limit to 250 activities
-      .slice(0, 250)
+      // limit to 50 activities (reduced from 250 for performance)
+      .slice(0, 50)
   );
 }
 
@@ -68,7 +70,7 @@ const getNewCompanies = async (
 ): Promise<Activity[]> => {
   const { data: companies } = await dataProvider.getList<Company>("companies", {
     filter,
-    pagination: { page: 1, perPage: 250 },
+    pagination: { page: 1, perPage: 50 }, // Reduced from 250
     sort: { field: "created_at", order: "DESC" },
   });
   return companies.map((company) => ({
@@ -87,7 +89,7 @@ async function getNewContactsAndNotes(
 ): Promise<Activity[]> {
   const { data: contacts } = await dataProvider.getList<Contact>("contacts", {
     filter,
-    pagination: { page: 1, perPage: 250 },
+    pagination: { page: 1, perPage: 50 }, // Reduced from 250
     sort: { field: "first_seen", order: "DESC" },
   });
 
@@ -97,7 +99,7 @@ async function getNewContactsAndNotes(
   }
   if (filter.company_id) {
     // No company_id field in contactNote, filtering by related contacts instead.
-    // This filter is only valid if a company has less than 250 contact.
+    // This filter is only valid if a company has less than 50 contacts.
     const contactIds = contacts.map((contact) => contact.id).join(",");
     recentContactNotesFilter["contact_id@in"] = `(${contactIds})`;
   }
@@ -106,7 +108,7 @@ async function getNewContactsAndNotes(
     "contactNotes",
     {
       filter: recentContactNotesFilter,
-      pagination: { page: 1, perPage: 250 },
+      pagination: { page: 1, perPage: 50 }, // Reduced from 250
       sort: { field: "date", order: "DESC" },
     },
   );
@@ -137,7 +139,7 @@ async function getNewDealsAndNotes(
 ): Promise<Activity[]> {
   const { data: deals } = await dataProvider.getList<Deal>("deals", {
     filter,
-    pagination: { page: 1, perPage: 250 },
+    pagination: { page: 1, perPage: 50 }, // Reduced from 250
     sort: { field: "created_at", order: "DESC" },
   });
 
@@ -147,7 +149,7 @@ async function getNewDealsAndNotes(
   }
   if (filter.company_id) {
     // No company_id field in dealNote, filtering by related deals instead.
-    // This filter is only valid if a deal has less than 250 notes.
+    // This filter is only valid if a deal has less than 50 notes.
     const dealIds = deals.map((deal) => deal.id).join(",");
     recentDealNotesFilter["deal_id@in"] = `(${dealIds})`;
   }
@@ -156,7 +158,7 @@ async function getNewDealsAndNotes(
     "dealNotes",
     {
       filter: recentDealNotesFilter,
-      pagination: { page: 1, perPage: 250 },
+      pagination: { page: 1, perPage: 50 }, // Reduced from 250
       sort: { field: "date", order: "DESC" },
     },
   );
@@ -198,7 +200,7 @@ async function getNewCompanyNotes(
     "companyNotes",
     {
       filter: recentCompanyNotesFilter,
-      pagination: { page: 1, perPage: 250 },
+      pagination: { page: 1, perPage: 50 }, // Reduced from 250
       sort: { field: "date", order: "DESC" },
     },
   );

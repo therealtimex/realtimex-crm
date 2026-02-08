@@ -3,12 +3,16 @@ export type Translate = (
   options?: Record<string, unknown>,
 ) => string;
 
-export const toI18nKey = (value: string): string =>
-  value
+export const toI18nKey = (value: string): string => {
+  // Handle undefined/null values gracefully
+  if (!value) return "";
+
+  return value
     .trim()
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "_")
     .replace(/^_+|_+$/g, "");
+};
 
 export const translateWithFallback = (
   translate: Translate,

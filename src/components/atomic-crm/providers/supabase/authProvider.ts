@@ -110,6 +110,7 @@ export const authProvider: AuthProvider = {
 };
 
 let cachedSale: any;
+let pendingSaleRequest: Promise<any> | null = null;
 
 export const updateCachedSaleLocale = (locale: string) => {
   if (!cachedSale) return;
@@ -118,28 +119,53 @@ export const updateCachedSaleLocale = (locale: string) => {
     locale,
   };
 };
+
 const getSaleFromCache = async () => {
+  // Return cached sale if available
   if (cachedSale != null) return cachedSale;
 
-  const { data: dataSession, error: errorSession } =
-    await supabase.auth.getSession();
-
-  // Shouldn't happen after login but just in case
-  if (dataSession?.session?.user == null || errorSession) {
-    return undefined;
+  // Deduplicate concurrent requests - if a request is already in flight, return it
+  if (pendingSaleRequest != null) {
+    return pendingSaleRequest;
   }
 
-  const { data: dataSale, error: errorSale } = await supabase
-    .from("sales")
-    .select("id, first_name, last_name, avatar, administrator, locale")
-    .match({ user_id: dataSession?.session?.user.id })
-    .single();
+  // Create and store the promise for deduplication
+  pendingSaleRequest = (async () => {
+    try {
+      const { data: dataSession, error: errorSession } =
+        await supabase.auth.getSession();
 
-  // Shouldn't happen either as all users are sales but just in case
-  if (dataSale == null || errorSale) {
-    return undefined;
-  }
+      // Shouldn't happen after login but just in case
+      if (dataSession?.session?.user == null || errorSession) {
+        console.error("[Auth] Failed to get session:", errorSession);
+        return undefined;
+      }
 
-  cachedSale = dataSale;
-  return dataSale;
+      const { data: dataSale, error: errorSale } = await supabase
+        .from("sales")
+        .select("id, first_name, last_name, avatar, administrator, locale")
+        .match({ user_id: dataSession?.session?.user.id })
+        .maybeSingle();
+
+      // If no sales record exists for this user, show helpful error
+      if (dataSale == null || errorSale) {
+        console.error("[Auth] Failed to get sale record:", errorSale);
+        console.error(
+          "[Auth] This usually means the database trigger didn't create a sales record."
+        );
+        console.error(
+          "[Auth] Run this migration to fix: npx supabase db push"
+        );
+        return undefined;
+      }
+
+      cachedSale = dataSale;
+      return dataSale;
+    } finally {
+      // Clear pending request after completion
+      pendingSaleRequest = null;
+    }
+  })();
+
+  return pendingSaleRequest;
 };

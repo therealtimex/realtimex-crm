@@ -154,7 +154,7 @@ Deno.serve(async (req) => {
       .insert({
         type: normalized.type,
         direction: "inbound",
-        processing_status: "raw", // Ready for Local Agent to steal
+        status: "pending", // Ready for Local Agent to steal
         raw_data: normalized.raw_data,
         metadata: activityMetadata,
         provider_id: provider.id,

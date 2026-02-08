@@ -123,9 +123,9 @@ export const ActivityFeed = ({
 
 const ActivityCard = ({ activity }: { activity: any }) => {
   const isPending =
-    activity.processing_status === "raw" ||
-    activity.processing_status === "processing";
-  const isFailed = activity.processing_status === "failed";
+    activity.status === "pending" ||
+    activity.status === "claimed";
+  const isFailed = activity.status === "failed";
   const translate = useTranslate();
   const locale = useLocale();
 
@@ -177,7 +177,7 @@ const ActivityCard = ({ activity }: { activity: any }) => {
           </div>
         </div>
 
-        <StatusBadge status={activity.processing_status} />
+        <StatusBadge status={activity.status} />
       </CardHeader>
 
       <CardContent className="pb-4 px-4 pt-0">
@@ -270,7 +270,8 @@ const ActivityIcon = ({ type }: { type: string }) => {
 const StatusBadge = ({ status }: { status: string }) => {
   const translate = useTranslate();
   switch (status) {
-    case "raw":
+    case "pending":
+    case "claimed":
     case "processing":
       return (
         <Badge

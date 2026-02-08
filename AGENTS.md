@@ -476,6 +476,32 @@ Two data providers are available:
 
 When using FakeRest, database views are emulated in the frontend. Test data generators are in `src/components/atomic-crm/providers/fakerest/dataGenerator/`.
 
+**Singleton Table Pattern:**
+
+For singleton tables (tables with only one row, like `business_profile`), the Supabase data provider uses direct Supabase client queries instead of the `ra-supabase-core` adapter. This is because:
+- The adapter has issues with singleton tables where response formats don't match react-admin expectations
+- Direct queries with `.maybeSingle()` handle edge cases more reliably
+- Auto-creation of missing records ensures the app works even if migrations haven't been run
+
+Implementation in `src/components/atomic-crm/providers/supabase/dataProvider.ts`:
+```typescript
+if (resource === "business_profile") {
+  const { data, error } = await supabase
+    .from("business_profile")
+    .select("*")
+    .eq("id", params.id)
+    .maybeSingle();
+
+  if (!data) {
+    // Auto-create default record if missing
+  }
+
+  return { data };
+}
+```
+
+This pattern is production-ready and is the recommended approach for singleton tables in Supabase + react-admin applications.
+
 #### Filter Syntax
 
 List filters follow the `ra-data-postgrest` convention with operator concatenation: `field_name@operator` (e.g., `first_name@eq`). The FakeRest adapter maps these to FakeRest syntax at runtime.

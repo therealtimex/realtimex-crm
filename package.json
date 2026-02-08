@@ -1,6 +1,6 @@
 {
   "name": "realtimex-crm",
-  "version": "0.48.20",
+  "version": "0.48.21",
   "description": "RealTimeX CRM - A full-featured CRM with zero cloud costs and complete privacy.",
   "type": "module",
   "main": "./dist/index.js",
@@ -172,6 +172,7 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.6.0",
+    "baseline-browser-mapping": "^2.9.19",
     "concurrently": "^9.1.2",
     "eslint": "^9.22.0",
     "eslint-plugin-react-hooks": "^5.2.0",

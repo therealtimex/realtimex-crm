@@ -34,7 +34,7 @@ npm install          # Install dependencies
 # - Run: npm run dev
 
 # Option 2: Use demo mode (no database needed)
-make start-demo      # Start with FakeRest data provider
+npm run dev:demo     # Start with FakeRest data provider
 ```
 
 **First-Time Setup:**
@@ -51,9 +51,9 @@ Priority: UI configuration overrides environment variables.
 ### Testing and Code Quality
 
 ```bash
-make test             # Run unit tests (vitest)
-make typecheck        # Run TypeScript type checking
-make lint             # Run ESLint and Prettier checks
+npm test              # Run unit tests (vitest)
+npm run typecheck     # Run TypeScript type checking
+npm run lint          # Run ESLint and Prettier checks
 ```
 
 **IMPORTANT: Always run before committing:**
@@ -74,8 +74,8 @@ This ensures:
 ### Building
 
 ```bash
-make build            # Build production bundle (runs tsc + vite build)
-npm run serve         # Serve production build locally at http://127.0.0.1:3000
+npm run build         # Build production bundle (runs tsc + vite build)
+npm run serve         # Serve production build locally
 ```
 
 ### Database Management
@@ -87,8 +87,7 @@ npm run serve         # Serve production build locally at http://127.0.0.1:3000
 **For Developers:**
 ```bash
 npx supabase migration new <name>  # Create new migration
-npx supabase db push               # Push migrations to remote database
-# OR use: make db-push
+npx supabase db push                # Push migrations to remote database
 ```
 
 **Automated Remote Setup:**
@@ -156,8 +155,8 @@ npx supabase db push
 ### Registry (Shadcn Components)
 
 ```bash
-make registry-gen     # Generate registry.json (runs automatically on pre-commit)
-make registry-build   # Build Shadcn registry
+npm run registry:gen    # Generate registry.json (runs automatically on pre-commit)
+npm run registry:build  # Build Shadcn registry
 ```
 
 ## Architecture
@@ -655,7 +654,7 @@ Update the CHANGELOG for:
 ### Git Hooks
 
 **Pre-commit hook automatically:**
-1. Runs `make registry-gen` to update `registry.json`
+1. Runs `npm run registry:gen` to update `registry.json`
 2. Stages registry changes for the commit
 
 **Note:** The pre-commit hook does NOT run linter/typecheck automatically. You must run these manually before committing:

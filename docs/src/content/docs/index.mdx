@@ -56,7 +56,6 @@ npm run dev
 
     ```bash
     npm run dev
-    # OR: make start
     ```
 
 RealTimeX CRM now runs at [http://localhost:5173/](http://localhost:5173/).
@@ -287,7 +286,7 @@ First, login or register to [Supabase.com](https://supabase.com).
 RealTimeX CRM comes with a CLI utility to create a backend instance on Supabase.com:
 
 ```sh
-make supabase-remote-init
+npm run supabase:remote:init
 ```
 
 The script will ask you for the Supabase instance name, create the database, apply the migrations and deploy the edge functions. Finally, it will create a `.env.production.local` file with your remote Supabase configuration.

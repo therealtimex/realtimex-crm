@@ -77,7 +77,6 @@ Start the development server:
 
 ```sh
 npm run dev
-# OR: make start
 ```
 
 Access the app at [http://localhost:5173/](http://localhost:5173/)
@@ -126,7 +125,7 @@ To customize RealTimeX CRM, you will need TypeScript and React programming skill
 This project contains unit tests. Run them with the following command:
 
 ```sh
-make test
+npm test
 ```
 
 You can add your own unit tests powered by Vitest anywhere in the `src` directory. The test files should be named `*.test.tsx` or `*.test.ts`.
@@ -134,17 +133,17 @@ You can add your own unit tests powered by Vitest anywhere in the `src` director
 ## Development Commands
 
 ```sh
-npm install           # Install dependencies
-npm run dev           # Start development server
-make start-demo       # Start with demo mode (no database)
-make test             # Run unit tests (vitest)
-make typecheck        # Run TypeScript type checking
-make lint             # Run ESLint and Prettier checks
-make build            # Build production bundle
-make serve            # Serve production build locally
+npm install              # Install dependencies
+npm run dev              # Start development server
+npm run dev:demo         # Start with demo mode (no database)
+npm test                 # Run unit tests (vitest)
+npm run typecheck        # Run TypeScript type checking
+npm run lint             # Run ESLint and Prettier checks
+npm run build            # Build production bundle
+npm run serve            # Serve production build locally
 
 # Developer commands (remote Supabase management)
-make db-push          # Push migrations to remote Supabase
+npx supabase db push     # Push migrations to remote Supabase
 ```
 
 ## Registry

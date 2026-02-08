@@ -5,11 +5,58 @@ All notable changes to RealTimeX CRM will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- **Migration UI**: Streamlined the "Database Migration Required" dialog for better UX:
+  - Removed manual migration instructions tab (automatic migration is the primary flow)
+  - Removed optional database password field (access token is the only required credential)
+  - Simplified troubleshooting section by removing logout instructions
+  - Added automatic page reload on successful migration completion
+  - Modal now focuses exclusively on the one-click automatic migration experience
+
 ## [0.48.22] - 2026-02-07
 
 ### Added
 - **Companies**: Added "Invoices" tab to the Company detail view, displaying related invoices and allowing creation of new ones directly from the company context.
 - **Database**: Updated `companies_summary` view to include invoice counts (`nb_invoices`), enabling the new UI tab.
+- **Setup**: Enhanced setup wizard with two connection modes - Quick Connect (auto-provision) and Manual Connect (existing credentials). Auto-provisioning creates and configures Supabase projects automatically via Management API with real-time progress streaming.
+- **API**: Added `/api/setup/organizations` and `/api/setup/auto-provision` endpoints in `api/server.js` for Supabase project auto-provisioning workflow.
+
+### Changed
+- **Architecture**: Removed Docker and local Supabase dependencies to align with local app model (CRM runs via npx in RealTimeX Desktop with remote Supabase backend).
+- **Documentation**: Updated Makefile, README.md, and AGENTS.md to use npm commands and remote-first workflow.
+- **Data Provider**: Fixed `companies_summary` and other database views by using direct Supabase client queries instead of ra-supabase-core adapter for better reliability.
+- **Setup UX**: Converted setup wizard from modal to full-page layout for better focus, accessibility, and interaction reliability.
+
+### Fixed
+- **Setup**: Fixed critical bug where setup wizard completion didn't properly reinitialize the app with new credentials, causing "Create first user" page to appear even when connecting to existing databases with users. **Root cause**: The global `supabase` singleton client is created once on module load and never refreshes, so even after saving new credentials to localStorage, the app continued using stale/placeholder credentials. **Fix**: Page now reloads after setup completes, forcing all modules to re-import and initialize with credentials from localStorage.
+- **Setup**: Fixed critical bug where Manual Connect wasn't actually checking the remote database before showing "Migration required". Root cause was using the global Supabase singleton client (created on module load with stale/placeholder credentials) instead of creating a fresh client with the new user-provided credentials. Now creates a fresh client before checking migration status.
+- **Setup**: Fixed unnecessary migration prompt for working databases with legacy schema. When database version matches app version and is initialized (has users), now skips migration even if it lacks timestamp tracking, preventing disruption to working databases.
+- **Setup**: Implemented smart migration detection with three decision paths:
+  - **Path 1**: Database not initialized (no users) → Always run migration (setup + backfill)
+  - **Path 2**: Database on older version → Run migration to upgrade schema
+  - **Path 3**: Database on same version with users → Skip migration (legacy schema OK, don't disrupt working DB)
+  - This prevents unnecessary migration runs and properly handles existing databases with users already set up.
+- **Setup**: Fixed non-clickable buttons and runtime errors in wizard steps due to prop name mismatches:
+  - TypeStep: `onManaged`/`onManual` vs `onSelectManaged`/`onSelectManual`
+  - CredentialsStep: `onSave` vs `onNext`
+  - ManagedOrgStep: `selectedOrg`/`onOrgSelect`/`onProvision` vs `selectedOrgId`/`onOrgChange`/`onNext`
+  - ProvisioningStep: `onRetry` vs `provisioning` prop
+- **Setup**: Fixed translation function errors in WelcomeStep, TypeStep, and CredentialsStep (migrated from custom `t()` to React-Admin's `translate()`).
+- **Setup**: Fixed app showing sign-up page when connecting to existing Supabase databases with users. Added migration to backfill existing `auth.users` to `sales` table, ensuring `init_state` correctly reflects database initialization status.
+- **Setup**: Clear `init_state` cache after migrations complete to ensure fresh database state check.
+- **Setup**: Fixed "SyntaxError: Unexpected token" error in Quick Connect flow by adding `/api/setup/organizations` endpoint to Vite development server middleware.
+
+### Changed
+- **Setup**: Implemented comprehensive Supabase API error handling in Quick Connect auto-provisioning with the same patterns as email-automator:
+  - Project name conflicts: Auto-generates random suffix
+  - Account limits: Displays Supabase API error messages in terminal logs
+  - Timeout protection: 5-minute polling with progress updates
+  - Retry functionality: "Try Again" button to go back to org selection
+  - Escape hatch: "Use Manual Connect Instead" button when auto-provisioning fails, preventing users from getting stuck
+  - Real-time feedback: SSE streaming with color-coded terminal logs
+  - Visual feedback: Error state shows ✕ icon and "Provisioning Failed" title
 
 ## [0.48.21] - 2026-02-07
 

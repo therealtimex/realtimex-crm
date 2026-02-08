@@ -1218,6 +1218,7 @@ export const enMessages = {
           failure_toast: "Migration failed. See logs for details.",
           missing_project_id:
             "Could not determine Project ID from configuration.",
+          reload_message: "✅ Migration completed! Reloading application...",
         },
         close: "Close",
         copy: {

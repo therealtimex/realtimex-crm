@@ -26,6 +26,240 @@ const distPath = join(__dirname, "..", "dist");
 app.use(express.static(distPath));
 
 /**
+ * GET /api/setup/organizations
+ *
+ * Fetches the user's Supabase organizations using their access token
+ *
+ * Headers:
+ * - Authorization: Bearer <access_token>
+ *
+ * Returns: Array of organizations with regions
+ */
+app.get("/api/setup/organizations", async (req, res) => {
+  const authHeader = req.headers["authorization"];
+
+  if (!authHeader) {
+    return res.status(401).json({ error: "Missing Authorization header" });
+  }
+
+  try {
+    const response = await fetch("https://api.supabase.com/v1/organizations", {
+      headers: { Authorization: authHeader },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      return res.status(response.status).json({
+        error: errorData.message || "Failed to fetch organizations",
+      });
+    }
+
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error("Failed to fetch organizations:", error);
+    res.status(500).json({
+      error: error.message || "Failed to fetch organizations",
+    });
+  }
+});
+
+/**
+ * POST /api/setup/auto-provision
+ *
+ * Auto-provisions a new Supabase project and returns credentials
+ *
+ * Headers:
+ * - Authorization: Bearer <access_token>
+ *
+ * Body:
+ * - orgId: Organization ID
+ * - projectName: Custom project name (optional)
+ * - region: AWS region (optional, defaults to us-east-1)
+ *
+ * Returns: Server-Sent Events stream with provisioning progress
+ */
+app.post("/api/setup/auto-provision", async (req, res) => {
+  const { orgId, projectName: customProjectName, region: customRegion } = req.body;
+  const authHeader = req.headers["authorization"];
+
+  if (!orgId) {
+    return res.status(400).json({ error: "Missing required parameter (orgId)" });
+  }
+
+  if (!authHeader) {
+    return res.status(401).json({ error: "Missing Authorization header" });
+  }
+
+  // Set up Server-Sent Events
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  const sendEvent = (type, data) => {
+    res.write(`data: ${JSON.stringify({ type, data })}\n\n`);
+  };
+
+  try {
+    const crypto = await import("crypto");
+    const projectName = customProjectName || `RealTimeX-CRM-${crypto.randomBytes(2).toString("hex")}`;
+    const region = customRegion || "us-east-1";
+
+    // Generate a secure DB password server-side
+    const dbPass = crypto.randomBytes(16).toString("base64")
+      .replace(/\+/g, "a")
+      .replace(/\//g, "b")
+      .replace(/=/g, "c") + "1!Aa";
+
+    sendEvent("info", `🚀 Creating Supabase project: ${projectName} in ${region}...`);
+
+    // 1. Create Project
+    const createResponse = await fetch("https://api.supabase.com/v1/projects", {
+      method: "POST",
+      headers: {
+        Authorization: authHeader,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: projectName,
+        organization_id: orgId,
+        region: region,
+        db_pass: dbPass,
+      }),
+    });
+
+    if (!createResponse.ok) {
+      const errorData = await createResponse.json().catch(() => ({}));
+      throw new Error(errorData.message || "Failed to create project");
+    }
+
+    const project = await createResponse.json();
+    const projectRef = project.id;
+
+    sendEvent("info", `📦 Project created! ID: ${projectRef}. Waiting for it to go live...`);
+    sendEvent("project_id", projectRef);
+
+    // 2. Poll for Readiness
+    let isReady = false;
+    let attempts = 0;
+    const maxAttempts = 60; // 5 minutes
+
+    while (!isReady && attempts < maxAttempts) {
+      attempts++;
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+
+      try {
+        const statusResponse = await fetch(
+          `https://api.supabase.com/v1/projects/${projectRef}`,
+          {
+            headers: { Authorization: authHeader },
+          }
+        );
+
+        if (statusResponse.ok) {
+          const statusData = await statusResponse.json();
+          const status = statusData.status;
+          sendEvent("info", `⏳ Status: ${status} (Attempt ${attempts}/${maxAttempts})`);
+
+          if (status === "ACTIVE_HEALTHY" || status === "ACTIVE") {
+            isReady = true;
+          }
+        }
+      } catch (pollError) {
+        console.warn("Polling error during provision:", pollError.message);
+      }
+    }
+
+    if (!isReady) {
+      throw new Error("Project provision timed out after 5 minutes.");
+    }
+
+    // 3. Get API Keys
+    sendEvent("info", "🔑 Retrieving API keys...");
+
+    let anonKey = "";
+    let keyAttempts = 0;
+    const maxKeyAttempts = 10;
+
+    while (!anonKey && keyAttempts < maxKeyAttempts) {
+      keyAttempts++;
+      if (keyAttempts > 1) {
+        sendEvent("info", `⏳ API keys not ready yet. Retrying (Attempt ${keyAttempts}/${maxKeyAttempts})...`);
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+      }
+
+      try {
+        const keysResponse = await fetch(
+          `https://api.supabase.com/v1/projects/${projectRef}/api-keys`,
+          {
+            headers: { Authorization: authHeader },
+          }
+        );
+
+        if (keysResponse.ok) {
+          const keys = await keysResponse.json();
+          if (Array.isArray(keys)) {
+            const anonKeyObj = keys.find((k) => k.name === "anon");
+            anonKey = anonKeyObj?.api_key;
+            if (anonKey) {
+              sendEvent("info", "✅ API keys retrieved successfully.");
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Key retrieval attempt failed:", err.message);
+      }
+    }
+
+    if (!anonKey) {
+      throw new Error("Could not find anonymous API key for the new project.");
+    }
+
+    const supabaseUrl = `https://${projectRef}.supabase.co`;
+
+    // 4. DNS Verification
+    sendEvent("info", "🌐 Waiting for DNS propagation...");
+    let dnsReady = false;
+    let dnsAttempts = 0;
+    const maxDnsAttempts = 20;
+
+    while (!dnsReady && dnsAttempts < maxDnsAttempts) {
+      dnsAttempts++;
+      try {
+        const pingResponse = await fetch(`${supabaseUrl}/rest/v1/`, {
+          method: "HEAD",
+        });
+        if (pingResponse.status < 500) {
+          dnsReady = true;
+          sendEvent("info", "✨ DNS resolved! Project is fully accessible.");
+        }
+      } catch (pingError) {
+        if (dnsAttempts % 5 === 0) {
+          sendEvent("info", "⏳ DNS still propagating... standby.");
+        }
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+      }
+    }
+
+    sendEvent("success", {
+      url: supabaseUrl,
+      anonKey: anonKey,
+      projectId: projectRef,
+      dbPass: dbPass,
+    });
+
+    sendEvent("done", "success");
+  } catch (error) {
+    const errorMsg = error.message || "Auto-provisioning failed";
+    console.error("Auto-provision failed:", errorMsg);
+    sendEvent("error", errorMsg);
+    sendEvent("done", "failed");
+  } finally {
+    res.end();
+  }
+});
+
+/**
  * POST /api/migrate
  *
  * Executes database migrations using the Supabase CLI

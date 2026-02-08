@@ -36,6 +36,11 @@ export async function getIsInitialized() {
 
 export namespace getIsInitialized {
   export var _is_initialized_cache: boolean | null = null;
+
+  // Helper to clear cache (useful after migrations or setup)
+  export function clearCache() {
+    _is_initialized_cache = null;
+  }
 }
 
 export const authProvider: AuthProvider = {

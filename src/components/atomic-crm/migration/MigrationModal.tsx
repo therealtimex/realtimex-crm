@@ -114,10 +114,8 @@ export function MigrationModal({
   const translate = useTranslate();
 
   // Auto-migration state
-  const [showAutoMigrate, setShowAutoMigrate] = useState(true);
   const [isMigrating, setIsMigrating] = useState(false);
   const [migrationLogs, setMigrationLogs] = useState<string[]>([]);
-  const [dbPassword, setDbPassword] = useState("");
   const [accessToken, setAccessToken] = useState("");
   const logsEndRef = useRef<HTMLDivElement>(null);
 
@@ -154,7 +152,6 @@ export function MigrationModal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           projectRef: projectId,
-          dbPassword,
           accessToken,
         }),
       });
@@ -169,6 +166,7 @@ export function MigrationModal({
       if (!reader) throw new Error("No response stream received.");
 
       const decoder = new TextDecoder();
+      let migrationSucceeded = false;
 
       while (true) {
         const { done, value } = await reader.read();
@@ -177,6 +175,22 @@ export function MigrationModal({
         const text = decoder.decode(value);
         const lines = text.split("\n").filter(Boolean);
         setMigrationLogs((prev) => [...prev, ...lines]);
+
+        // Check if migration succeeded
+        if (text.includes("Migration completed successfully") || text.includes("✅")) {
+          migrationSucceeded = true;
+        }
+      }
+
+      // Auto-reload on success
+      if (migrationSucceeded) {
+        setMigrationLogs((prev) => [
+          ...prev,
+          translate("crm.migration.modal.auto.reload_message"),
+        ]);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       }
     } catch (err) {
       console.error(err);
@@ -228,24 +242,8 @@ export function MigrationModal({
             </AlertDescription>
           </Alert>
 
-          {/* Mode Selection Tabs */}
-          <div className="flex border-b">
-            <button
-              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${showAutoMigrate ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}
-              onClick={() => setShowAutoMigrate(true)}
-            >
-              {translate("crm.migration.modal.auto.tab_title")}
-            </button>
-            <button
-              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${!showAutoMigrate ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}
-              onClick={() => setShowAutoMigrate(false)}
-            >
-              {translate("crm.migration.modal.auto.manual_tab_title")}
-            </button>
-          </div>
-
-          {showAutoMigrate ? (
-            <div className="space-y-4 py-2">
+          {/* Auto-Migration Interface */}
+          <div className="space-y-4 py-2">
               <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
                 <h3 className="text-lg font-semibold mb-2">
                   {translate("crm.migration.modal.auto.title")}
@@ -296,25 +294,6 @@ export function MigrationModal({
                     </p>
                   </div>
 
-                  <div className="grid gap-2">
-                    <Label htmlFor="db-password">
-                      {translate("crm.migration.modal.auto.db_password")}
-                    </Label>
-                    <Input
-                      id="db-password"
-                      type="password"
-                      placeholder={translate(
-                        "crm.migration.modal.auto.db_password_placeholder",
-                      )}
-                      value={dbPassword}
-                      onChange={(e) => setDbPassword(e.target.value)}
-                      disabled={isMigrating}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      {translate("crm.migration.modal.auto.db_password_hint")}
-                    </p>
-                  </div>
-
                   <Button
                     onClick={handleAutoMigrate}
                     disabled={isMigrating}
@@ -351,160 +330,6 @@ export function MigrationModal({
                 <div ref={logsEndRef} />
               </div>
             </div>
-          ) : (
-            // Manual Instructions (Existing content)
-            <>
-              {/* Step 1: Prerequisites */}
-              <div>
-                <h4 className="mb-3 flex items-center gap-2 font-semibold">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                    1
-                  </span>
-                  {translate("crm.migration.modal.prerequisites.title")}
-                </h4>
-                <div className="ml-8 space-y-3">
-                  <p className="text-sm text-muted-foreground">
-                    {translate("crm.migration.modal.prerequisites.intro")}
-                  </p>
-                  <ul className="list-inside list-disc space-y-1 text-sm">
-                    <li>
-                      {translate(
-                        "crm.migration.modal.prerequisites.cli_installed",
-                      )}
-                    </li>
-                    <li>
-                      {translate(
-                        "crm.migration.modal.prerequisites.project_id",
-                      )}{" "}
-                      <code className="rounded bg-muted px-1 py-0.5 text-xs">
-                        {projectId || "your-project-id"}
-                      </code>
-                    </li>
-                    <li>
-                      {translate(
-                        "crm.migration.modal.prerequisites.db_password",
-                      )}
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* Step 2: Install Supabase CLI */}
-              <div>
-                <h4 className="mb-3 flex items-center gap-2 font-semibold">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                    2
-                  </span>
-                  {translate("crm.migration.modal.install_cli.title")}
-                </h4>
-                <div className="ml-8 space-y-3">
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">
-                      {translate("crm.migration.modal.install_cli.macos")}
-                    </p>
-                    <CodeBlock code="brew install supabase/tap/supabase" />
-                  </div>
-                  {/* ... other instructions kept via implicit return if I didn't cut them ... */}
-                  {/* To save tokens/time I'm keeping the structure but replacing the manual content block with the original logic if I had the full file content in memory.
-                        Since I'm rewriting the file, I must include EVERYTHING.
-                    */}
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">
-                      {translate(
-                        "crm.migration.modal.install_cli.windows_scoop",
-                      )}
-                    </p>
-                    <CodeBlock
-                      code={`scoop bucket add supabase https://github.com/supabase/scoop-bucket.git\nscoop install supabase`}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">
-                      {translate("crm.migration.modal.install_cli.windows_npm")}
-                    </p>
-                    <CodeBlock code="npm install -g supabase" />
-                  </div>
-
-                  <a
-                    href="https://supabase.com/docs/guides/cli/getting-started"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
-                  >
-                    {translate("crm.migration.modal.install_cli.view_all")}
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
-                </div>
-              </div>
-
-              {/* Step 3: Run Migration */}
-              <div>
-                <h4 className="mb-3 flex items-center gap-2 font-semibold">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                    3
-                  </span>
-                  {translate("crm.migration.modal.run_migration.title")}
-                </h4>
-                <div className="ml-8 space-y-3">
-                  <p className="text-sm text-muted-foreground">
-                    {translate("crm.migration.modal.run_migration.intro")}
-                  </p>
-                  <CodeBlock code="npx realtimex-crm migrate" />
-                  <p className="text-sm text-muted-foreground">
-                    {translate("crm.migration.modal.run_migration.tool_intro")}
-                  </p>
-                  <ol className="list-inside list-decimal space-y-1 text-sm text-muted-foreground">
-                    <li>
-                      {translate(
-                        "crm.migration.modal.run_migration.steps.login",
-                      )}
-                    </li>
-                    <li>
-                      {translate(
-                        "crm.migration.modal.run_migration.steps.project_id",
-                      )}{" "}
-                      (
-                      <code className="rounded bg-muted px-1 py-0.5 text-xs">
-                        {projectId || "your-project-id"}
-                      </code>
-                      )
-                    </li>
-                    <li>
-                      {translate(
-                        "crm.migration.modal.run_migration.steps.password",
-                      )}
-                    </li>
-                    <li>
-                      {translate(
-                        "crm.migration.modal.run_migration.steps.apply",
-                      )}
-                    </li>
-                    <li>
-                      {translate(
-                        "crm.migration.modal.run_migration.steps.deploy",
-                      )}
-                    </li>
-                  </ol>
-                </div>
-              </div>
-
-              {/* Step 4: Refresh App */}
-              <div>
-                <h4 className="mb-3 flex items-center gap-2 font-semibold">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                    4
-                  </span>
-                  {translate("crm.migration.modal.refresh.title")}
-                </h4>
-                <div className="ml-8 space-y-3">
-                  <p className="text-sm text-muted-foreground">
-                    {translate("crm.migration.modal.refresh.description")}
-                  </p>
-                </div>
-              </div>
-            </>
-          )}
 
           {/* Troubleshooting */}
           <Alert className="border-red-200 bg-red-50 dark:border-red-900/40 dark:bg-red-950/20">
@@ -514,18 +339,6 @@ export function MigrationModal({
                 {translate("crm.migration.modal.troubleshooting.title")}
               </strong>
               <ul className="mt-2 list-inside list-disc space-y-1 text-sm">
-                <li>
-                  {translate(
-                    "crm.migration.modal.troubleshooting.logout_prefix",
-                  )}{" "}
-                  <code>supabase logout</code>{" "}
-                  {translate(
-                    "crm.migration.modal.troubleshooting.logout_suffix",
-                  )}
-                </li>
-                <li>
-                  {translate("crm.migration.modal.troubleshooting.password")}
-                </li>
                 <li>
                   {translate("crm.migration.modal.troubleshooting.report")}{" "}
                   <a

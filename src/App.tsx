@@ -5,7 +5,7 @@ import {
   localStorageStore,
 } from "ra-core";
 import { CRM } from "@/components/atomic-crm/root/CRM";
-import { SupabaseSetupWizard } from "@/components/atomic-crm/setup/SupabaseSetupWizard";
+import { SetupWizard } from "@/components/atomic-crm/setup/SetupWizard";
 import { isSupabaseConfigured } from "@/lib/supabase-config";
 import {
   MigrationBanner,
@@ -195,7 +195,7 @@ const App = () => {
               <LocalesMenuButton />
               <ThemeModeToggle />
             </div>
-            <SupabaseSetupWizard
+            <SetupWizard
               open={true}
               onComplete={() => {
                 setNeedsSetup(false);

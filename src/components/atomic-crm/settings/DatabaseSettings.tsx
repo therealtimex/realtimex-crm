@@ -15,7 +15,7 @@ import {
   clearSupabaseConfig,
   getConfigSource,
 } from "@/lib/supabase-config";
-import { SupabaseSetupWizard } from "../setup/SupabaseSetupWizard";
+import { SetupWizard } from "../setup/SetupWizard";
 import { isDemoMode } from "@/lib/demo-utils";
 import {
   Tooltip,
@@ -182,7 +182,7 @@ export function DatabaseSettings() {
         </CardContent>
       </Card>
 
-      <SupabaseSetupWizard
+      <SetupWizard
         open={showWizard}
         onComplete={() => setShowWizard(false)}
         canClose={true}

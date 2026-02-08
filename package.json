@@ -118,6 +118,7 @@
     "dompurify": "^3.3.1",
     "express": "^4.21.2",
     "faker": "^5.5.3",
+    "framer-motion": "^12.33.0",
     "html-to-image": "^1.11.13",
     "inflection": "^3.0.2",
     "jsonexport": "^3.2.0",

@@ -11,19 +11,30 @@ RealTimeX CRM is a full-featured CRM built with React, shadcn-admin-kit, and Sup
 Before starting development, ensure you have:
 - **Node.js** (v18 or higher)
 - **npm** (v9 or higher)
-- **Docker** (for local Supabase)
 
 **Required NPX packages** (installed automatically via package.json):
-- `supabase` - Supabase CLI for database management
+- `supabase` - Supabase CLI for database management (developers only)
 - `serve` - Static file server for production preview
 - `shadcn` - UI component registry builder
 
 ### Setup
+
+**For End Users (Recommended):**
 ```bash
-make install          # Install dependencies (frontend, backend, local Supabase)
-make start            # Start full stack with real API (Supabase + Vite dev server)
-make stop             # Stop the stack
-make start-demo       # Start full-stack with FakeRest data provider
+npm install          # Install dependencies
+npm run dev          # Start app (configure database via setup wizard)
+```
+
+**For Developers:**
+```bash
+npm install          # Install dependencies
+# Option 1: Use remote Supabase (recommended)
+# - Create a free project at supabase.com
+# - Configure .env.development.local with your credentials
+# - Run: npm run dev
+
+# Option 2: Use demo mode (no database needed)
+make start-demo      # Start with FakeRest data provider
 ```
 
 **First-Time Setup:**
@@ -69,19 +80,27 @@ npm run serve         # Serve production build locally at http://127.0.0.1:3000
 
 ### Database Management
 
+**For End Users:**
+- Use the in-app migration tool: Settings → Database → Run Migration
+- No CLI required - migrations run directly in the browser
+
+**For Developers:**
 ```bash
 npx supabase migration new <name>  # Create new migration
-npx supabase migration up          # Apply migrations locally
-npx supabase db push               # Push migrations to remote
-npx supabase db reset              # Reset local database (destructive)
-npm run supabase:remote:init       # Automated remote Supabase setup (creates project, links, deploys)
+npx supabase db push               # Push migrations to remote database
+# OR use: make db-push
 ```
 
-**Note:** The `supabase:remote:init` script automates:
+**Automated Remote Setup:**
+```bash
+npm run supabase:remote:init       # Create and configure remote Supabase project
+```
+
+This script automates:
 1. Supabase CLI login
 2. Project creation with generated password
 3. Waiting for project to be ready
-4. Linking local to remote
+4. Linking to remote project
 5. Pushing migrations
 6. Writing `.env.production.local` with credentials
 
@@ -646,13 +665,19 @@ npm run typecheck && npm run lint
 
 This is intentional to keep commits fast. CI/CD will catch linting errors, but it's faster to catch them locally first.
 
-### Accessing Local Services During Development
+### Accessing Services During Development
 
-- Frontend: http://localhost:5173/
-- Supabase Dashboard: http://localhost:54323/
-- REST API: http://127.0.0.1:54321
-- Storage (attachments): http://localhost:54323/project/default/storage/buckets/attachments
-- Inbucket (email testing): http://localhost:54324/
+**Local App:**
+- Frontend: http://localhost:5173/ (development server)
+
+**Remote Supabase (your project):**
+- Dashboard: https://supabase.com/dashboard/project/YOUR_PROJECT_ID
+- REST API: https://YOUR_PROJECT_ID.supabase.co/rest/v1/
+- Storage: https://supabase.com/dashboard/project/YOUR_PROJECT_ID/storage/buckets
+
+**Demo Mode (FakeRest):**
+- All data stored in browser memory (resets on page reload)
+- No external services required
 
 ## Important Notes
 

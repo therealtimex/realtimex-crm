@@ -4,69 +4,44 @@ help:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 install: package.json ## install dependencies
-	npm install;
+	npm install
 
-start-supabase: ## start supabase locally
-	npx supabase start
-
-start-supabase-functions: ## start the supabase Functions watcher
-	npx supabase functions serve --env-file supabase/functions/.env.development
-
-supabase-migrate-database: ## apply the migrations to the database
-	npx supabase migration up
-
-supabase-reset-database: ## reset (and clear!) the database
-	npx supabase db reset
-
-start-app: ## start the app locally
+start: ## start the app in development mode
 	npm run dev
 
-start: start-supabase start-app ## start the stack locally
-
-start-demo: ## start the app locally in demo mode
+start-demo: ## start the app in demo mode (no database needed)
 	npm run dev:demo
 
-stop-supabase: ## stop local supabase
-	npx supabase stop
-
-stop: stop-supabase ## stop the stack locally
-
-build: ## build the app
+build: ## build the app for production
 	npm run build
 
 build-demo: ## build the app in demo mode
 	npm run build:demo
 
-prod-start: build supabase-deploy
-	open http://127.0.0.1:3000 && npx serve -l tcp://127.0.0.1:3000 dist
+serve: build ## serve the production build locally
+	npm run serve
 
-prod-deploy: build supabase-deploy
-	npm run ghpages:deploy
-
-supabase-remote-init:
-	npm run supabase:remote:init
-	$(MAKE) supabase-deploy
-
-supabase-deploy:
-	npx supabase db push
-	npx supabase functions deploy
-
-test:
+test: ## run tests
 	npm test
 
-test-ci:
+test-ci: ## run tests in CI mode
 	CI=1 npm test
 
-lint:
+lint: ## run linter and prettier
 	npm run lint
 	npm run prettier
 
-publish:
-	npm publish
-
-typecheck:
+typecheck: ## run TypeScript type checking
 	npm run typecheck
 
+# Developer commands for remote Supabase management
+db-push: ## push migrations to remote Supabase (developers only)
+	npx supabase db push
+
+db-functions-deploy: ## deploy edge functions to remote Supabase (developers only)
+	npx supabase functions deploy
+
+# Documentation commands
 doc-install:
 	@(cd docs && npm install)
 
@@ -88,15 +63,17 @@ doc-reset: ## delete the gh-pages branch to start fresh
 	git fetch --prune origin
 	rm -rf docs/node_modules/.cache/gh-pages
 
+# Deployment commands
 app-deploy:
 	@npx gh-pages -d dist -m "Deploy app" --no-history --nojekyll
 
+# Registry commands (for shadcn/ui components)
 registry-build: ## build the shadcn registry
 	npm run registry:build
 
-registry-deploy: registry-build ## Deploy the shadcn registry (Automatically done by CI/CD pipeline)
+registry-deploy: registry-build ## deploy the shadcn registry
 	@(cd public/r && npx gh-pages -b gh-pages -d ./ -s atomic-crm.json -e r -m "Deploy registry" --remove r --add --nojekyll)
 
-registry-gen: ## Generate the shadcn registry (ran automatically by a pre-commit hook)
+registry-gen: ## generate the shadcn registry (auto-run by pre-commit hook)
 	npm run registry:gen
 	npx prettier --config ./.prettierrc.json --write "registry.json"

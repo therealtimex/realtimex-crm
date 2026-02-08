@@ -55,11 +55,10 @@ npm run dev
 
 ### Option 2: Clone and Customize
 
-To run this project locally, you will need the following tools installed on your computer:
+To run this project locally, you will need:
 
-- Make
 - Node 22 LTS
-- Docker (required by Supabase)
+- A free Supabase account (create at [supabase.com](https://supabase.com))
 
 Clone the repository:
 
@@ -71,32 +70,35 @@ cd realtimex-crm
 Install dependencies:
 
 ```sh
-make install
+npm install
 ```
 
-This will install the dependencies for the frontend and the backend, including a local Supabase instance.
-
-Once your app is configured, start the app locally with the following command:
+Start the development server:
 
 ```sh
-make start
+npm run dev
+# OR: make start
 ```
 
-This will start the Vite dev server for the frontend, the local Supabase instance for the API, and a Postgres database (thanks to Docker).
+Access the app at [http://localhost:5173/](http://localhost:5173/)
 
-You can then access the app via [http://localhost:5173/](http://localhost:5173/). On first launch, you'll see a setup wizard to configure your Supabase connection, or you can set environment variables in `.env`:
+**First Launch:**
+1. Setup wizard appears automatically
+2. Choose one of:
+   - **Connect to Supabase**: Enter your project URL and API key
+   - **Try Demo Mode**: Use in-memory database (no signup required)
+3. If using Supabase, configure via:
+   - Setup wizard (recommended for users)
+   - OR set environment variables in `.env.development.local`:
+     ```env
+     VITE_SUPABASE_URL=https://xxxxx.supabase.co
+     VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+     ```
 
-```env
-VITE_SUPABASE_URL=https://xxxxx.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-```
-
-If you need to debug the backend, you can access the following services:
-
-- Supabase dashboard: [http://localhost:54323/](http://localhost:54323/)
-- REST API: [http://127.0.0.1:54321](http://127.0.0.1:54321)
-- Attachments storage: [http://localhost:54323/project/default/storage/buckets/attachments](http://localhost:54323/project/default/storage/buckets/attachments)
-- Inbucket email testing service: [http://localhost:54324/](http://localhost:54324/)
+**Managing Your Remote Supabase:**
+- Dashboard: https://supabase.com/dashboard/project/YOUR_PROJECT_ID
+- Storage: View attachments in Supabase dashboard
+- Database: Run migrations via Settings → Database in the app
 
 ## User Documentation
 
@@ -132,14 +134,17 @@ You can add your own unit tests powered by Vitest anywhere in the `src` director
 ## Development Commands
 
 ```sh
-make install          # Install dependencies (frontend, backend, local Supabase)
-make start            # Start full stack with real API (Supabase + Vite dev server)
-make stop             # Stop the stack
-make start-demo       # Start full-stack with FakeRest data provider
+npm install           # Install dependencies
+npm run dev           # Start development server
+make start-demo       # Start with demo mode (no database)
 make test             # Run unit tests (vitest)
 make typecheck        # Run TypeScript type checking
 make lint             # Run ESLint and Prettier checks
 make build            # Build production bundle
+make serve            # Serve production build locally
+
+# Developer commands (remote Supabase management)
+make db-push          # Push migrations to remote Supabase
 ```
 
 ## Registry

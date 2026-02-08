@@ -10,8 +10,7 @@ RealTimeX CRM is a full-featured, open-source CRM built with React, Tailwind CSS
 - A [GitHub](https://github.com/) account
 - [Git](https://git-scm.com/)
 - [Node.js](https://nodejs.org/en/download/) (version 22 recommended)
-- [Docker](https://docs.docker.com/get-docker/) (required for local Supabase)
-- A [Supabase](https://supabase.com/) account for production deployment
+- A [Supabase](https://supabase.com/) account (free tier available)
 
 ## Installation
 
@@ -48,18 +47,21 @@ npm run dev
 3. Install the dependencies:
 
     ```bash
-    make install
+    npm install
     ```
 
 ## Running Locally
 
-1. Start the stack (Supabase + Vite dev server):
+1. Start the development server:
 
     ```bash
-    make start
+    npm run dev
+    # OR: make start
     ```
 
 RealTimeX CRM now runs at [http://localhost:5173/](http://localhost:5173/).
+
+On first launch, you'll see a Setup Wizard to configure your Supabase connection, or you can start in demo mode (no database required).
 
 ## "Bring Your Own Database" Setup
 

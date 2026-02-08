@@ -5,6 +5,12 @@ All notable changes to RealTimeX CRM will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.48.22] - 2026-02-07
+
+### Added
+- **Companies**: Added "Invoices" tab to the Company detail view, displaying related invoices and allowing creation of new ones directly from the company context.
+- **Database**: Updated `companies_summary` view to include invoice counts (`nb_invoices`), enabling the new UI tab.
+
 ## [0.48.21] - 2026-02-07
 
 ### Added

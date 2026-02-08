@@ -104,19 +104,98 @@ const dataProviderWithCustomMethods = {
   },
   async getOne(resource: string, params: any) {
     if (resource === "companies") {
-      return baseDataProvider.getOne("companies_summary", params);
+      // Use direct Supabase query for better error handling
+      const { data, error } = await supabase
+        .from("companies_summary")
+        .select("*")
+        .eq("id", params.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("[DataProvider] companies_summary query error:", error);
+        throw new Error(`Failed to fetch company: ${error.message}`);
+      }
+
+      if (!data) {
+        throw new Error(`Company with id ${params.id} not found`);
+      }
+
+      return { data };
     }
     if (resource === "contacts") {
-      return baseDataProvider.getOne("contacts_summary", params);
+      const { data, error } = await supabase
+        .from("contacts_summary")
+        .select("*")
+        .eq("id", params.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("[DataProvider] contacts_summary query error:", error);
+        throw new Error(`Failed to fetch contact: ${error.message}`);
+      }
+
+      if (!data) {
+        throw new Error(`Contact with id ${params.id} not found`);
+      }
+
+      return { data };
     }
+
     if (resource === "tasks") {
-      return baseDataProvider.getOne("tasks_summary", params);
+      const { data, error } = await supabase
+        .from("tasks_summary")
+        .select("*")
+        .eq("id", params.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("[DataProvider] tasks_summary query error:", error);
+        throw new Error(`Failed to fetch task: ${error.message}`);
+      }
+
+      if (!data) {
+        throw new Error(`Task with id ${params.id} not found`);
+      }
+
+      return { data };
     }
+
     if (resource === "deals") {
-      return baseDataProvider.getOne("deals_summary", params);
+      const { data, error } = await supabase
+        .from("deals_summary")
+        .select("*")
+        .eq("id", params.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("[DataProvider] deals_summary query error:", error);
+        throw new Error(`Failed to fetch deal: ${error.message}`);
+      }
+
+      if (!data) {
+        throw new Error(`Deal with id ${params.id} not found`);
+      }
+
+      return { data };
     }
+
     if (resource === "invoices") {
-      return baseDataProvider.getOne("invoices_summary", params);
+      const { data, error } = await supabase
+        .from("invoices_summary")
+        .select("*")
+        .eq("id", params.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("[DataProvider] invoices_summary query error:", error);
+        throw new Error(`Failed to fetch invoice: ${error.message}`);
+      }
+
+      if (!data) {
+        throw new Error(`Invoice with id ${params.id} not found`);
+      }
+
+      return { data };
     }
 
     // Special handling for business_profile (singleton table)

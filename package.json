@@ -1,6 +1,6 @@
 {
   "name": "realtimex-crm",
-  "version": "0.48.21",
+  "version": "0.48.22",
   "description": "RealTimeX CRM - A full-featured CRM with zero cloud costs and complete privacy.",
   "type": "module",
   "main": "./dist/index.js",

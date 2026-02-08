@@ -21,9 +21,9 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
         <div className="flex-1 flex flex-col justify-center space-y-8" onKeyDown={handleKeyDown}>
             <div className="space-y-2">
                 <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">
-                    {translate('setup.welcomeTitle')}
+                    {translate('setup.welcomeTitle', { title: 'RealTimeX CRM' })}
                 </h2>
-                <p className="text-sm text-muted-foreground font-medium max-w-sm">
+                <p className="text-sm text-muted-foreground font-medium">
                     {translate('setup.welcomeSubtitle')}
                 </p>
             </div>

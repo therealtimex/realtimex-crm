@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useTranslate } from 'ra-core';
 import { validateAccessToken } from '../validators';
 
 interface ManagedTokenStepProps {
@@ -22,6 +23,7 @@ export function ManagedTokenStep({
     onFetchOrgs,
     onBack,
 }: ManagedTokenStepProps) {
+    const translate = useTranslate();
     const validation = validateAccessToken(accessToken);
     const isValid = validation.valid;
 
@@ -39,9 +41,11 @@ export function ManagedTokenStep({
     return (
         <div className="flex-1 flex flex-col justify-center space-y-6" onKeyDown={handleKeyDown}>
             <div className="space-y-1">
-                <h3 className="text-2xl font-black uppercase italic tracking-tighter">Forge Token</h3>
+                <h3 className="text-2xl font-black uppercase italic tracking-tighter">
+                    {translate('setup.managedTokenTitle')}
+                </h3>
                 <p className="text-[10px] text-muted-foreground font-bold tracking-widest uppercase">
-                    Supabase API coordinates
+                    {translate('setup.managedTokenSubtitle')}
                 </p>
             </div>
 
@@ -61,7 +65,7 @@ export function ManagedTokenStep({
                         htmlFor="access-token"
                         className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1"
                     >
-                        Personal Access Token
+                        {translate('setup.personalAccessToken')}
                     </Label>
                     <div className="relative">
                         <Key
@@ -82,7 +86,7 @@ export function ManagedTokenStep({
                         />
                     </div>
                     <p id="token-help" className="text-[9px] text-muted-foreground/60 px-1 italic">
-                        Generate at{' '}
+                        {translate('setup.generateAt')}{' '}
                         <a
                             href="https://supabase.com/dashboard/account/tokens"
                             target="_blank"
@@ -101,7 +105,7 @@ export function ManagedTokenStep({
                         className="flex-1 h-12 rounded-xl text-[10px] font-bold uppercase tracking-widest"
                         disabled={isFetching}
                     >
-                        Back
+                        {translate('setup.back')}
                     </Button>
                     <Button
                         onClick={onFetchOrgs}
@@ -112,7 +116,7 @@ export function ManagedTokenStep({
                             <Loader2 className="w-4 h-4 animate-spin" />
                         ) : (
                             <>
-                                Scan Organizations{' '}
+                                {translate('setup.scanOrgs')}{' '}
                                 <ChevronRight
                                     size={14}
                                     className="ml-2 group-hover:translate-x-1 transition-transform"

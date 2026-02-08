@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Terminal } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTranslate } from 'ra-core';
 import { LogEntry } from './types';
 
 interface TerminalLogsProps {
@@ -9,6 +10,7 @@ interface TerminalLogsProps {
 }
 
 export function TerminalLogs({ logs, className }: TerminalLogsProps) {
+    const translate = useTranslate();
     const logEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -27,12 +29,12 @@ export function TerminalLogs({ logs, className }: TerminalLogsProps) {
         >
             <div className="absolute top-2 right-4 flex items-center gap-2 text-[9px] font-bold text-muted-foreground/30 uppercase tracking-widest pointer-events-none">
                 <Terminal size={10} aria-hidden="true" />
-                <span>Live Feed</span>
+                <span>{translate('setup.liveFeed')}</span>
             </div>
 
             {logs.length === 0 ? (
                 <div className="text-slate-600 italic animate-pulse" role="status">
-                    Awaiting kernel signals...
+                    {translate('setup.awaitingSignals')}
                 </div>
             ) : (
                 <>

@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import { useDataProvider, useLogin, useNotify, useTranslate } from "ra-core";
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { useState } from "react";
 import { Navigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,6 +52,7 @@ export const SignupPage = () => {
 
   const login = useLogin();
   const notify = useNotify();
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -125,12 +127,27 @@ export const SignupPage = () => {
             </div>
             <div className="flex flex-col gap-2">
               <Label htmlFor="password">{translate("ra.auth.password")}</Label>
-              <Input
-                {...register("password", { required: true })}
-                id="password"
-                type="password"
-                required
-              />
+              <div className="relative">
+                <Input
+                  {...register("password", { required: true })}
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label={showPassword ? translate("ra.auth.hide_password") : translate("ra.auth.show_password")}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
             </div>
             <div className="flex justify-between items-center mt-8">
               <Button

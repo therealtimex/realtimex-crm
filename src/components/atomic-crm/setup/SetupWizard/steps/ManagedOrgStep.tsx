@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { useTranslate } from 'ra-core';
 import { Organization } from '../types';
 
 interface ManagedOrgStepProps {
@@ -28,6 +29,8 @@ export function ManagedOrgStep({
     onProvision,
     onBack,
 }: ManagedOrgStepProps) {
+    const translate = useTranslate();
+
     // Keyboard shortcuts
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && selectedOrg) {
@@ -42,9 +45,11 @@ export function ManagedOrgStep({
     return (
         <div className="flex-1 flex flex-col justify-center space-y-6" onKeyDown={handleKeyDown}>
             <div className="space-y-1">
-                <h3 className="text-2xl font-black uppercase italic tracking-tighter">Project Config</h3>
+                <h3 className="text-2xl font-black uppercase italic tracking-tighter">
+                    {translate('setup.projectConfigTitle')}
+                </h3>
                 <p className="text-[10px] text-muted-foreground font-bold tracking-widest uppercase">
-                    Engine parameters
+                    {translate('setup.engineParameters')}
                 </p>
             </div>
 
@@ -55,7 +60,7 @@ export function ManagedOrgStep({
                             htmlFor="project-name"
                             className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1"
                         >
-                            Project Name
+                            {translate('setup.projectName')}
                         </Label>
                         <Input
                             id="project-name"
@@ -70,7 +75,7 @@ export function ManagedOrgStep({
                             htmlFor="region"
                             className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1"
                         >
-                            Hosting Sector
+                            {translate('setup.hostingSector')}
                         </Label>
                         <select
                             id="region"
@@ -78,20 +83,20 @@ export function ManagedOrgStep({
                             onChange={(e) => onRegionChange(e.target.value)}
                             className="w-full h-10 bg-muted/20 border border-border/50 rounded-xl px-3 text-[11px] font-sans focus:outline-none focus:ring-1 focus:ring-primary/50"
                         >
-                            <option value="us-east-1">US East (N. Virginia)</option>
-                            <option value="us-west-1">US West (N. California)</option>
-                            <option value="eu-central-1">Europe (Frankfurt)</option>
-                            <option value="ap-southeast-1">Asia Pacific (Singapore)</option>
+                            <option value="us-east-1">{translate('setup.regions.us-east-1')}</option>
+                            <option value="us-west-1">{translate('setup.regions.us-west-1')}</option>
+                            <option value="eu-central-1">{translate('setup.regions.eu-central-1')}</option>
+                            <option value="ap-southeast-1">{translate('setup.regions.ap-southeast-1')}</option>
                         </select>
                     </div>
                 </div>
 
                 <div className="space-y-2">
                     <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">
-                        Vessel (Organization)
+                        {translate('setup.vesselOrg')}
                     </Label>
                     <div
-                        className="max-h-[160px] overflow-y-auto space-y-2 pr-1 custom-scrollbar"
+                        className="max-h-[240px] overflow-y-auto space-y-2 pr-1 custom-scrollbar"
                         role="radiogroup"
                         aria-label="Select organization"
                     >
@@ -132,14 +137,14 @@ export function ManagedOrgStep({
                         onClick={onBack}
                         className="flex-1 h-12 rounded-xl text-[10px] font-bold uppercase tracking-widest"
                     >
-                        Back
+                        {translate('setup.back')}
                     </Button>
                     <Button
                         onClick={onProvision}
                         disabled={!selectedOrg}
                         className="flex-1 h-12 rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-md"
                     >
-                        Initialize System
+                        {translate('setup.initializeSystem')}
                     </Button>
                 </div>
             </div>

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useTranslate } from 'ra-core';
 import { TerminalLogs } from '../TerminalLogs';
 import { LogEntry } from '../types';
 
@@ -25,6 +26,7 @@ export function MigrationStep({
     onTokenChange,
     onRunMigration,
 }: MigrationStepProps) {
+    const translate = useTranslate();
     const needsToken = !accessToken && !migrating && !complete;
     const canRun = accessToken.trim().length > 0;
 
@@ -40,18 +42,18 @@ export function MigrationStep({
                         <Boxes className="w-5 h-5 text-primary" aria-hidden="true" />
                     )}
                     <h3 className="text-2xl font-black uppercase italic tracking-tighter">
-                        {complete ? 'Installation Complete' : 'Installing Database'}
+                        {complete ? translate('setup.installationComplete') : translate('setup.installingDatabase')}
                     </h3>
                 </div>
                 <p className="text-[10px] text-muted-foreground font-bold tracking-widest uppercase">
-                    {migrating ? 'Applying schema DNA...' : complete ? 'System ready!' : needsToken ? 'Token required' : 'Ready to install'}
+                    {migrating ? translate('setup.applyingSchemaDna') : complete ? translate('setup.systemReady') : needsToken ? translate('setup.tokenRequired') : translate('setup.readyToInstall')}
                 </p>
             </div>
 
             {needsToken && (
                 <div className="space-y-4 p-5 bg-primary/5 rounded-2xl border border-primary/20">
                     <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">
-                        A Supabase access token is required to install the database schema and sync existing users.
+                        {translate('setup.tokenDescription')}
                     </p>
 
                     <div className="space-y-2">
@@ -59,7 +61,7 @@ export function MigrationStep({
                             htmlFor="migration-token"
                             className="text-[10px] font-bold uppercase tracking-widest text-primary/60"
                         >
-                            Management Token
+                            {translate('setup.managementToken')}
                         </Label>
                         <div className="relative">
                             <Key
@@ -79,7 +81,7 @@ export function MigrationStep({
                             />
                         </div>
                         <p id="migration-token-help" className="text-[9px] text-muted-foreground/60 italic px-1">
-                            Generate at{' '}
+                            {translate('setup.generateAt')}{' '}
                             <a
                                 href="https://supabase.com/dashboard/account/tokens"
                                 target="_blank"
@@ -96,7 +98,7 @@ export function MigrationStep({
                         disabled={!canRun}
                         className="w-full h-11 bg-primary text-[10px] font-bold uppercase tracking-widest shadow-lg hover:shadow-primary/30"
                     >
-                        Install Database Schema
+                        {translate('setup.installDatabaseSchema')}
                     </Button>
                 </div>
             )}
@@ -118,7 +120,7 @@ export function MigrationStep({
                         disabled={!canRun}
                         className="w-full h-12 rounded-xl text-[10px] font-bold uppercase tracking-widest"
                     >
-                        Retry Installation
+                        {translate('setup.retryInstallation')}
                     </Button>
                 </div>
             )}

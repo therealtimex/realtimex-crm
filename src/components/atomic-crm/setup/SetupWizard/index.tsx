@@ -83,7 +83,7 @@ export function SetupWizard({ onComplete, open = true, canClose = false }: Setup
         dispatch({ type: 'SET_STEP', payload: 'provisioning' });
         dispatch({ type: 'CLEAR_LOGS' });
         dispatch({ type: 'SET_PROVISIONING', payload: true });
-        addLog('info', 'Connecting to Supabase provisioning engine...');
+        addLog('info', translate('setup.connectingProvisioning'));
 
         const token = accessTokenRef.current || state.managed.accessToken.trim();
         let provisionResult: ProvisioningResult | null = null;
@@ -108,7 +108,7 @@ export function SetupWizard({ onComplete, open = true, canClose = false }: Setup
 
                         case 'success':
                             provisionResult = event.data as ProvisioningResult;
-                            addLog('success', '✨ Project ready! Initializing database...');
+                            addLog('success', translate('setup.projectReady'));
 
                             // Save config immediately
                             saveSupabaseConfig({
@@ -130,7 +130,7 @@ export function SetupWizard({ onComplete, open = true, canClose = false }: Setup
                             if (event.data === 'failed') {
                                 dispatch({
                                     type: 'SET_ERROR',
-                                    payload: 'Provisioning failed. Check logs above for details.',
+                                    payload: translate('setup.provisioningFailedDetails'),
                                 });
                             }
                             break;
@@ -169,7 +169,7 @@ export function SetupWizard({ onComplete, open = true, canClose = false }: Setup
             if (!targetProjectId) {
                 dispatch({
                     type: 'SET_ERROR',
-                    payload: 'Project ID is required for migration.',
+                    payload: translate('setup.projectIdRequired'),
                 });
                 return;
             }
@@ -177,7 +177,7 @@ export function SetupWizard({ onComplete, open = true, canClose = false }: Setup
             dispatch({ type: 'SET_STEP', payload: 'migration' });
             dispatch({ type: 'CLEAR_LOGS' });
             dispatch({ type: 'SET_MIGRATING', payload: true });
-            addLog('info', 'Starting database migration...');
+            addLog('info', translate('setup.startingMigration'));
 
             try {
                 await runMigration(
@@ -206,7 +206,7 @@ export function SetupWizard({ onComplete, open = true, canClose = false }: Setup
                 dispatch({ type: 'SET_MIGRATING', payload: false });
                 dispatch({ type: 'SET_MIGRATION_COMPLETE', payload: true });
                 dispatch({ type: 'SET_STEP', payload: 'success' });
-                addLog('success', '🎉 Setup complete!');
+                addLog('success', translate('setup.setupCompleteLog'));
 
                 // Clear init_state cache so the app re-checks if database is initialized
                 getIsInitialized.clearCache();
@@ -247,7 +247,7 @@ export function SetupWizard({ onComplete, open = true, canClose = false }: Setup
             dispatch({ type: 'SET_VALIDATING', payload: false });
 
             // Check migration status and init_state
-            addLog('info', 'Checking database status...');
+            addLog('info', translate('setup.checkingDatabase'));
 
             // Create a fresh Supabase client with the new credentials
             // (the global singleton hasn't been reinitialized yet)
@@ -271,26 +271,29 @@ export function SetupWizard({ onComplete, open = true, canClose = false }: Setup
             // Decide what to do based on state
             if (!isInitialized) {
                 // Database has no users - need migration to set up schema and backfill
-                addLog('info', 'Database not initialized. Migration required to set up schema.');
+                addLog('info', translate('setup.dbNotInitialized'));
                 dispatch({ type: 'SET_STEP', payload: 'migration' });
             } else if (needsMigration && migrationStatus.dbVersion !== migrationStatus.appVersion) {
                 // Database has users but is on an older version - offer migration
-                addLog('info', `Database version (${migrationStatus.dbVersion}) is behind app version (${migrationStatus.appVersion}). Migration recommended.`);
+                addLog('info', translate('setup.dbVersionBehind', {
+                    dbVersion: migrationStatus.dbVersion,
+                    appVersion: migrationStatus.appVersion
+                }));
                 dispatch({ type: 'SET_STEP', payload: 'migration' });
             } else if (needsMigration && migrationStatus.dbVersion === migrationStatus.appVersion) {
                 // Same version but legacy schema (no timestamp tracking)
                 // Skip migration to avoid disrupting working database
-                addLog('info', 'Database uses legacy schema but is already initialized and working.');
-                addLog('success', '✅ Skipping migration. Database ready to use!');
-                addLog('info', 'Reloading app with new credentials...');
+                addLog('info', translate('setup.dbLegacySchema'));
+                addLog('success', translate('setup.skippingMigration'));
+                addLog('info', translate('setup.reloadingApp'));
                 getIsInitialized.clearCache();
                 setTimeout(() => {
                     window.location.reload();
                 }, 1000);
             } else {
                 // Database is up to date and initialized - complete setup
-                addLog('success', '✅ Database already set up and ready!');
-                addLog('info', 'Reloading app with new credentials...');
+                addLog('success', translate('setup.dbReady'));
+                addLog('info', translate('setup.reloadingApp'));
                 getIsInitialized.clearCache();
                 setTimeout(() => {
                     window.location.reload();
@@ -425,9 +428,11 @@ export function SetupWizard({ onComplete, open = true, canClose = false }: Setup
                 return (
                     <div className="text-center py-8">
                         <div className="text-6xl mb-4">🎉</div>
-                        <h3 className="text-2xl font-bold mb-2">Setup Complete!</h3>
+                        <h3 className="text-2xl font-bold mb-2">
+                            {translate('setup.setupComplete')}
+                        </h3>
                         <p className="text-muted-foreground">
-                            Redirecting to your CRM...
+                            {translate('setup.redirecting')}
                         </p>
                     </div>
                 );
@@ -442,15 +447,7 @@ export function SetupWizard({ onComplete, open = true, canClose = false }: Setup
     return (
         <div className="fixed inset-0 bg-background z-50 overflow-y-auto">
             <div className="min-h-screen flex items-center justify-center p-4">
-                <div className="w-full max-w-2xl">
-                    <div className="mb-8 text-center">
-                        <h1 className="text-3xl font-black uppercase italic tracking-tighter mb-2">
-                            {translate('crm.setup_wizard.welcome.title', { _: 'RealTimeX CRM' })}
-                        </h1>
-                        <p className="text-sm text-muted-foreground">
-                            {translate('crm.setup_wizard.welcome.subtitle', { _: 'Database Configuration' })}
-                        </p>
-                    </div>
+                <div className="w-full max-w-3xl">
                     <div className="bg-card border border-border rounded-3xl p-8 shadow-2xl">
                         {renderStep()}
                     </div>

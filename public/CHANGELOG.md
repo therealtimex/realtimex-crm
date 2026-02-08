@@ -7,16 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
-- **Setup Wizard**: Fixed migration progress not streaming to UI - `/api/migrate` endpoint now correctly sends Server-Sent Events (SSE) format instead of plain text
+## [0.48.23] - 2026-02-08
+
+### Added
+- **Localization**: Comprehensive localization of the Setup Wizard across 6 languages (English, Vietnamese, French, Spanish, Japanese, and Korean).
+- **Localization**: Added 30+ new translation keys covering connection modes, provisioning logs, and database installation status.
+- **Localization**: Localized Supabase hosting regions in the project configuration step.
 
 ### Changed
+- **Setup UX**: Increased setup card width to `max-w-3xl` to improve readability and accommodate longer localized strings.
+- **Setup UX**: Removed redundant top-level headers in the Setup Wizard for a cleaner, step-focused interface.
+- **Setup UX**: Improved layout of the organization list and welcome subtitle to better utilize the increased card width.
 - **Migration UI**: Streamlined the "Database Migration Required" dialog for better UX:
   - Removed manual migration instructions tab (automatic migration is the primary flow)
   - Removed optional database password field (access token is the only required credential)
   - Simplified troubleshooting section by removing logout instructions
   - Added automatic page reload on successful migration completion
   - Modal now focuses exclusively on the one-click automatic migration experience
+
+### Fixed
+- **I18n**: Fixed a critical truncation issue in the Spanish translation file (`es.ts`) that caused missing content.
+- **Setup Wizard**: Fixed migration progress not streaming to UI - `/api/migrate` endpoint now correctly sends Server-Sent Events (SSE) format instead of plain text.
+- **Signup Page**: Added password visibility toggle (eye icon) in first user creation form to help prevent typos when entering passwords.
 - **Migration Script**: Enhanced `migrate.sh` to bundle migrations directly into the build:
   - Migrations and script are now bundled into `dist/` during build
   - Script auto-detects bundled context and uses local migrations (no GitHub download)

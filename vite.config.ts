@@ -349,7 +349,7 @@ export default defineConfig(({ mode }) => {
                       dnsReady = true;
                       sendEvent("info", "✨ DNS resolved! Project is fully accessible.");
                     }
-                  } catch (pingError) {
+                  } catch {
                     if (dnsAttempts % 5 === 0) {
                       sendEvent("info", "⏳ DNS still propagating... standby.");
                     }

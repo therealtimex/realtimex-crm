@@ -1,4 +1,4 @@
-import { WizardState, WizardAction } from './types';
+import type { WizardState, WizardAction } from './types';
 
 const MAX_LOGS = 500; // Prevent memory issues with too many logs
 
@@ -130,7 +130,7 @@ export function wizardReducer(state: WizardState, action: WizardAction): WizardS
                 },
             };
 
-        case 'ADD_LOG':
+        case 'ADD_LOG': {
             const logEntry = 'timestamp' in action.payload
                 ? action.payload
                 : { ...action.payload, timestamp: Date.now() };
@@ -138,6 +138,7 @@ export function wizardReducer(state: WizardState, action: WizardAction): WizardS
                 ...state,
                 logs: [...state.logs, logEntry].slice(-MAX_LOGS),
             };
+        }
 
         case 'CLEAR_LOGS':
             return {

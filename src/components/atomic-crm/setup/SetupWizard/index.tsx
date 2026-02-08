@@ -20,7 +20,6 @@ import {
     runMigration,
     SetupApiError,
 } from './api';
-import { TerminalLogs } from './TerminalLogs';
 
 // Step components
 import { WelcomeStep } from './steps/WelcomeStep';
@@ -31,7 +30,7 @@ import { ProvisioningStep } from './steps/ProvisioningStep';
 import { CredentialsStep } from './steps/CredentialsStep';
 import { MigrationStep } from './steps/MigrationStep';
 
-export function SetupWizard({ onComplete, open = true, canClose = false }: SetupWizardProps) {
+export function SetupWizard({ onComplete, open = true }: SetupWizardProps) {
     const [state, dispatch] = useReducer(wizardReducer, initialState);
     const translate = useTranslate();
 

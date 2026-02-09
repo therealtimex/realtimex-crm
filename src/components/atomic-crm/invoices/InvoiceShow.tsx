@@ -4,8 +4,11 @@ import {
   useTranslate,
   useListContext,
   useDataProvider,
+  useNotify,
+  useRedirect,
 } from "ra-core";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { ReferenceField } from "@/components/ds/admin/reference-field";
 import { ReferenceManyField } from "@/components/ds/admin/reference-many-field";
 import { TextField } from "@/components/ds/admin/text-field";
@@ -28,9 +31,19 @@ export const InvoiceShow = () => (
 );
 
 const InvoiceShowContent = () => {
-  const { record, isPending } = useShowContext<Invoice>();
+  const { record, isPending, error } = useShowContext<Invoice>();
   const translate = useTranslate();
   const dataProvider = useDataProvider();
+  const notify = useNotify();
+  const redirect = useRedirect();
+
+  // Handle error (invoice not found)
+  useEffect(() => {
+    if (error) {
+      notify("Invoice not found or has been deleted", { type: "error" });
+      redirect("/invoices");
+    }
+  }, [error, notify, redirect]);
 
   // Fetch business profile for sender branding
   const { data: businessProfile } = useQuery({

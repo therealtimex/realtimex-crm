@@ -7,6 +7,7 @@ import {
   useRedirect,
   useTranslate,
 } from "ra-core";
+import { useEffect } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { SimpleForm } from "@/components/ds/admin/simple-form";
 import { CancelButton } from "@/components/ds/admin/cancel-button";
@@ -27,12 +28,20 @@ function EditToolbar() {
 }
 
 export function SalesEdit() {
-  const { record } = useEditController();
+  const { record, error } = useEditController();
 
   const dataProvider = useDataProvider<CrmDataProvider>();
   const notify = useNotify();
   const redirect = useRedirect();
   const translate = useTranslate();
+
+  // Handle error (user not found)
+  useEffect(() => {
+    if (error) {
+      notify("User not found or has been deleted", { type: "error" });
+      redirect("/sales");
+    }
+  }, [error, notify, redirect]);
 
   const { mutate } = useMutation({
     mutationKey: ["signup"],

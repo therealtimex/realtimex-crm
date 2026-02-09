@@ -8,7 +8,10 @@ import {
   useShowContext,
   useTranslate,
   useLocale,
+  useNotify,
+  useRedirect,
 } from "ra-core";
+import { useEffect } from "react";
 import {
   Link as RouterLink,
   useLocation,
@@ -42,9 +45,19 @@ export const CompanyShow = () => (
 );
 
 const CompanyShowContent = () => {
-  const { record, isPending } = useShowContext<Company>();
+  const { record, isPending, error } = useShowContext<Company>();
   const navigate = useNavigate();
   const translate = useTranslate();
+  const notify = useNotify();
+  const redirect = useRedirect();
+
+  // Handle error (company not found)
+  useEffect(() => {
+    if (error) {
+      notify("Company not found or has been deleted", { type: "error" });
+      redirect("/companies");
+    }
+  }, [error, notify, redirect]);
 
   // Get tab from URL or default to "activity"
   const tabMatch = useMatch("/companies/:id/show/:tab");

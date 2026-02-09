@@ -298,6 +298,39 @@ const dataProviderWithCustomMethods = {
   },
 
   async update(resource: string, params: any) {
+    // Special handling for business_profile (singleton table)
+    if (resource === "business_profile") {
+      const { data, error } = await supabase
+        .from("business_profile")
+        .update(params.data)
+        .eq("id", params.id)
+        .select()
+        .maybeSingle();
+
+      if (error) {
+        console.error("[DataProvider] business_profile update error:", error);
+        throw new Error(`Failed to update business profile: ${error.message}`);
+      }
+
+      // If no record exists, create it
+      if (!data) {
+        const { data: newData, error: insertError } = await supabase
+          .from("business_profile")
+          .insert({ id: 1, ...params.data })
+          .select()
+          .single();
+
+        if (insertError) {
+          console.error("[DataProvider] Failed to create business_profile:", insertError);
+          throw new Error(`Failed to create business profile: ${insertError.message}`);
+        }
+
+        return { data: newData };
+      }
+
+      return { data };
+    }
+
     if (resource === "tasks") {
       const {
         contact_first_name: _contact_first_name,

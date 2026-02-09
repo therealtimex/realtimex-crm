@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.49.2] - 2026-02-08
+
+### Added
+- **Performance**: Introduced comprehensive database indexing strategy with 11 new performance indexes (GIN/trgm for search, partial indexes for active records, and composite indexes for common filters).
+- **Performance**: Added `scripts/create_indexes_concurrent.sql` for zero-downtime manual index creation in production environments.
+- **Database**: Added search helper functions (`contacts_email_text`, `contacts_phone_text`) to optimize JSONB data extraction for indexing.
+
+### Changed
+- **Infrastructure**: Enhanced `migrate.sh` with better authentication error handling, support for `SUPABASE_ACCESS_TOKEN`, and automatic performance optimization feedback.
+- **Data Provider**: Implemented robust upsert logic for `business_profile` (singleton table) to ensure consistent behavior across all environments.
+
+### Fixed
+- **UI Resilience**: Added automatic redirection and error notifications to all resource detail views (`CompanyShow`, `ContactShow`, `DealShow`, `InvoiceShow`, `SalesEdit`) when records are not found or have been deleted.
+- **CLI**: Improved `migrate.sh` success messaging with clear "Next Steps" and direct application links.
+
 ## [0.49.1] - 2026-02-08
 
 ### Changed

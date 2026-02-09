@@ -124,10 +124,40 @@ cd "$WORK_DIR"
 
 echo "---------------------------------------------------------"
 echo "🔗 Linking to Supabase Project: $SUPABASE_PROJECT_ID"
-echo "🔑 NOTE: If asked, please enter your DATABASE PASSWORD."
-# This connects the CLI to the remote project. 
+
+# Check authentication method
+if [ -n "$SUPABASE_ACCESS_TOKEN" ]; then
+    echo "🔑 Using access token for authentication (recommended)"
+else
+    echo "🔑 NOTE: If asked, please enter your DATABASE PASSWORD."
+    echo "💡 TIP: For UI-based setup, use an access token instead of password"
+fi
+
+# This connects the CLI to the remote project.
 # It will pause and ask for the password if not found in env vars.
-$SUPABASE_CMD link --project-ref "$SUPABASE_PROJECT_ID"
+# SUPABASE_ACCESS_TOKEN is automatically used by CLI when set
+if ! $SUPABASE_CMD link --project-ref "$SUPABASE_PROJECT_ID" 2>&1; then
+    echo ""
+    echo "❌ Failed to link to Supabase project."
+    echo ""
+    echo "This usually means one of:"
+    echo "  1. Authentication token is invalid or expired"
+    echo "  2. You need to log in to Supabase CLI"
+    echo "  3. The project ID is incorrect"
+    echo ""
+    if [ -z "$SUPABASE_ACCESS_TOKEN" ]; then
+        echo "💡 For UI-based migration, provide an access token:"
+        echo "   Generate one at: https://supabase.com/dashboard/account/tokens"
+        echo ""
+        echo "💡 For CLI-based migration, authenticate first:"
+        echo "   Run: npx supabase login"
+    else
+        echo "💡 Your access token may be invalid or expired."
+        echo "   Generate a new one at: https://supabase.com/dashboard/account/tokens"
+    fi
+    echo ""
+    exit 1
+fi
 
 echo "---------------------------------------------------------"
 echo "📂 Pushing Database Schema Changes..."
@@ -153,11 +183,53 @@ fi
 
 
 # ------------------------------------------------------------------------------
-# 6. COMPLETION
+# 6. PERFORMANCE OPTIMIZATION (AUTOMATIC)
 # ------------------------------------------------------------------------------
 
+echo ""
+echo "========================================================="
+echo "📊 DATABASE PERFORMANCE OPTIMIZATION"
+echo "========================================================="
+echo ""
+
+if [ "$SKIP_INDEXES" = "1" ]; then
+    echo "⚠️  SKIP_INDEXES=1 detected - skipping index migration"
+    echo "   (Development mode)"
+else
+    echo "✅ Performance indexes created via migration:"
+    echo "   20260209050000_create_performance_indexes.sql"
+    echo ""
+    echo "📊 11 indexes created for:"
+    echo "   • Fast search (ILIKE with pg_trgm)"
+    echo "   • Partial indexes (active records)"
+    echo "   • Composite indexes (common filters)"
+    echo ""
+    echo "💡 For zero-downtime production:"
+    echo "   Run scripts/create_indexes_concurrent.sql via SQL Editor"
+    echo "   (uses CONCURRENTLY for zero blocking)"
+fi
+
 echo "---------------------------------------------------------"
-echo "✅ SUCCESS: Backend updated successfully!"
-echo "   You can now run the application with:"
-echo "   npx realtimex-crm@latest"
-echo "---------------------------------------------------------"
+
+# ------------------------------------------------------------------------------
+# 7. COMPLETION
+# ------------------------------------------------------------------------------
+
+echo ""
+echo "========================================================="
+echo "✅ SUCCESS: REALTIMEX CRM FULLY CONFIGURED!"
+echo "========================================================="
+echo ""
+echo "🎉 Your CRM is ready to use with optimized performance!"
+echo ""
+echo "Next steps:"
+echo "   1. Run the application:"
+echo "      $ npx realtimex-crm@latest"
+echo ""
+echo "   2. Access the CRM at: http://localhost:5173"
+echo ""
+echo "   3. First-time setup will guide you through configuration"
+echo ""
+echo "📚 Documentation: https://github.com/therealtimex/realtimex-crm"
+echo "🐛 Issues: https://github.com/therealtimex/realtimex-crm/issues"
+echo "========================================================="

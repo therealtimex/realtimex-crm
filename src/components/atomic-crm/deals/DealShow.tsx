@@ -4,7 +4,10 @@ import {
   useRecordContext,
   useShowContext,
   useTranslate,
+  useNotify,
+  useRedirect,
 } from "ra-core";
+import { useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { Receipt } from "lucide-react";
 import { Button } from "@/components/ds/ui/button";
@@ -26,8 +29,18 @@ export const DealShow = () => (
 );
 
 const DealShowContent = () => {
-  const { record, isPending } = useShowContext<Deal>();
+  const { record, isPending, error } = useShowContext<Deal>();
   const translate = useTranslate();
+  const notify = useNotify();
+  const redirect = useRedirect();
+
+  // Handle error (deal not found)
+  useEffect(() => {
+    if (error) {
+      notify("Deal not found or has been deleted", { type: "error" });
+      redirect("/deals");
+    }
+  }, [error, notify, redirect]);
 
   if (isPending || !record) return null;
 

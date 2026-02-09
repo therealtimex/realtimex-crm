@@ -4,7 +4,10 @@ import {
   useRecordContext,
   useShowContext,
   useTranslate,
+  useNotify,
+  useRedirect,
 } from "ra-core";
+import { useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { Receipt } from "lucide-react";
 import { Button } from "@/components/ds/ui/button";
@@ -28,8 +31,19 @@ export const ContactShow = () => (
 );
 
 const ContactShowContent = () => {
-  const { record, isPending } = useShowContext<Contact>();
+  const { record, isPending, error } = useShowContext<Contact>();
   const translate = useTranslate();
+  const notify = useNotify();
+  const redirect = useRedirect();
+
+  // Handle error (contact not found)
+  useEffect(() => {
+    if (error) {
+      notify("Contact not found or has been deleted", { type: "error" });
+      redirect("/contacts");
+    }
+  }, [error, notify, redirect]);
+
   if (isPending || !record) return null;
 
   return (

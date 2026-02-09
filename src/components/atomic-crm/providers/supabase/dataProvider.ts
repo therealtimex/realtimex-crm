@@ -202,6 +202,25 @@ const dataProviderWithCustomMethods = {
     // NOTE: The ra-supabase-core adapter has issues with singleton tables where
     // the response format doesn't match react-admin's expectations. This direct
     // query approach is more reliable and is the recommended pattern for single-row tables.
+    if (resource === "sales") {
+      const { data, error } = await supabase
+        .from("sales")
+        .select("*")
+        .eq("id", params.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("[DataProvider] sales query error:", error);
+        throw new Error(`Failed to fetch sales: ${error.message}`);
+      }
+
+      if (!data) {
+        throw new Error(`Sales user with id ${params.id} not found`);
+      }
+
+      return { data };
+    }
+
     if (resource === "business_profile") {
       const { data, error } = await supabase
         .from("business_profile")
@@ -407,7 +426,7 @@ const dataProviderWithCustomMethods = {
     );
 
     if (!sale || error) {
-      console.error("salesCreate.error", error);
+      console.error("salesUpdate.error", error);
       throw new Error("Failed to update account manager");
     }
 

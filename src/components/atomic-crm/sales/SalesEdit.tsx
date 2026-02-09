@@ -76,12 +76,16 @@ export function SalesEdit() {
 const SaleEditTitle = () => {
   const record = useRecordContext<Sale>();
   const translate = useTranslate();
+
   if (!record) return null;
+
+  const name = record.first_name && record.last_name
+    ? `${record.first_name} ${record.last_name}`
+    : record.email || "User";
+
   return (
     <h2 className="text-lg font-semibold mb-4">
-      {translate("crm.user.action.edit", {
-        name: `${record?.first_name} ${record?.last_name}`,
-      })}
+      {translate("crm.user.action.edit", { name })}
     </h2>
   );
 };

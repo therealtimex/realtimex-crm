@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.49.1] - 2026-02-08
+
+### Changed
+- **Infrastructure**: Simplified Edge Function deployment in `migrate.sh` to use a single command, improving reliability and speed.
+- **Data Provider**: Optimized `getOne` for the `sales` resource using a direct Supabase client query, matching the pattern used for other single-row/critical tables and improving reliability.
+
+### Fixed
+- **Sales UI**: Improved the user edit title to gracefully handle users with missing first or last names by falling back to their email address.
+- **Logging**: Fixed a typo in a DataProvider error log (`salesCreate.error` -> `salesUpdate.error`).
+
 ## [0.49.0] - 2026-02-08
 
 ### Added

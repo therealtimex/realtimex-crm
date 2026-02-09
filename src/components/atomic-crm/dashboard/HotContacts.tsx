@@ -1,14 +1,14 @@
 import { Plus, Users } from "lucide-react";
 import { useGetIdentity, useGetList, useTranslate } from "ra-core";
 import { Link } from "react-router";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ds/ui/button";
+import { Card } from "@/components/ds/ui/card";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/ds/ui/tooltip";
 
 import { SimpleList } from "../simple-list/SimpleList";
 import { Avatar } from "../contacts/Avatar";

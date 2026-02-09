@@ -1,4 +1,4 @@
-import { CreateButton } from "@/components/admin/create-button";
+import { CreateButton } from "@/components/ds/admin/create-button";
 import { useTranslate } from "ra-core";
 
 import useAppBarHeight from "../misc/useAppBarHeight";

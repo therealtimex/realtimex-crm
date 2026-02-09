@@ -6,19 +6,20 @@ import {
   useDataProvider,
 } from "ra-core";
 import { useQuery } from "@tanstack/react-query";
-import { ReferenceField } from "@/components/admin/reference-field";
-import { ReferenceManyField } from "@/components/admin/reference-many-field";
-import { TextField } from "@/components/admin/text-field";
-import { DateField } from "@/components/admin/date-field";
-import { FunctionField } from "@/components/admin/function-field";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
+import { ReferenceManyField } from "@/components/ds/admin/reference-many-field";
+import { TextField } from "@/components/ds/admin/text-field";
+import { DateField } from "@/components/ds/admin/date-field";
+import { FunctionField } from "@/components/ds/admin/function-field";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ds/ui/card";
+import { Separator } from "@/components/ds/ui/separator";
 
 import { CompanyLogo } from "../companies/CompanyLogo";
 import { NoteCreate } from "../notes/NoteCreate";
 import { NotesIterator } from "../notes/NotesIterator";
 import type { Invoice, InvoiceItem } from "../types";
 import { InvoiceAside } from "./InvoiceAside";
+import { InvoiceStatusBadge } from "./InvoiceStatusBadge";
 
 export const InvoiceShow = () => (
   <ShowBase>
@@ -79,7 +80,11 @@ const InvoiceShowContent = () => {
                       {translate("resources.invoices.name", { smart_count: 1 })}{" "}
                       #{record.invoice_number}
                     </CardTitle>
-                    <InvoiceStatusBadge record={record} />
+                    <InvoiceStatusBadge
+                      status={record.status}
+                      dueDate={record.due_date}
+                      className="px-3 py-1 text-sm"
+                    />
                   </div>
                   {record.reference && (
                     <p className="text-sm text-muted-foreground">
@@ -242,7 +247,7 @@ const InvoiceShowContent = () => {
                     <span>
                       {translate("resources.invoices.fields.discount")}:
                     </span>
-                    <span className="font-medium text-orange-600">
+                    <span className="font-medium text-warning">
                       {record.discount_type === "percentage"
                         ? `-${record.discount}%`
                         : `-${record.currency} ${record.discount.toFixed(2)}`}
@@ -268,7 +273,7 @@ const InvoiceShowContent = () => {
                 </div>
                 {record.amount_paid > 0 && (
                   <>
-                    <div className="flex justify-between text-green-600">
+                    <div className="flex justify-between text-success">
                       <span className="text-sm">
                         {translate("resources.invoices.fields.amount_paid")}:
                       </span>
@@ -276,7 +281,7 @@ const InvoiceShowContent = () => {
                         {record.currency} {record.amount_paid.toFixed(2)}
                       </span>
                     </div>
-                    <div className="flex justify-between text-red-600">
+                    <div className="flex justify-between text-critical">
                       <span className="text-sm font-semibold">
                         {translate("resources.invoices.fields.balance_due")}:
                       </span>
@@ -453,37 +458,5 @@ const InvoiceItemsTable = ({ currency }: { currency: string }) => {
         </tbody>
       </table>
     </div>
-  );
-};
-
-const InvoiceStatusBadge = ({ record }: { record: Invoice }) => {
-  const translate = useTranslate();
-  let status = record.status;
-
-  // Client-side overdue calculation (consistent with List view)
-  if (status !== "paid" && status !== "cancelled" && record.due_date) {
-    const dueDate = new Date(record.due_date);
-    const today = new Date();
-    if (dueDate < today) {
-      status = "overdue";
-    }
-  }
-
-  const statusColors: Record<string, string> = {
-    draft: "bg-gray-100 text-gray-800",
-    sent: "bg-blue-100 text-blue-800",
-    paid: "bg-green-100 text-green-800",
-    overdue: "bg-red-100 text-red-800",
-    cancelled: "bg-gray-100 text-gray-500",
-  };
-
-  return (
-    <span
-      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
-        statusColors[status] || statusColors.draft
-      }`}
-    >
-      {translate(`resources.invoices.status.${status}`)}
-    </span>
   );
 };

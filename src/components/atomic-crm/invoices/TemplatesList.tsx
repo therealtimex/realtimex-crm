@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useGetList, useTranslate, useNotify, useDataProvider } from "ra-core";
 import { Plus, FileText, Trash2, Edit } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ds/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ds/ui/card";
+import { Badge } from "@/components/ds/ui/badge";
 import { format } from "date-fns";
 import type { InvoiceTemplate } from "../types";
 import { TemplateEditDialog } from "./TemplateEditDialog";
@@ -16,7 +16,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "@/components/ds/ui/alert-dialog";
 
 export const TemplatesList = () => {
   const translate = useTranslate();

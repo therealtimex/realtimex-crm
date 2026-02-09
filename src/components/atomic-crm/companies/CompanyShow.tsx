@@ -15,11 +15,11 @@ import {
   useMatch,
   useNavigate,
 } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { ReferenceManyField } from "@/components/admin/reference-many-field";
-import { SortButton } from "@/components/admin/sort-button";
+import { Button } from "@/components/ds/ui/button";
+import { Card, CardContent } from "@/components/ds/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ds/ui/tabs";
+import { ReferenceManyField } from "@/components/ds/admin/reference-many-field";
+import { SortButton } from "@/components/ds/admin/sort-button";
 
 import { ActivityLog } from "../activity/ActivityLog";
 import { Avatar } from "../contacts/Avatar";

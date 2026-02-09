@@ -1,8 +1,8 @@
 import { formatDistance } from "date-fns";
 import { Activity, HeartPulse, Mail, Linkedin } from "lucide-react";
 import { useRecordContext, useTranslate, useLocale } from "ra-core";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ds/ui/badge";
+import { Progress } from "@/components/ds/ui/progress";
 
 import { AsideSection } from "../misc/AsideSection";
 import type { Contact } from "../types";
@@ -10,32 +10,37 @@ import { getDateFnsLocale } from "@/i18n/date-fns";
 
 const InternalStatusBadge = ({ status }: { status: string }) => {
   const translate = useTranslate();
-  let variant: "default" | "secondary" | "destructive" | "outline" = "outline";
-  let className = "";
+  let variant:
+    | "default"
+    | "secondary"
+    | "destructive"
+    | "outline"
+    | "success"
+    | "warning"
+    | "info"
+    | "critical"
+    | "neutral" = "outline";
 
   switch (status) {
     case "strong":
       variant = "default";
       break;
     case "active":
-      variant = "secondary";
-      className = "bg-green-100 text-green-800 hover:bg-green-100";
+      variant = "success";
       break;
     case "cooling":
-      variant = "secondary";
-      className = "bg-yellow-100 text-yellow-800 hover:bg-yellow-100";
+      variant = "warning";
       break;
     case "cold":
-      variant = "secondary";
-      className = "bg-orange-100 text-orange-800 hover:bg-orange-100";
+      variant = "warning";
       break;
     case "dormant":
-      variant = "secondary";
+      variant = "neutral";
       break;
   }
 
   return (
-    <Badge variant={variant} className={className}>
+    <Badge variant={variant}>
       {translate(`crm.contact.filter.engagement_status.${status}`, {
         _: status,
       })}
@@ -45,25 +50,31 @@ const InternalStatusBadge = ({ status }: { status: string }) => {
 
 const EmailStatusBadge = ({ status }: { status: string }) => {
   const translate = useTranslate();
-  let variant: "default" | "secondary" | "destructive" | "outline" = "outline";
-  let className = "";
+  let variant:
+    | "default"
+    | "secondary"
+    | "destructive"
+    | "outline"
+    | "success"
+    | "warning"
+    | "info"
+    | "critical"
+    | "neutral" = "outline";
 
   switch (status) {
     case "valid":
-      variant = "secondary";
-      className = "bg-green-100 text-green-800 hover:bg-green-100";
+      variant = "success";
       break;
     case "risky":
-      variant = "secondary";
-      className = "bg-yellow-100 text-yellow-800 hover:bg-yellow-100";
+      variant = "warning";
       break;
     case "invalid":
-      variant = "destructive";
+      variant = "critical";
       break;
   }
 
   return (
-    <Badge variant={variant} className={className}>
+    <Badge variant={variant}>
       {translate(`crm.contact.health.status.${status}`, { _: status })}
     </Badge>
   );
@@ -71,24 +82,31 @@ const EmailStatusBadge = ({ status }: { status: string }) => {
 
 const LinkedInStatusBadge = ({ status }: { status: string }) => {
   const translate = useTranslate();
-  let variant: "default" | "secondary" | "destructive" | "outline" = "outline";
-  let className = "";
+  let variant:
+    | "default"
+    | "secondary"
+    | "destructive"
+    | "outline"
+    | "success"
+    | "warning"
+    | "info"
+    | "critical"
+    | "neutral" = "outline";
 
   switch (status) {
     case "active":
-      variant = "default";
-      className = "bg-[#0077b5] hover:bg-[#0077b5]"; // LinkedIn Blue
+      variant = "info";
       break;
     case "inactive":
-      variant = "secondary";
+      variant = "neutral";
       break;
     case "not_found":
-      variant = "destructive";
+      variant = "critical";
       break;
   }
 
   return (
-    <Badge variant={variant} className={className}>
+    <Badge variant={variant}>
       {translate(`crm.contact.health.status.${status}`, {
         _: status
           .split("_")

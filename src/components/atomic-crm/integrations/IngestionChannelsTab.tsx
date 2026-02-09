@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDataProvider, useNotify, useTranslate } from "ra-core";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ds/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ds/ui/card";
+import { Label } from "@/components/ds/ui/label";
 import { Plus, Trash2, Copy, Activity } from "lucide-react";
 import { CreateChannelDialog } from "./CreateChannelDialog";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/ds/ui/badge";
 import { format } from "date-fns";
 import { getSupabaseConfig } from "@/lib/supabase-config";
 import {
@@ -18,7 +18,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "@/components/ds/ui/alert-dialog";
 
 export const IngestionChannelsTab = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);

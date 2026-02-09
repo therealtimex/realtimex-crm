@@ -20,24 +20,24 @@ import {
 import { useState } from "react";
 import { useFormState } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { RecordField } from "@/components/admin/record-field";
-import { TextInput } from "@/components/admin/text-input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RecordField } from "@/components/ds/admin/record-field";
+import { TextInput } from "@/components/ds/admin/text-input";
+import { Button } from "@/components/ds/ui/button";
+import { Card, CardContent } from "@/components/ds/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ds/ui/tabs";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/ds/ui/tooltip";
 
 import ImageEditorField from "../misc/ImageEditorField";
 import type { CrmDataProvider } from "../providers/types";
 import type { SalesFormData } from "../types";
 import { TemplatesList } from "../invoices/TemplatesList";
 import { isDemoMode } from "@/lib/demo-utils";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ds/ui/alert";
 import { Info } from "lucide-react";
 
 export const SettingsPage = () => {
@@ -117,9 +117,9 @@ const ProfileSettings = () => {
       <Card>
         <CardContent className="pt-6">
           {isDemoMode() && (
-            <Alert className="mb-6 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-              <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-              <AlertDescription className="text-blue-700 dark:text-blue-300">
+            <Alert className="mb-6 border-info/30 bg-info/10">
+              <Info className="h-4 w-4 text-info" />
+              <AlertDescription className="text-info">
                 You are in Demo Mode. Personal settings can be viewed but not
                 all actions (like password changes) are available.
               </AlertDescription>

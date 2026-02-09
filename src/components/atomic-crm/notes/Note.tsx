@@ -12,14 +12,14 @@ import { useState } from "react";
 import type { FieldValues, SubmitHandler } from "react-hook-form";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ReferenceField } from "@/components/admin/reference-field";
-import { Button } from "@/components/ui/button";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
+import { Button } from "@/components/ds/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/ds/ui/tooltip";
 
 import { CompanyAvatar } from "../companies/CompanyAvatar";
 import { Avatar } from "../contacts/Avatar";

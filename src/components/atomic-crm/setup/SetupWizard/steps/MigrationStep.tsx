@@ -1,8 +1,8 @@
 import { AlertCircle, Boxes, Key, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ds/ui/button';
+import { Input } from '@/components/ds/ui/input';
+import { Label } from '@/components/ds/ui/label';
+import { Alert, AlertDescription } from '@/components/ds/ui/alert';
 import { useTranslate } from 'ra-core';
 import { TerminalLogs } from '../TerminalLogs';
 import { LogEntry } from '../types';
@@ -37,7 +37,7 @@ export function MigrationStep({
                     {migrating ? (
                         <Loader2 className="w-5 h-5 animate-spin text-primary" aria-hidden="true" />
                     ) : complete ? (
-                        <Boxes className="w-5 h-5 text-green-500" aria-hidden="true" />
+                        <Boxes className="w-5 h-5 text-success" aria-hidden="true" />
                     ) : (
                         <Boxes className="w-5 h-5 text-primary" aria-hidden="true" />
                     )}

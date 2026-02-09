@@ -20,11 +20,11 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@/components/ds/ui/dialog";
+import { Button } from "@/components/ds/ui/button";
+import { Alert, AlertDescription } from "@/components/ds/ui/alert";
+import { Input } from "@/components/ds/ui/input";
+import { Label } from "@/components/ds/ui/label";
 import { toast } from "sonner";
 import { useTranslate } from "ra-core";
 import { getSupabaseConfig } from "@/lib/supabase-config";
@@ -146,7 +146,7 @@ export function MigrationModal({
       <DialogContent className="max-h-[90vh] sm:max-w-5xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
-            <AlertTriangle className="h-6 w-6 text-red-700 dark:text-red-600" />
+            <AlertTriangle className="h-6 w-6 text-critical" />
             {translate("crm.migration.modal.title")}
           </DialogTitle>
           <DialogDescription>
@@ -251,7 +251,7 @@ export function MigrationModal({
               {/* Logs Terminal */}
               <div className="rounded-lg border bg-black text-white font-mono text-xs p-4 h-64 overflow-y-auto">
                 {migrationLogs.length === 0 ? (
-                  <div className="text-gray-500 italic">
+                  <div className="text-muted-foreground italic">
                     {translate("crm.migration.modal.auto.logs_placeholder")}
                   </div>
                 ) : (
@@ -266,8 +266,8 @@ export function MigrationModal({
             </div>
 
           {/* Troubleshooting */}
-          <Alert className="border-red-200 bg-red-50 dark:border-red-900/40 dark:bg-red-950/20">
-            <AlertTriangle className="h-4 w-4 text-red-700 dark:text-red-600" />
+          <Alert className="border-critical/30 bg-critical/10">
+            <AlertTriangle className="h-4 w-4 text-critical" />
             <AlertDescription>
               <strong>
                 {translate("crm.migration.modal.troubleshooting.title")}

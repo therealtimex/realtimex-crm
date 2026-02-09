@@ -7,7 +7,7 @@ import {
 } from "ra-core";
 import { useEffect } from "react";
 import { Route } from "react-router";
-import { AdminContext, AdminUI } from "@/components/admin/admin";
+import { AdminContext, AdminUI } from "@/components/ds/admin/admin";
 import { ForgotPasswordPage } from "@/components/supabase/forgot-password-page";
 import { SetPasswordPage } from "@/components/supabase/set-password-page";
 import { ChangePasswordPage } from "@/components/supabase/change-password-page";

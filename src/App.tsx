@@ -19,9 +19,9 @@ import {
 import { supabase } from "@/components/atomic-crm/providers/supabase/supabase";
 import { MigrationProvider } from "@/contexts/MigrationContext";
 import { i18nProvider } from "@/components/atomic-crm/root/i18nProvider";
-import { ThemeProvider } from "@/components/admin/theme-provider";
-import { ThemeModeToggle } from "@/components/admin/theme-mode-toggle";
-import { LocalesMenuButton } from "@/components/admin/locales-menu-button";
+import { ThemeProvider } from "@/components/ds/admin/theme-provider";
+import { ThemeModeToggle } from "@/components/ds/admin/theme-mode-toggle";
+import { LocalesMenuButton } from "@/components/ds/admin/locales-menu-button";
 import {
   defaultDarkModeLogo,
   defaultLightModeLogo,
@@ -100,19 +100,19 @@ const companyRevenueRanges = [
 
 // External heartbeat status configuration
 const externalHeartbeatStatuses = [
-  { id: "healthy", name: "Healthy", color: "#10b981" },
-  { id: "risky", name: "Risky", color: "#f59e0b" },
-  { id: "dead", name: "Dead", color: "#ef4444" },
-  { id: "unknown", name: "Not Checked", color: "#6b7280" },
+  { id: "healthy", name: "Healthy", color: "var(--color-success)" },
+  { id: "risky", name: "Risky", color: "var(--color-warning)" },
+  { id: "dead", name: "Dead", color: "var(--color-critical)" },
+  { id: "unknown", name: "Not Checked", color: "var(--color-neutral)" },
 ];
 
 // Internal heartbeat status configuration
 const internalHeartbeatStatuses = [
-  { id: "engaged", name: "Engaged", color: "#10b981" },
-  { id: "quiet", name: "Quiet", color: "#3b82f6" },
-  { id: "at_risk", name: "At Risk", color: "#f59e0b" },
-  { id: "unresponsive", name: "Unresponsive", color: "#ef4444" },
-  { id: "unknown", name: "Unknown", color: "#6b7280" },
+  { id: "engaged", name: "Engaged", color: "var(--color-success)" },
+  { id: "quiet", name: "Quiet", color: "var(--color-info)" },
+  { id: "at_risk", name: "At Risk", color: "var(--color-warning)" },
+  { id: "unresponsive", name: "Unresponsive", color: "var(--color-critical)" },
+  { id: "unknown", name: "Unknown", color: "var(--color-neutral)" },
 ];
 
 const App = () => {

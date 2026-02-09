@@ -1,8 +1,8 @@
 import { Draggable } from "@hello-pangea/dnd";
 import { useLocaleState, useRedirect, useTranslate } from "ra-core";
-import { Card, CardContent } from "@/components/ui/card";
-import { ReferenceField } from "@/components/admin/reference-field";
-import { TextField } from "@/components/admin/text-field";
+import { Card, CardContent } from "@/components/ds/ui/card";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
+import { TextField } from "@/components/ds/admin/text-field";
 import { Calendar } from "lucide-react";
 
 import type { Task } from "../types";

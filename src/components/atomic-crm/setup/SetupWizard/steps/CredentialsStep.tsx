@@ -1,6 +1,6 @@
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ds/ui/label';
+import { Input } from '@/components/ds/ui/input';
+import { Button } from '@/components/ds/ui/button';
 import { AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslate } from 'ra-core';

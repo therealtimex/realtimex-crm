@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDataProvider, useNotify, useTranslate } from "ra-core";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ds/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ds/ui/card";
 import { Plus, Trash2, Copy } from "lucide-react";
 import { CreateApiKeyDialog } from "./CreateApiKeyDialog";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/ds/ui/badge";
 import { format } from "date-fns";
 import { decryptValue } from "@/lib/encryption-utils";
 import {
@@ -17,14 +17,14 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "@/components/ds/ui/alert-dialog";
 import { isDemoMode } from "@/lib/demo-utils";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/ds/ui/tooltip";
 
 export const ApiKeysTab = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);

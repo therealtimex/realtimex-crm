@@ -173,6 +173,24 @@ npm run registry:build  # Build Shadcn registry
 - **Backend**: Supabase (PostgreSQL + REST API + Auth + Storage + Edge Functions)
 - **Testing**: Vitest
 
+### DS Compliance Rules (Agents + Humans)
+
+Apply these rules for any UI change:
+
+1. Import primitives from `@/components/ds/*` only.
+2. Do not import `@/components/ui/*` or `@/components/admin/*` in feature code.
+3. Prefer semantic variants (`success`, `warning`, `info`, `critical`, `neutral`) over raw palette classes.
+4. Prefer shared status components over repeated inline status color maps.
+5. If custom styling is required, use token-backed utilities (`text-critical`, `bg-info/10`) instead of palette utilities (`text-red-600`, `bg-blue-50`).
+6. Keep DS modules owned (no pass-through re-export wrappers).
+7. Update DS snapshot tests intentionally when DS primitive visuals change.
+
+Reference:
+- `src/components/ds/DESIGN_SYSTEM.md`
+- `src/components/ds/ui/ds-ui.snapshot.test.tsx`
+- `src/components/ds/ui/ds-ui.a11y.test.tsx`
+- `src/components/ds/ui/ds-ui.ownership.test.ts`
+
 ### Authentication & Authorization Architecture
 
 #### User Management System

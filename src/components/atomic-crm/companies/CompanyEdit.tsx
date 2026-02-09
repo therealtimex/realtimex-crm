@@ -1,5 +1,5 @@
 import { EditBase, Form } from "ra-core";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ds/ui/card";
 
 import { CompanyInputs } from "./CompanyInputs";
 import { CompanyAside } from "./CompanyAside";

@@ -8,14 +8,14 @@ import {
   type Identifier,
 } from "ra-core";
 import { useCallback, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ds/ui/badge";
+import { Button } from "@/components/ds/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ds/ui/dropdown-menu";
 
 import { TagChip } from "../tags/TagChip";
 import { TagCreateModal } from "../tags/TagCreateModal";

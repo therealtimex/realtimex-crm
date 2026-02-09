@@ -4,8 +4,8 @@ import {
   useShowContext,
   useTranslate,
 } from "ra-core";
-import { Card, CardContent } from "@/components/ui/card";
-import { ReferenceManyField } from "@/components/admin/reference-many-field";
+import { Card, CardContent } from "@/components/ds/ui/card";
+import { ReferenceManyField } from "@/components/ds/admin/reference-many-field";
 import { Calendar } from "lucide-react";
 import { formatDistance } from "date-fns";
 import { getDateFnsLocale } from "@/i18n/date-fns";

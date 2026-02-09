@@ -2,10 +2,10 @@ import { formatRelative } from "date-fns";
 import { RecordContextProvider, useListContext, useTranslate } from "ra-core";
 import { type MouseEvent, useCallback } from "react";
 import { Link } from "react-router";
-import { ReferenceField } from "@/components/admin/reference-field";
-import { TextField } from "@/components/admin/text-field";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
+import { TextField } from "@/components/ds/admin/text-field";
+import { Checkbox } from "@/components/ds/ui/checkbox";
+import { Skeleton } from "@/components/ds/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 import { Status } from "../misc/Status";

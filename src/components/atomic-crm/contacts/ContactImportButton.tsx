@@ -3,18 +3,18 @@ import type { MouseEvent } from "react";
 import { Upload, Loader2 } from "lucide-react";
 import { Form, useRefresh, useTranslate } from "ra-core";
 import { Link } from "react-router";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ds/ui/alert";
+import { Button } from "@/components/ds/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { FormToolbar } from "@/components/admin/simple-form";
-import { FileInput } from "@/components/admin/file-input";
-import { FileField } from "@/components/admin/file-field";
+} from "@/components/ds/ui/dialog";
+import { FormToolbar } from "@/components/ds/admin/simple-form";
+import { FileInput } from "@/components/ds/admin/file-input";
+import { FileField } from "@/components/ds/admin/file-field";
 
 import { usePapaParse } from "../misc/usePapaParse";
 import type { ContactImportSchema } from "./useContactImport";

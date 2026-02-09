@@ -9,8 +9,8 @@ import {
   Download,
   FileText,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ds/ui/button";
+import { Separator } from "@/components/ds/ui/separator";
 import { useTranslate } from "ra-core";
 
 interface EmailViewerProps {

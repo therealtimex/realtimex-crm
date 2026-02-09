@@ -8,10 +8,10 @@ import {
   useTranslate,
 } from "ra-core";
 import type { SubmitHandler } from "react-hook-form";
-import { SimpleForm } from "@/components/admin/simple-form";
-import { CancelButton } from "@/components/admin/cancel-button";
-import { SaveButton } from "@/components/admin/form";
-import { Card, CardContent } from "@/components/ui/card";
+import { SimpleForm } from "@/components/ds/admin/simple-form";
+import { CancelButton } from "@/components/ds/admin/cancel-button";
+import { SaveButton } from "@/components/ds/admin/form";
+import { Card, CardContent } from "@/components/ds/ui/card";
 
 import type { CrmDataProvider } from "../providers/types";
 import type { Sale, SalesFormData } from "../types";

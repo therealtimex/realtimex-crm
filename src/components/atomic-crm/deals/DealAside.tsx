@@ -18,13 +18,13 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { format, isValid } from "date-fns";
 import type { ReactNode } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { DeleteButton } from "@/components/admin/delete-button";
-import { EditButton } from "@/components/admin/edit-button";
-import { ReferenceField } from "@/components/admin/reference-field";
-import { ReferenceArrayField } from "@/components/admin/reference-array-field";
-import { TextField } from "@/components/admin/text-field";
+import { Button } from "@/components/ds/ui/button";
+import { Badge } from "@/components/ds/ui/badge";
+import { DeleteButton } from "@/components/ds/admin/delete-button";
+import { EditButton } from "@/components/ds/admin/edit-button";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
+import { ReferenceArrayField } from "@/components/ds/admin/reference-array-field";
+import { TextField } from "@/components/ds/admin/text-field";
 
 import { AsideSection } from "../misc/AsideSection";
 import { useConfigurationContext } from "../root/ConfigurationContext";

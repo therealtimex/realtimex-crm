@@ -1,16 +1,16 @@
 import { CheckCircle, Circle, X } from "lucide-react";
 import { useTranslate, useUpdate, type Identifier } from "ra-core";
 import { Link } from "react-router";
-import { CreateButton } from "@/components/admin/create-button";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { CreateButton } from "@/components/ds/admin/create-button";
+import { Progress } from "@/components/ds/ui/progress";
+import { Button } from "@/components/ds/ui/button";
+import { Card, CardContent } from "@/components/ds/ui/card";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/ds/ui/tooltip";
 
 import { ContactImportButton } from "../contacts/ContactImportButton";
 import useAppBarHeight from "../misc/useAppBarHeight";
@@ -76,14 +76,14 @@ export const DashboardStepper = ({
           </div>
           <div className="flex flex-col gap-12">
             <div className="flex gap-8 items-center">
-              <CheckCircle className="text-green-600 w-5 h-5" />
+              <CheckCircle className="h-5 w-5 text-success" />
               <h4 className="font-bold">
                 {translate("crm.dashboard.stepper.install")}
               </h4>
             </div>
             <div className="flex gap-8 items-start">
               {step > 1 ? (
-                <CheckCircle className="text-green-600 w-5 h-5 mt-1" />
+                <CheckCircle className="mt-1 h-5 w-5 text-success" />
               ) : (
                 <Circle className="text-muted-foreground w-5 h-5 mt-1" />
               )}

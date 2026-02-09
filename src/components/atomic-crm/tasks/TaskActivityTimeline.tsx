@@ -5,7 +5,7 @@ import {
   useRecordContext,
   useTranslate,
 } from "ra-core";
-import { ReferenceField } from "@/components/admin/reference-field";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
 import { AlertCircle } from "lucide-react";
 import { getDateFnsLocale } from "@/i18n/date-fns";
 import { translateChoice, type Translate } from "@/i18n/utils";

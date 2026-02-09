@@ -1,6 +1,6 @@
 import { Download } from "lucide-react";
 import { useGetOne, useRecordContext, useTranslate } from "ra-core";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ds/ui/button";
 import type { Contact, Company } from "../types";
 import { exportToVCard } from "./exportToVCard";
 

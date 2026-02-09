@@ -1,15 +1,15 @@
 import { useState, useRef, useEffect } from "react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ds/ui/alert";
+import { Button } from "@/components/ds/ui/button";
+import { Input } from "@/components/ds/ui/input";
+import { Label } from "@/components/ds/ui/label";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ds/ui/card";
 import {
   AlertCircle,
   Database,
@@ -24,7 +24,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+} from "@/components/ds/ui/collapsible";
 
 interface DatabaseSetupGuideProps {
   missingTables: string[];
@@ -200,7 +200,7 @@ export function DatabaseSetupGuide({
           {/* Logs Terminal */}
           <div className="rounded-lg border bg-black text-white font-mono text-xs p-4 h-64 overflow-y-auto shadow-inner">
             {migrationLogs.length === 0 ? (
-              <div className="text-gray-500 italic">
+              <div className="text-muted-foreground italic">
                 Logs will appear here...
               </div>
             ) : (

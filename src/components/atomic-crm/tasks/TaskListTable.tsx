@@ -8,16 +8,16 @@ import {
   useTranslate,
 } from "ra-core";
 import { Check, Pencil, Clock } from "lucide-react";
-import { DataTable } from "@/components/admin/data-table";
-import { ReferenceField } from "@/components/admin/reference-field";
-import { TextField } from "@/components/admin/text-field";
-import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/ds/admin/data-table";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
+import { TextField } from "@/components/ds/admin/text-field";
+import { Button } from "@/components/ds/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/ds/ui/tooltip";
 import { getRelativeDueDate, parseLocalDate } from "@/lib/date-utils";
 
 import type { Task, TaskSummary } from "../types";

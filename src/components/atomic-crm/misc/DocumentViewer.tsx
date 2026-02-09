@@ -16,7 +16,7 @@ import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import ReactMarkdown from "react-markdown";
 import { renderAsync } from "docx-preview";
 import { PPTXViewer, parsePPTX } from "@kandiforge/pptx-renderer";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ds/ui/button";
 import { EmailViewer } from "./EmailViewer";
 import { useTranslate } from "ra-core";
 

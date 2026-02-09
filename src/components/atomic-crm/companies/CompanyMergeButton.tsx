@@ -20,11 +20,11 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { ReferenceInput } from "@/components/admin/reference-input";
-import { AutocompleteInput } from "@/components/admin/autocomplete-input";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+} from "@/components/ds/ui/dialog";
+import { Button } from "@/components/ds/ui/button";
+import { ReferenceInput } from "@/components/ds/admin/reference-input";
+import { AutocompleteInput } from "@/components/ds/admin/autocomplete-input";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ds/ui/alert";
 import type { Company } from "../types";
 
 export const CompanyMergeButton = () => {

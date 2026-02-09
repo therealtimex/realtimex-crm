@@ -9,8 +9,8 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
-import { Separator } from "@/components/ui/separator";
+} from "@/components/ds/ui/pagination";
+import { Separator } from "@/components/ds/ui/separator";
 import {
   COMPANY_CREATED,
   COMPANY_NOTE_CREATED,

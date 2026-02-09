@@ -1,8 +1,8 @@
 import { DollarSign } from "lucide-react";
 import { Link } from "react-router";
 import { useCreatePath, useListContext, useRecordContext } from "ra-core";
-import { ReferenceManyField } from "@/components/admin/reference-many-field";
-import { Card } from "@/components/ui/card";
+import { ReferenceManyField } from "@/components/ds/admin/reference-many-field";
+import { Card } from "@/components/ds/ui/card";
 
 import { Avatar as ContactAvatar } from "../contacts/Avatar";
 import type { Company } from "../types";

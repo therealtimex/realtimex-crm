@@ -6,9 +6,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+} from "@/components/ds/ui/card";
+import { Button } from "@/components/ds/ui/button";
+import { Alert, AlertDescription } from "@/components/ds/ui/alert";
 import { Database, CheckCircle, XCircle, Settings, Trash2 } from "lucide-react";
 import {
   getSupabaseConfig,
@@ -22,7 +22,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/ds/ui/tooltip";
 
 export function DatabaseSettings() {
   const [showWizard, setShowWizard] = useState(false);
@@ -55,7 +55,7 @@ export function DatabaseSettings() {
             <>
               {/* Connection Status */}
               <div className="flex items-start gap-3 p-4 border rounded-lg">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
+                <CheckCircle className="mt-0.5 h-5 w-5 text-success" />
                 <div className="flex-1 space-y-1">
                   <p className="font-medium">
                     {translate("crm.settings.database.connected")}

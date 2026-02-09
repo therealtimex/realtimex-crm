@@ -20,7 +20,7 @@ export function TerminalLogs({ logs, className }: TerminalLogsProps) {
     return (
         <div
             className={cn(
-                'bg-slate-950 rounded-2xl p-4 font-mono text-[10px] h-[240px] overflow-y-auto border border-white/5 shadow-inner custom-scrollbar relative',
+                'rounded-2xl border border-border/60 bg-card/60 p-4 font-mono text-[10px] h-[240px] overflow-y-auto shadow-inner custom-scrollbar relative',
                 className
             )}
             role="log"
@@ -33,7 +33,7 @@ export function TerminalLogs({ logs, className }: TerminalLogsProps) {
             </div>
 
             {logs.length === 0 ? (
-                <div className="text-slate-600 italic animate-pulse" role="status">
+                <div className="text-muted-foreground/70 italic animate-pulse" role="status">
                     {translate('setup.awaitingSignals')}
                 </div>
             ) : (
@@ -43,14 +43,14 @@ export function TerminalLogs({ logs, className }: TerminalLogsProps) {
                             key={`${log.timestamp}-${i}`}
                             className={cn(
                                 'mb-1 break-all transition-all duration-300',
-                                log.type === 'error' && 'text-red-400 font-bold',
-                                log.type === 'success' && 'text-green-400 font-bold',
-                                log.type === 'info' && 'text-blue-300',
-                                log.type === 'stdout' && 'text-slate-400',
-                                log.type === 'stderr' && 'text-yellow-400'
+                                log.type === 'error' && 'text-critical font-bold',
+                                log.type === 'success' && 'text-success font-bold',
+                                log.type === 'info' && 'text-info',
+                                log.type === 'stdout' && 'text-muted-foreground',
+                                log.type === 'stderr' && 'text-warning'
                             )}
                         >
-                            <span className="text-slate-600 mr-2 tabular-nums">
+                            <span className="text-muted-foreground/60 mr-2 tabular-nums">
                                 [{new Date(log.timestamp).toLocaleTimeString([], {
                                     hour12: false,
                                     hour: '2-digit',

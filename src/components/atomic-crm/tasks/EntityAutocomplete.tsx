@@ -1,6 +1,6 @@
 import { useWatch } from "react-hook-form";
-import { ReferenceInput } from "@/components/admin/reference-input";
-import { AutocompleteInput } from "@/components/admin/autocomplete-input";
+import { ReferenceInput } from "@/components/ds/admin/reference-input";
+import { AutocompleteInput } from "@/components/ds/admin/autocomplete-input";
 import { useTranslate } from "ra-core";
 import { contactOptionText } from "../misc/ContactOption";
 

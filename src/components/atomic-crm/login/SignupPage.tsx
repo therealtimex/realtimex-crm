@@ -4,11 +4,11 @@ import { useDataProvider, useLogin, useNotify, useTranslate } from "ra-core";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 import { Navigate } from "react-router";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ThemeModeToggle } from "@/components/admin/theme-mode-toggle";
-import { LocalesMenuButton } from "@/components/admin/locales-menu-button";
+import { Button } from "@/components/ds/ui/button";
+import { Input } from "@/components/ds/ui/input";
+import { Label } from "@/components/ds/ui/label";
+import { ThemeModeToggle } from "@/components/ds/admin/theme-mode-toggle";
+import { LocalesMenuButton } from "@/components/ds/admin/locales-menu-button";
 
 import type { CrmDataProvider } from "../providers/types";
 import { useConfigurationContext } from "../root/ConfigurationContext";

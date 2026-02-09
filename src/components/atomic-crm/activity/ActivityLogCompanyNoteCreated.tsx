@@ -1,5 +1,5 @@
 import { useTranslate } from "ra-core";
-import { ReferenceField } from "@/components/admin/reference-field";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
 
 import { CompanyAvatar } from "../companies/CompanyAvatar";
 import { RelativeDate } from "../misc/RelativeDate";

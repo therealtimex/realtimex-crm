@@ -1,16 +1,16 @@
 import { Linkedin, Mail, Phone } from "lucide-react";
 import { useRecordContext, WithRecord, useTranslate } from "ra-core";
 import type { ReactNode } from "react";
-import { ArrayField } from "@/components/admin/array-field";
-import { EditButton } from "@/components/admin/edit-button";
+import { ArrayField } from "@/components/ds/admin/array-field";
+import { EditButton } from "@/components/ds/admin/edit-button";
 import { DeleteButton } from "@/components/admin";
-import { ReferenceField } from "@/components/admin/reference-field";
-import { ReferenceManyField } from "@/components/admin/reference-many-field";
-import { ShowButton } from "@/components/admin/show-button";
-import { SingleFieldList } from "@/components/admin/single-field-list";
-import { TextField } from "@/components/admin/text-field";
-import { DateField } from "@/components/admin/date-field";
-import { EmailField } from "@/components/admin/email-field";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
+import { ReferenceManyField } from "@/components/ds/admin/reference-many-field";
+import { ShowButton } from "@/components/ds/admin/show-button";
+import { SingleFieldList } from "@/components/ds/admin/single-field-list";
+import { TextField } from "@/components/ds/admin/text-field";
+import { DateField } from "@/components/ds/admin/date-field";
+import { EmailField } from "@/components/ds/admin/email-field";
 
 import { AddTask } from "../tasks/AddTask";
 import { TasksIterator } from "../tasks/TasksIterator";

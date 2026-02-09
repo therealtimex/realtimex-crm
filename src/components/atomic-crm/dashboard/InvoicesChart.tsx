@@ -4,7 +4,7 @@ import { Receipt } from "lucide-react";
 import { useGetList, useLocaleState, useTranslate } from "ra-core";
 import { memo, useMemo } from "react";
 import { getDateFnsLocale } from "@/i18n/date-fns";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/ds/ui/skeleton";
 
 import type { Invoice } from "../types";
 

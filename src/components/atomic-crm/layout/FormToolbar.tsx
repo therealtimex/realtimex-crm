@@ -1,5 +1,5 @@
-import { CancelButton } from "@/components/admin/cancel-button";
-import { SaveButton } from "@/components/admin/form";
+import { CancelButton } from "@/components/ds/admin/cancel-button";
+import { SaveButton } from "@/components/ds/admin/form";
 
 export const FormToolbar = () => (
   <div

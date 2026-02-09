@@ -10,14 +10,14 @@ import {
   useRefresh,
   useTranslate,
 } from "ra-core";
-import { CreateButton } from "@/components/admin/create-button";
-import { DataTable } from "@/components/admin/data-table";
-import { ExportButton } from "@/components/admin/export-button";
-import { List } from "@/components/admin/list";
-import { SearchInput } from "@/components/admin/search-input";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { CreateButton } from "@/components/ds/admin/create-button";
+import { DataTable } from "@/components/ds/admin/data-table";
+import { ExportButton } from "@/components/ds/admin/export-button";
+import { List } from "@/components/ds/admin/list";
+import { SearchInput } from "@/components/ds/admin/search-input";
+import { Badge } from "@/components/ds/ui/badge";
+import { Button } from "@/components/ds/ui/button";
+import { Card } from "@/components/ds/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -25,7 +25,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/ds/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,8 +33,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@/components/ds/ui/dropdown-menu";
+import { Skeleton } from "@/components/ds/ui/skeleton";
 
 import { TopToolbar } from "../layout/TopToolbar";
 import useAppBarHeight from "../misc/useAppBarHeight";

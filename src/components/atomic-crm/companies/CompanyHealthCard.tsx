@@ -1,8 +1,8 @@
 import { formatDistance } from "date-fns";
 import { Activity, HeartPulse } from "lucide-react";
 import { useRecordContext, useTranslate, useLocale } from "ra-core";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ds/ui/badge";
+import { Progress } from "@/components/ds/ui/progress";
 
 import { AsideSection } from "../misc/AsideSection";
 import type { Company } from "../types";

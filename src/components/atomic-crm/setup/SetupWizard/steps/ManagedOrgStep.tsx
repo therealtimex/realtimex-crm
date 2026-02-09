@@ -1,7 +1,7 @@
 import { Globe } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ds/ui/button';
+import { Input } from '@/components/ds/ui/input';
+import { Label } from '@/components/ds/ui/label';
 import { cn } from '@/lib/utils';
 import { useTranslate } from 'ra-core';
 import { Organization } from '../types';

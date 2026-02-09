@@ -6,7 +6,7 @@ import {
   startOfToday,
 } from "date-fns";
 import { CheckSquare } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Card } from "@/components/ds/ui/card";
 import { useTranslate } from "ra-core";
 
 import { AddTask } from "../tasks/AddTask";

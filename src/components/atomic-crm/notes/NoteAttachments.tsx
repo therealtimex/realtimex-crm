@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import type { AttachmentNote, ContactNote, DealNote } from "../types";
 import { DocumentViewer } from "../misc/DocumentViewer";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ds/ui/button";
 
 export const NoteAttachments = ({ note }: { note: ContactNote | DealNote }) => {
   const [selectedAttachment, setSelectedAttachment] =

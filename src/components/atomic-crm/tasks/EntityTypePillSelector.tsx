@@ -1,5 +1,5 @@
 import { useWatch, useFormContext } from "react-hook-form";
-import { Label } from "@/components/ui/label";
+import { Label } from "@/components/ds/ui/label";
 import { cn } from "@/lib/utils";
 import { useTranslate } from "ra-core";
 

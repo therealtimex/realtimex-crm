@@ -2,7 +2,7 @@ import {
   AvatarFallback,
   AvatarImage,
   Avatar as ShadcnAvatar,
-} from "@/components/ui/avatar";
+} from "@/components/ds/ui/avatar";
 import { useRecordContext } from "ra-core";
 
 import type { Contact } from "../types";

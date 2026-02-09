@@ -7,7 +7,7 @@
 
 import { useState } from "react";
 import { AlertTriangle, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ds/ui/button";
 import { toast } from "sonner";
 import { useTranslate } from "ra-core";
 import {
@@ -52,18 +52,18 @@ export function MigrationBanner({
 
   return (
     <div className="fixed right-4 top-16 z-50 max-w-sm animate-in slide-in-from-top-5">
-      <div className="rounded-lg border border-yellow-500 bg-yellow-50 p-4 shadow-lg dark:bg-yellow-950/90 dark:border-yellow-600">
+      <div className="rounded-lg border border-warning/40 bg-warning/15 p-4 shadow-lg">
         <div className="flex items-start gap-3">
-          <AlertTriangle className="h-5 w-5 flex-shrink-0 text-yellow-600 dark:text-yellow-500 mt-0.5" />
+          <AlertTriangle className="mt-0.5 h-5 w-5 flex-shrink-0 text-warning" />
           <div className="flex-1 space-y-2">
             <div className="flex items-start justify-between gap-2">
-              <p className="text-sm font-medium text-yellow-900 dark:text-yellow-100">
+              <p className="text-sm font-medium text-warning-foreground">
                 {translate("crm.migration.banner.title")}
               </p>
               <Button
                 size="icon"
                 variant="ghost"
-                className="h-5 w-5 -mr-1 -mt-1 text-yellow-900 hover:bg-yellow-100 dark:text-yellow-100 dark:hover:bg-yellow-900/30"
+                className=" -mr-1 -mt-1 h-5 w-5 text-warning-foreground hover:bg-warning/20"
                 onClick={handleDismiss}
               >
                 <X className="h-3 w-3" />
@@ -72,7 +72,7 @@ export function MigrationBanner({
                 </span>
               </Button>
             </div>
-            <p className="text-xs text-yellow-800 dark:text-yellow-200">
+            <p className="text-xs text-warning-foreground/80">
               {translate("crm.migration.banner.subtitle", {
                 version: status.appVersion,
               })}
@@ -80,8 +80,8 @@ export function MigrationBanner({
             <div className="flex gap-2">
               <Button
                 size="sm"
-                variant="default"
-                className="h-7 text-xs bg-yellow-600 hover:bg-yellow-700 dark:bg-yellow-500 dark:hover:bg-yellow-600"
+                variant="warning"
+                className="h-7 text-xs"
                 onClick={handleClick}
               >
                 {translate("crm.migration.banner.view_details")}
@@ -89,7 +89,7 @@ export function MigrationBanner({
               <Button
                 size="sm"
                 variant="ghost"
-                className="h-7 text-xs text-yellow-900 hover:bg-yellow-100 dark:text-yellow-100 dark:hover:bg-yellow-900/30"
+                className="h-7 text-xs text-warning-foreground hover:bg-warning/20"
                 onClick={handleDismiss}
               >
                 {translate("crm.migration.banner.later")}

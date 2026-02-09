@@ -8,9 +8,9 @@ import {
 } from "ra-core";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ReferenceField } from "@/components/admin/reference-field";
-import { TextField } from "@/components/admin/text-field";
-import { Card, CardContent } from "@/components/ui/card";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
+import { TextField } from "@/components/ds/admin/text-field";
+import { Card, CardContent } from "@/components/ds/ui/card";
 import { getDateFnsLocale } from "@/i18n/date-fns";
 
 import type { Contact, ContactNote } from "../types";

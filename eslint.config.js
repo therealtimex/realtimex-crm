@@ -38,5 +38,22 @@ export default tseslint.config(
       "@typescript-eslint/consistent-type-imports": "warn",
     },
   },
+  {
+    files: ["src/components/atomic-crm/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@/components/ui/*", "@/components/admin/*"],
+              message:
+                "Import from the local design-system facade instead: '@/components/ds/ui/*' or '@/components/ds/admin/*'.",
+            },
+          ],
+        },
+      ],
+    },
+  },
   storybook.configs["flat/recommended"],
 );

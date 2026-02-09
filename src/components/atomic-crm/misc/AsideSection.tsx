@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/components/ds/ui/separator";
 import { cn } from "@/lib/utils";
 
 export type AsideSectionProps = {

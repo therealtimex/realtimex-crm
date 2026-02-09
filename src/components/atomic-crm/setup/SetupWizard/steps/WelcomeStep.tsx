@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ds/ui/button';
 import { Shield, Zap, ArrowLeft } from 'lucide-react';
 import { useTranslate } from 'ra-core';
 

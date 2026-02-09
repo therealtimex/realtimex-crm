@@ -1,8 +1,8 @@
 import { AlertCircle, ChevronRight, Key, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ds/ui/button';
+import { Input } from '@/components/ds/ui/input';
+import { Label } from '@/components/ds/ui/label';
+import { Alert, AlertDescription } from '@/components/ds/ui/alert';
 import { useTranslate } from 'ra-core';
 import { validateAccessToken } from '../validators';
 

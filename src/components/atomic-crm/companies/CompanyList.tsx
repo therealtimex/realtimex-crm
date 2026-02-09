@@ -1,11 +1,11 @@
 import { useGetIdentity, useListContext, useTranslate } from "ra-core";
-import { CreateButton } from "@/components/admin/create-button";
-import { ExportButton } from "@/components/admin/export-button";
-import { List } from "@/components/admin/list";
-import { ListPagination } from "@/components/admin/list-pagination";
-import { SortButton } from "@/components/admin/sort-button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Card } from "@/components/ui/card";
+import { CreateButton } from "@/components/ds/admin/create-button";
+import { ExportButton } from "@/components/ds/admin/export-button";
+import { List } from "@/components/ds/admin/list";
+import { ListPagination } from "@/components/ds/admin/list-pagination";
+import { SortButton } from "@/components/ds/admin/sort-button";
+import { Skeleton } from "@/components/ds/ui/skeleton";
+import { Card } from "@/components/ds/ui/card";
 
 import { TopToolbar } from "../layout/TopToolbar";
 import { CompanyEmpty } from "./CompanyEmpty";

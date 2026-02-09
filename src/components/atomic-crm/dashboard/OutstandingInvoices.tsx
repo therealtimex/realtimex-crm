@@ -2,8 +2,8 @@ import { format } from "date-fns";
 import { AlertCircle, Clock } from "lucide-react";
 import { useGetList, useTranslate } from "ra-core";
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ds/ui/card";
+import { Badge } from "@/components/ds/ui/badge";
 
 import type { Invoice } from "../types";
 
@@ -23,7 +23,7 @@ export const OutstandingInvoices = () => {
     <Card className="h-full">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm font-medium flex items-center gap-2">
-          <Clock className="w-4 h-4 text-orange-500" />
+          <Clock className="h-4 w-4 text-warning" />
           {translate("crm.dashboard.outstanding_invoices")}
         </CardTitle>
       </CardHeader>

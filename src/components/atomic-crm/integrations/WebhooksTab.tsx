@@ -8,10 +8,10 @@ import {
 } from "ra-core";
 import { useForm } from "react-hook-form";
 import { generateApiKey } from "@/lib/api-key-utils";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ds/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ds/ui/card";
 import { Plus, Trash2, Power, PowerOff, Pencil } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/ds/ui/badge";
 import { format } from "date-fns";
 import {
   Dialog,
@@ -19,16 +19,16 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+} from "@/components/ds/ui/dialog";
+import { Input } from "@/components/ds/ui/input";
+import { Label } from "@/components/ds/ui/label";
+import { Checkbox } from "@/components/ds/ui/checkbox";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/ds/ui/tooltip";
 import { isDemoMode } from "@/lib/demo-utils";
 import {
   AlertDialog,
@@ -39,7 +39,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "@/components/ds/ui/alert-dialog";
 
 const AVAILABLE_EVENTS = [
   { value: "contact.created", category: "contacts" },

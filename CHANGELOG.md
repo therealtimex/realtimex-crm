@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.49.0] - 2026-02-08
+
+### Added
+- **Design System**: Added a local facade layer under `src/components/ds/` (`ds/ui/*` and `ds/admin/*`) to decouple feature code from upstream forked component paths.
+- **Design System**: Added `src/components/ds/DESIGN_SYSTEM.md` with token semantics, variant usage rules, and import/testing conventions.
+- **Testing**: Added DS snapshot tests for owned `ds/ui` primitives in `src/components/ds/ui/ds-ui.snapshot.test.tsx`.
+
+### Changed
+- **Architecture**: Migrated Atomic CRM feature imports (and `App.tsx`) from direct `@/components/ui/*` and `@/components/admin/*` to facade imports `@/components/ds/ui/*` and `@/components/ds/admin/*`.
+- **Code Quality**: Added ESLint guardrails to block new direct upstream imports in `src/components/atomic-crm/**`, enforcing design-system facade usage.
+- **Design Tokens**: Added semantic color tokens (`success`, `warning`, `info`, `critical`, `neutral`) for both light and dark themes in `src/index.css`.
+- **UI Components**: Implemented custom facade `Button` and `Badge` components in `src/components/ds/ui/` with semantic variants, enabling visual divergence from upstream primitives.
+- **Status UI**: Consolidated invoice status styling into a shared `InvoiceStatusBadge` component and updated invoice/task/contact health status UIs to use semantic DS variants instead of hardcoded color classes.
+- **Semantic Theming**: Migrated migration/setup/activity/settings/dashboard alert and progress surfaces to semantic DS colors, removing hardcoded warning/success/error utility colors in those areas.
+- **Component Ownership**: Converted top-used facade components (`card`, `dialog`, `label`, `input`, `alert`, `tooltip`, `skeleton`, `separator`) from pass-through re-exports to locally owned DS implementations.
+- **Component Ownership**: Further converted `tabs`, `select`, `dropdown-menu`, and `checkbox` DS facade modules to locally owned implementations.
+- **Component Ownership**: Converted all remaining `src/components/ds/ui/*` pass-through wrappers (`accordion`, `alert-dialog`, `avatar`, `breadcrumb`, `collapsible`, `command`, `drawer`, `navigation-menu`, `pagination`, `popover`, `progress`, `radio-group`, `sheet`, `sidebar`, `sonner`, `spinner`, `switch`, `table`, `textarea`, `visually-hidden`) to locally owned DS modules.
+- **Accessibility**: Added DS accessibility contract tests (`src/components/ds/ui/ds-ui.a11y.test.tsx`) to verify core semantic/role/label behavior.
+- **Quality Gates**: Added DS ownership guard tests (`src/components/ds/ui/ds-ui.ownership.test.ts`) to prevent reintroducing upstream `@/components/ui/*` pass-through imports.
+
 ## [0.48.23] - 2026-02-08
 
 ### Added

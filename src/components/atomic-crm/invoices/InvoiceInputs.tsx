@@ -9,13 +9,13 @@ import { useQuery } from "@tanstack/react-query";
 import { useWatch, useFormContext } from "react-hook-form";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import { TextInput } from "@/components/admin/text-input";
-import { DateInput } from "@/components/admin/date-input";
-import { ReferenceInput } from "@/components/admin/reference-input";
-import { AutocompleteInput } from "@/components/admin/autocomplete-input";
-import { SelectInput } from "@/components/admin/select-input";
+import { TextInput } from "@/components/ds/admin/text-input";
+import { DateInput } from "@/components/ds/admin/date-input";
+import { ReferenceInput } from "@/components/ds/admin/reference-input";
+import { AutocompleteInput } from "@/components/ds/admin/autocomplete-input";
+import { SelectInput } from "@/components/ds/admin/select-input";
 import { Sparkles, FileText } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ds/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -23,12 +23,12 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from "@/components/ds/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@/components/ds/ui/popover";
 import { useState } from "react";
 
 import { InvoiceItemsInput } from "./InvoiceItemsInput";

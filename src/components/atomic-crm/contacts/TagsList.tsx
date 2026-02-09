@@ -1,7 +1,7 @@
 import { useRecordContext } from "ra-core";
-import { ReferenceArrayField } from "@/components/admin/reference-array-field";
-import { SingleFieldList } from "@/components/admin/single-field-list";
-import { Badge } from "@/components/ui/badge";
+import { ReferenceArrayField } from "@/components/ds/admin/reference-array-field";
+import { SingleFieldList } from "@/components/ds/admin/single-field-list";
+import { Badge } from "@/components/ds/ui/badge";
 import { cn } from "@/lib/utils";
 
 const ColoredBadge = (props: any) => {

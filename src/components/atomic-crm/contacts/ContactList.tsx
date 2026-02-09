@@ -5,13 +5,13 @@ import {
   useListContext,
   type Exporter,
 } from "ra-core";
-import { BulkActionsToolbar } from "@/components/admin/bulk-actions-toolbar";
-import { CreateButton } from "@/components/admin/create-button";
-import { ExportButton } from "@/components/admin/export-button";
-import { List } from "@/components/admin/list";
-import { SortButton } from "@/components/admin/sort-button";
-import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { BulkActionsToolbar } from "@/components/ds/admin/bulk-actions-toolbar";
+import { CreateButton } from "@/components/ds/admin/create-button";
+import { ExportButton } from "@/components/ds/admin/export-button";
+import { List } from "@/components/ds/admin/list";
+import { SortButton } from "@/components/ds/admin/sort-button";
+import { Card } from "@/components/ds/ui/card";
+import { Skeleton } from "@/components/ds/ui/skeleton";
 
 import type { Company, Contact, Sale, Tag } from "../types";
 import { ContactEmpty } from "./ContactEmpty";

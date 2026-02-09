@@ -1,5 +1,5 @@
-import { Edit } from "@/components/admin/edit";
-import { SimpleForm } from "@/components/admin/simple-form";
+import { Edit } from "@/components/ds/admin/edit";
+import { SimpleForm } from "@/components/ds/admin/simple-form";
 
 import { InvoiceInputs } from "./InvoiceInputs";
 

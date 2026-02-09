@@ -6,7 +6,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/ds/ui/dialog";
 import { Loader2 } from "lucide-react";
 import { useTranslate } from "ra-core";
 

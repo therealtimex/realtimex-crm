@@ -12,7 +12,7 @@ import {
   type RaRecord,
 } from "ra-core";
 import { useFormContext } from "react-hook-form";
-import { SaveButton } from "@/components/admin/form";
+import { SaveButton } from "@/components/ds/admin/form";
 import { cn } from "@/lib/utils";
 
 import { NoteInputs } from "./NoteInputs";

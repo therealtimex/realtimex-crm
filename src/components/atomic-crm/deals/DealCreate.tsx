@@ -7,16 +7,16 @@ import {
   useRedirect,
   type GetListResult,
 } from "ra-core";
-import { Create } from "@/components/admin/create";
-import { SaveButton } from "@/components/admin/form";
-import { FormToolbar } from "@/components/admin/simple-form";
+import { Create } from "@/components/ds/admin/create";
+import { SaveButton } from "@/components/ds/admin/form";
+import { FormToolbar } from "@/components/ds/admin/simple-form";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { VisuallyHidden } from "@/components/ui/visually-hidden";
+} from "@/components/ds/ui/dialog";
+import { VisuallyHidden } from "@/components/ds/ui/visually-hidden";
 
 import type { Deal } from "../types";
 import { DealInputs } from "./DealInputs";

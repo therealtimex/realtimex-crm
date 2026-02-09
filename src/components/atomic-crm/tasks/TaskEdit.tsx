@@ -9,12 +9,12 @@ import {
   useTranslate,
   type Identifier,
 } from "ra-core";
-import { DeleteButton } from "@/components/admin/delete-button";
-import { TextInput } from "@/components/admin/text-input";
-import { DateInput } from "@/components/admin/date-input";
-import { SelectInput } from "@/components/admin/select-input";
-import { ReferenceInput } from "@/components/admin/reference-input";
-import { SaveButton } from "@/components/admin/form";
+import { DeleteButton } from "@/components/ds/admin/delete-button";
+import { TextInput } from "@/components/ds/admin/text-input";
+import { DateInput } from "@/components/ds/admin/date-input";
+import { SelectInput } from "@/components/ds/admin/select-input";
+import { ReferenceInput } from "@/components/ds/admin/reference-input";
+import { SaveButton } from "@/components/ds/admin/form";
 import {
   Dialog,
   DialogContent,
@@ -22,7 +22,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/ds/ui/dialog";
 
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import type { Task } from "../types";

@@ -1,22 +1,21 @@
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ds/ui/badge";
 import { useTranslate } from "ra-core";
 import { translateChoice } from "@/i18n/utils";
 
-const statusColors = {
-  todo: "bg-slate-500 hover:bg-slate-600",
-  in_progress: "bg-blue-500 hover:bg-blue-600",
-  blocked: "bg-red-500 hover:bg-red-600",
-  done: "bg-green-500 hover:bg-green-600",
-  cancelled: "bg-gray-400 hover:bg-gray-500",
+const statusVariants = {
+  todo: "neutral",
+  in_progress: "info",
+  blocked: "critical",
+  done: "success",
+  cancelled: "outline",
 };
 
 export const TaskStatusBadge = ({ status }: { status?: string }) => {
   const translate = useTranslate();
   if (!status) return null;
-  const colorClass =
-    statusColors[status as keyof typeof statusColors] || "bg-slate-500";
+  const variant =
+    statusVariants[status as keyof typeof statusVariants] || "neutral";
   const label = translateChoice(translate, "crm.task.status", status, status);
 
-  return <Badge className={cn(colorClass)}>{label}</Badge>;
+  return <Badge variant={variant}>{label}</Badge>;
 };

@@ -1,5 +1,5 @@
 import { useCreate, useGetIdentity, useNotify, useTranslate } from "ra-core";
-import { AutocompleteInput } from "@/components/admin/autocomplete-input";
+import { AutocompleteInput } from "@/components/ds/admin/autocomplete-input";
 import type { InputProps } from "ra-core";
 
 export const AutocompleteCompanyInput = ({

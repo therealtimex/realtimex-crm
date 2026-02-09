@@ -3,7 +3,7 @@ import { useTranslate, useNotify } from "ra-core";
 import { Download, FileText } from "lucide-react";
 import jsPDF from "jspdf";
 import { toJpeg } from "html-to-image";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ds/ui/button";
 import type { Invoice } from "../types";
 
 interface DownloadPDFButtonProps {

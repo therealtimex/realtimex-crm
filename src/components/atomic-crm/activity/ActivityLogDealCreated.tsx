@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { useTranslate, type RaRecord } from "ra-core";
 
-import { ReferenceField } from "@/components/admin/reference-field";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
 import { SaleName } from "../sales/SaleName";
 import { RelativeDate } from "../misc/RelativeDate";
 import type { ActivityDealCreated } from "../types";

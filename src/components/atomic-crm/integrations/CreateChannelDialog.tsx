@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDataProvider, useNotify, useTranslate } from "ra-core";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ds/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,16 +9,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@/components/ds/ui/dialog";
+import { Input } from "@/components/ds/ui/input";
+import { Label } from "@/components/ds/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ds/ui/select";
 import { Loader2 } from "lucide-react";
 
 interface CreateChannelDialogProps {

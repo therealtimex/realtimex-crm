@@ -4,15 +4,15 @@ import type { ReactCropperElement } from "react-cropper";
 import { Cropper } from "react-cropper";
 import { useDropzone } from "react-dropzone";
 import { useFormContext } from "react-hook-form";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ds/ui/avatar";
+import { Button } from "@/components/ds/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/ds/ui/dialog";
 
 import "cropperjs/dist/cropper.css";
 

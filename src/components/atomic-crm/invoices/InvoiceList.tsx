@@ -1,20 +1,21 @@
 import { useTranslate } from "ra-core";
-import { AutocompleteInput } from "@/components/admin/autocomplete-input";
-import { CreateButton } from "@/components/admin/create-button";
-import { ExportButton } from "@/components/admin/export-button";
-import { List } from "@/components/admin/list";
-import { ReferenceInput } from "@/components/admin/reference-input";
-import { FilterButton } from "@/components/admin/filter-form";
-import { SearchInput } from "@/components/admin/search-input";
-import { SelectInput } from "@/components/admin/select-input";
-import { DataTable } from "@/components/admin/data-table";
-import { TextField } from "@/components/admin/text-field";
-import { DateField } from "@/components/admin/date-field";
-import { ReferenceField } from "@/components/admin/reference-field";
-import { FunctionField } from "@/components/admin/function-field";
+import { AutocompleteInput } from "@/components/ds/admin/autocomplete-input";
+import { CreateButton } from "@/components/ds/admin/create-button";
+import { ExportButton } from "@/components/ds/admin/export-button";
+import { List } from "@/components/ds/admin/list";
+import { ReferenceInput } from "@/components/ds/admin/reference-input";
+import { FilterButton } from "@/components/ds/admin/filter-form";
+import { SearchInput } from "@/components/ds/admin/search-input";
+import { SelectInput } from "@/components/ds/admin/select-input";
+import { DataTable } from "@/components/ds/admin/data-table";
+import { TextField } from "@/components/ds/admin/text-field";
+import { DateField } from "@/components/ds/admin/date-field";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
+import { FunctionField } from "@/components/ds/admin/function-field";
 
 import { TopToolbar } from "../layout/TopToolbar";
 import type { Invoice } from "../types";
+import { InvoiceStatusBadge } from "./InvoiceStatusBadge";
 
 export const InvoiceList = () => {
   const translate = useTranslate();
@@ -102,7 +103,13 @@ export const InvoiceList = () => {
 
         <DataTable.Col source="status" label="resources.invoices.fields.status">
           <FunctionField
-            render={(record: Invoice) => <InvoiceStatusBadge record={record} />}
+            render={(record: Invoice) => (
+              <InvoiceStatusBadge
+                status={record.status}
+                dueDate={record.due_date}
+                className="px-2.5 py-0.5 text-xs"
+              />
+            )}
           />
         </DataTable.Col>
 
@@ -144,11 +151,11 @@ export const InvoiceList = () => {
               const paid = record.amount_paid || 0;
               const balance = total - paid;
               return balance > 0.01 ? (
-                <span className="text-red-600 font-semibold">
+                <span className="text-critical font-semibold">
                   {record.currency} {balance.toFixed(2)}
                 </span>
               ) : (
-                <span className="text-green-600">
+                <span className="text-success">
                   {translate("resources.invoices.status.paid")}
                 </span>
               );
@@ -158,38 +165,6 @@ export const InvoiceList = () => {
         </DataTable.Col>
       </DataTable>
     </List>
-  );
-};
-
-const InvoiceStatusBadge = ({ record }: { record: Invoice }) => {
-  const translate = useTranslate();
-  let status = record.status;
-
-  // Client-side overdue calculation
-  if (status !== "paid" && status !== "cancelled" && record.due_date) {
-    const dueDate = new Date(record.due_date);
-    const today = new Date();
-    if (dueDate < today) {
-      status = "overdue";
-    }
-  }
-
-  const statusColors: Record<string, string> = {
-    draft: "bg-gray-100 text-gray-800",
-    sent: "bg-blue-100 text-blue-800",
-    paid: "bg-green-100 text-green-800",
-    overdue: "bg-red-100 text-red-800",
-    cancelled: "bg-gray-100 text-gray-500",
-  };
-
-  return (
-    <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-        statusColors[status] || statusColors.draft
-      }`}
-    >
-      {translate(`resources.invoices.status.${status}`)}
-    </span>
   );
 };
 

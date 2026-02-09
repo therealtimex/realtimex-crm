@@ -18,11 +18,11 @@ import {
   useTranslate,
 } from "ra-core";
 import { useState, type ReactNode } from "react";
-import { Button } from "@/components/ui/button";
-import { DeleteButton } from "@/components/admin/delete-button";
-import { ReferenceField } from "@/components/admin/reference-field";
-import { TextField } from "@/components/admin/text-field";
-import { DateField } from "@/components/admin/date-field";
+import { Button } from "@/components/ds/ui/button";
+import { DeleteButton } from "@/components/ds/admin/delete-button";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
+import { TextField } from "@/components/ds/admin/text-field";
+import { DateField } from "@/components/ds/admin/date-field";
 import { parseLocalDate } from "@/lib/date-utils";
 
 import { AsideSection } from "../misc/AsideSection";

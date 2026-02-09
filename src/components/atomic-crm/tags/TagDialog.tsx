@@ -1,14 +1,14 @@
 import { SaveIcon } from "lucide-react";
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ds/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@/components/ds/ui/dialog";
+import { Input } from "@/components/ds/ui/input";
+import { Label } from "@/components/ds/ui/label";
 import { cn } from "@/lib/utils";
 
 import type { Tag } from "../types";

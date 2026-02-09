@@ -8,9 +8,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { TextInput } from "@/components/admin/text-input";
+} from "@/components/ds/ui/dialog";
+import { Button } from "@/components/ds/ui/button";
+import { TextInput } from "@/components/ds/admin/text-input";
 import type { InvoiceTemplate } from "../types";
 import { InvoiceItemsInput } from "./InvoiceItemsInput";
 

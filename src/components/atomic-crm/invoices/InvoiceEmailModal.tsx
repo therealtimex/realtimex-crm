@@ -10,11 +10,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/components/ds/ui/dialog";
+import { Button } from "@/components/ds/ui/button";
+import { Input } from "@/components/ds/ui/input";
+import { Label } from "@/components/ds/ui/label";
+import { Textarea } from "@/components/ds/ui/textarea";
 import type { Invoice } from "../types";
 import { generateInvoiceEmailHTML } from "./generateInvoiceEmail";
 import { generateInvoicePDFBase64 } from "./generateInvoicePDF";

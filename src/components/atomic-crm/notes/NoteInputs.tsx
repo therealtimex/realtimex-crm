@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { TextInput } from "@/components/admin/text-input";
-import { FileInput } from "@/components/admin/file-input";
-import { FileField } from "@/components/admin/file-field";
-import { SelectInput } from "@/components/admin/select-input";
-import { DateTimeInput } from "@/components/admin/date-time-input";
-import { Button } from "@/components/ui/button";
+import { TextInput } from "@/components/ds/admin/text-input";
+import { FileInput } from "@/components/ds/admin/file-input";
+import { FileField } from "@/components/ds/admin/file-field";
+import { SelectInput } from "@/components/ds/admin/select-input";
+import { DateTimeInput } from "@/components/ds/admin/date-time-input";
+import { Button } from "@/components/ds/ui/button";
 import { cn } from "@/lib/utils";
 import { useTranslate } from "ra-core";
 import { translateChoice } from "@/i18n/utils";

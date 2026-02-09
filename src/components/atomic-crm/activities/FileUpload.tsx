@@ -7,17 +7,17 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+} from "@/components/ds/ui/card";
+import { Button } from "@/components/ds/ui/button";
+import { Progress } from "@/components/ds/ui/progress";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
+} from "@/components/ds/ui/select";
+import { Label } from "@/components/ds/ui/label";
 import { Upload, FileIcon, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { getSupabaseConfig } from "@/lib/supabase-config";
 
@@ -324,13 +324,13 @@ export const FileUpload = () => {
               transition-all duration-200
               ${
                 isDragActive
-                  ? "border-green-500 bg-green-50 scale-[1.02] shadow-lg"
-                  : "border-gray-300 hover:border-primary/50 hover:bg-gray-50"
+                  ? "scale-[1.02] border-success bg-success/10 shadow-lg"
+                  : "border-border hover:border-primary/50 hover:bg-muted/40"
               }
             `}
           >
             <input {...getInputProps()} />
-            <Upload className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+            <Upload className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
             {isDragActive ? (
               <p className="text-lg font-medium">
                 {translate("crm.integrations.file_upload.action.drop_files")}
@@ -342,7 +342,7 @@ export const FileUpload = () => {
                     "crm.integrations.file_upload.action.drag_and_drop",
                   )}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   {translate(
                     "crm.integrations.file_upload.action.supports_all",
                   )}
@@ -391,12 +391,12 @@ export const FileUpload = () => {
                   <div key={index} className="border rounded-lg p-4 space-y-2">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex items-start gap-3 flex-1 min-w-0">
-                        <FileIcon className="w-5 h-5 mt-0.5 flex-shrink-0 text-gray-400" />
+                        <FileIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-muted-foreground" />
                         <div className="flex-1 min-w-0">
                           <p className="font-medium truncate">
                             {fileItem.file.name}
                           </p>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm text-muted-foreground">
                             {formatFileSize(fileItem.file.size)}
                             {fileItem.activityId && (
                               <span className="ml-2 text-xs">
@@ -419,10 +419,10 @@ export const FileUpload = () => {
                           <Loader2 className="w-5 h-5 animate-spin text-primary" />
                         )}
                         {fileItem.status === "success" && (
-                          <CheckCircle className="w-5 h-5 text-green-500" />
+                          <CheckCircle className="h-5 w-5 text-success" />
                         )}
                         {fileItem.status === "error" && (
-                          <XCircle className="w-5 h-5 text-red-500" />
+                          <XCircle className="h-5 w-5 text-critical" />
                         )}
                       </div>
                     </div>
@@ -434,7 +434,7 @@ export const FileUpload = () => {
 
                     {/* Error message */}
                     {fileItem.status === "error" && fileItem.error && (
-                      <p className="text-sm text-red-500">
+                      <p className="text-sm text-critical">
                         Error: {fileItem.error}
                       </p>
                     )}
@@ -453,7 +453,7 @@ export const FileUpload = () => {
             {translate("crm.integrations.file_upload.how_it_works.title")}
           </CardTitle>
         </CardHeader>
-        <CardContent className="text-sm text-gray-600 space-y-2">
+        <CardContent className="space-y-2 text-sm text-muted-foreground">
           <p>
             • {translate("crm.integrations.file_upload.how_it_works.step_1")}
           </p>

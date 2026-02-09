@@ -1,6 +1,6 @@
-import { Alert } from "@/components/ui/alert";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Alert } from "@/components/ds/ui/alert";
+import { Separator } from "@/components/ds/ui/separator";
+import { Skeleton } from "@/components/ds/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { type Identifier, useDataProvider, useTranslate } from "ra-core";
 

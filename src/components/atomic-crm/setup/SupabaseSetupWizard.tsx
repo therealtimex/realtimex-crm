@@ -5,11 +5,11 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+} from "@/components/ds/ui/dialog";
+import { Button } from "@/components/ds/ui/button";
+import { Input } from "@/components/ds/ui/input";
+import { Label } from "@/components/ds/ui/label";
+import { Alert, AlertDescription } from "@/components/ds/ui/alert";
 import {
   Loader2,
   Database,
@@ -303,17 +303,17 @@ export function SupabaseSetupWizard({
                     className={
                       urlTouched && url
                         ? urlValidation.valid
-                          ? "pr-8 border-green-500"
+                          ? "pr-8 border-success"
                           : "pr-8 border-destructive"
                         : ""
                     }
                   />
                   {urlTouched && url && urlValidation.valid && (
-                    <Check className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-green-500" />
+                    <Check className="absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-success" />
                   )}
                 </div>
                 {showUrlExpansion && (
-                  <div className="flex items-start gap-1.5 text-xs text-green-600 dark:text-green-400">
+                  <div className="flex items-start gap-1.5 text-xs text-success">
                     <Check className="h-3 w-3 mt-0.5 flex-shrink-0" />
                     <span>
                       {translate("crm.setup_wizard.credentials.url_expansion", {
@@ -357,18 +357,18 @@ export function SupabaseSetupWizard({
                     className={
                       keyTouched && anonKey
                         ? keyValidation.valid
-                          ? "pr-8 border-green-500"
+                          ? "pr-8 border-success"
                           : "pr-8 border-destructive"
                         : ""
                     }
                   />
                   {keyTouched && anonKey && keyValidation.valid && (
-                    <Check className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-green-500" />
+                    <Check className="absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-success" />
                   )}
                 </div>
                 {keyTouched && anonKey && keyValidation.messageKey && (
                   <p
-                    className={`text-xs ${keyValidation.valid ? "text-green-600 dark:text-green-400" : "text-destructive"}`}
+                    className={`text-xs ${keyValidation.valid ? "text-success" : "text-destructive"}`}
                   >
                     {translate(keyValidation.messageKey)}
                   </p>
@@ -432,7 +432,7 @@ export function SupabaseSetupWizard({
             </DialogHeader>
 
             <div className="flex flex-col items-center justify-center py-8">
-              <CheckCircle className="h-12 w-12 text-green-500 mb-4" />
+              <CheckCircle className="mb-4 h-12 w-12 text-success" />
               <p className="text-sm text-muted-foreground">
                 {translate("crm.setup_wizard.success.reloading")}
               </p>

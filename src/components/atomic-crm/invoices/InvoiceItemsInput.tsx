@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { useTranslate, useInput } from "ra-core";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ds/ui/button";
+import { Input } from "@/components/ds/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
+} from "@/components/ds/ui/select";
+import { Separator } from "@/components/ds/ui/separator";
 import { Trash2, Plus, GripVertical } from "lucide-react";
 import { TaxPresetSelector } from "./TaxPresetSelector";
 

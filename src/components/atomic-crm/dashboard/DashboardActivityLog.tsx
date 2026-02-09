@@ -1,5 +1,5 @@
 import { Clock } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Card } from "@/components/ds/ui/card";
 import { useTranslate } from "ra-core";
 
 import { ActivityLog } from "../activity/ActivityLog";

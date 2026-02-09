@@ -5,8 +5,8 @@ import {
   useTranslate,
 } from "ra-core";
 import { X } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ds/ui/badge";
+import { Button } from "@/components/ds/ui/button";
 import { translateChoice } from "@/i18n/utils";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 

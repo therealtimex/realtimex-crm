@@ -1,12 +1,12 @@
-import { AutocompleteInput } from "@/components/admin/autocomplete-input";
-import { BooleanInput } from "@/components/admin/boolean-input";
-import { CreateButton } from "@/components/admin/create-button";
-import { ExportButton } from "@/components/admin/export-button";
-import { FilterButton } from "@/components/admin/filter-form";
-import { List, ListView } from "@/components/admin/list";
-import { ReferenceInput } from "@/components/admin/reference-input";
-import { SearchInput } from "@/components/admin/search-input";
-import { SelectInput } from "@/components/admin/select-input";
+import { AutocompleteInput } from "@/components/ds/admin/autocomplete-input";
+import { BooleanInput } from "@/components/ds/admin/boolean-input";
+import { CreateButton } from "@/components/ds/admin/create-button";
+import { ExportButton } from "@/components/ds/admin/export-button";
+import { FilterButton } from "@/components/ds/admin/filter-form";
+import { List, ListView } from "@/components/ds/admin/list";
+import { ReferenceInput } from "@/components/ds/admin/reference-input";
+import { SearchInput } from "@/components/ds/admin/search-input";
+import { SelectInput } from "@/components/ds/admin/select-input";
 
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -16,7 +16,7 @@ import {
   useTranslate,
 } from "ra-core";
 import { LayoutList, Kanban } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ds/ui/button";
 import { cn } from "@/lib/utils";
 import { translateChoice } from "@/i18n/utils";
 import { useConfigurationContext } from "../root/ConfigurationContext";

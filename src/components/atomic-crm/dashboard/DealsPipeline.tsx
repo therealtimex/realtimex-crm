@@ -6,8 +6,8 @@ import {
   useTranslate,
 } from "ra-core";
 import { Link } from "react-router";
-import { ReferenceField } from "@/components/admin/reference-field";
-import { Card } from "@/components/ui/card";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
+import { Card } from "@/components/ds/ui/card";
 
 import { SimpleList } from "../simple-list/SimpleList";
 import { CompanyAvatar } from "../companies/CompanyAvatar";

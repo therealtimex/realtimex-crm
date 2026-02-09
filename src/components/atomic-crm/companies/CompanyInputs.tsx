@@ -1,16 +1,16 @@
 import { required, useRecordContext, useTranslate } from "ra-core";
-import { ReferenceInput } from "@/components/admin/reference-input";
-import { TextInput } from "@/components/admin/text-input";
-import { SelectInput } from "@/components/admin/select-input";
-import { ArrayInput } from "@/components/admin/array-input";
-import { SimpleFormIterator } from "@/components/admin/simple-form-iterator";
-import { Separator } from "@/components/ui/separator";
+import { ReferenceInput } from "@/components/ds/admin/reference-input";
+import { TextInput } from "@/components/ds/admin/text-input";
+import { SelectInput } from "@/components/ds/admin/select-input";
+import { ArrayInput } from "@/components/ds/admin/array-input";
+import { SimpleFormIterator } from "@/components/ds/admin/simple-form-iterator";
+import { Separator } from "@/components/ds/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+} from "@/components/ds/ui/collapsible";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 

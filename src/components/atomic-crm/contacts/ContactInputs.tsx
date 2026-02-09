@@ -1,15 +1,15 @@
 import { email, required, useRecordContext, useTranslate } from "ra-core";
 import type { FocusEvent, ClipboardEventHandler } from "react";
 import { useFormContext } from "react-hook-form";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/components/ds/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { BooleanInput } from "@/components/admin/boolean-input";
-import { ReferenceInput } from "@/components/admin/reference-input";
-import { TextInput } from "@/components/admin/text-input";
-import { RadioButtonGroupInput } from "@/components/admin/radio-button-group-input";
-import { SelectInput } from "@/components/admin/select-input";
-import { ArrayInput } from "@/components/admin/array-input";
-import { SimpleFormIterator } from "@/components/admin/simple-form-iterator";
+import { BooleanInput } from "@/components/ds/admin/boolean-input";
+import { ReferenceInput } from "@/components/ds/admin/reference-input";
+import { TextInput } from "@/components/ds/admin/text-input";
+import { RadioButtonGroupInput } from "@/components/ds/admin/radio-button-group-input";
+import { SelectInput } from "@/components/ds/admin/select-input";
+import { ArrayInput } from "@/components/ds/admin/array-input";
+import { SimpleFormIterator } from "@/components/ds/admin/simple-form-iterator";
 
 import { isLinkedinUrl } from "../misc/isLinkedInUrl";
 import { useConfigurationContext } from "../root/ConfigurationContext";

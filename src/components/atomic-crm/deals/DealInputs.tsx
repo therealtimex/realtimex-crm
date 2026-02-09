@@ -1,16 +1,16 @@
 import { useEffect, useRef } from "react";
 import { useWatch, useFormContext } from "react-hook-form";
 import { required } from "ra-core";
-import { AutocompleteArrayInput } from "@/components/admin/autocomplete-array-input";
-import { ReferenceArrayInput } from "@/components/admin/reference-array-input";
-import { ReferenceInput } from "@/components/admin/reference-input";
-import { TextInput } from "@/components/admin/text-input";
-import { NumberInput } from "@/components/admin/number-input";
-import { DateInput } from "@/components/admin/date-input";
-import { SelectInput } from "@/components/admin/select-input";
+import { AutocompleteArrayInput } from "@/components/ds/admin/autocomplete-array-input";
+import { ReferenceArrayInput } from "@/components/ds/admin/reference-array-input";
+import { ReferenceInput } from "@/components/ds/admin/reference-input";
+import { TextInput } from "@/components/ds/admin/text-input";
+import { NumberInput } from "@/components/ds/admin/number-input";
+import { DateInput } from "@/components/ds/admin/date-input";
+import { SelectInput } from "@/components/ds/admin/select-input";
 import { useTranslate } from "ra-core";
 import { translateChoice } from "@/i18n/utils";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/components/ds/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 import { contactOptionText } from "../misc/ContactOption";

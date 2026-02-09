@@ -15,7 +15,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/ds/ui/tooltip";
 import { useTranslate } from "ra-core";
 import { translateChoice } from "@/i18n/utils";
 

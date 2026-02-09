@@ -4,7 +4,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ds/ui/select";
 import { useTranslate } from "ra-core";
 import { translateChoice } from "@/i18n/utils";
 

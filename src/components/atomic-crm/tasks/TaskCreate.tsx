@@ -1,9 +1,9 @@
-import { DateInput } from "@/components/admin/date-input";
-import { ReferenceInput } from "@/components/admin/reference-input";
-import { SelectInput } from "@/components/admin/select-input";
-import { TextInput } from "@/components/admin/text-input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Create } from "@/components/admin/create";
+import { DateInput } from "@/components/ds/admin/date-input";
+import { ReferenceInput } from "@/components/ds/admin/reference-input";
+import { SelectInput } from "@/components/ds/admin/select-input";
+import { TextInput } from "@/components/ds/admin/text-input";
+import { Card, CardContent } from "@/components/ds/ui/card";
+import { Create } from "@/components/ds/admin/create";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Form,

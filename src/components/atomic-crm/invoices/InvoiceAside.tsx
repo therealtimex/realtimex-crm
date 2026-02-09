@@ -7,12 +7,12 @@ import {
   useDataProvider,
 } from "ra-core";
 import { Check, Download, Printer, Send, XCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DateField } from "@/components/admin/date-field";
-import { ReferenceField } from "@/components/admin/reference-field";
-import { TextField } from "@/components/admin/text-field";
-import { EditButton } from "@/components/admin/edit-button";
+import { Button } from "@/components/ds/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ds/ui/card";
+import { DateField } from "@/components/ds/admin/date-field";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
+import { TextField } from "@/components/ds/admin/text-field";
+import { EditButton } from "@/components/ds/admin/edit-button";
 
 import { InvoiceEmailModal } from "./InvoiceEmailModal";
 import { DownloadPDFButton } from "./DownloadPDFButton";

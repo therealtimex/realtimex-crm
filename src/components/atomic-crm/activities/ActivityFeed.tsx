@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/components/atomic-crm/providers/supabase/supabase";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ds/ui/card";
+import { Badge } from "@/components/ds/ui/badge";
+import { Skeleton } from "@/components/ds/ui/skeleton";
 import {
   Mail,
   Phone,
@@ -17,7 +17,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ds/ui/button";
 import { useTranslate, useLocale } from "ra-core";
 import { getDateFnsLocale } from "@/i18n/date-fns";
 
@@ -131,11 +131,11 @@ const ActivityCard = ({ activity }: { activity: any }) => {
 
   return (
     <Card
-      className={`relative overflow-hidden transition-all ${isPending ? "border-blue-200 bg-blue-50/30 dark:bg-blue-950/10" : ""}`}
+      className={`relative overflow-hidden transition-all ${isPending ? "border-info/30 bg-info/10" : ""}`}
     >
       {isPending && (
-        <div className="absolute top-0 left-0 right-0 h-1 bg-blue-100">
-          <div className="h-full bg-blue-500 animate-progress origin-left w-full"></div>
+        <div className="absolute left-0 right-0 top-0 h-1 bg-info/20">
+          <div className="h-full w-full origin-left animate-progress bg-info"></div>
         </div>
       )}
 
@@ -155,7 +155,7 @@ const ActivityCard = ({ activity }: { activity: any }) => {
                 </Badge>
               )}
               {activity.direction === "outbound" && (
-                <Badge variant="secondary" className="text-[10px] h-5">
+                <Badge variant="info" className="h-5 text-[10px]">
                   {translate("crm.activity_feed.direction.outbound")}
                 </Badge>
               )}
@@ -186,15 +186,15 @@ const ActivityCard = ({ activity }: { activity: any }) => {
           {isPending ? (
             <div className="flex items-center gap-2 text-muted-foreground italic">
               <div
-                className="h-2 w-2 bg-blue-500 rounded-full animate-bounce"
+                className="h-2 w-2 rounded-full bg-info animate-bounce"
                 style={{ animationDelay: "0ms" }}
               ></div>
               <div
-                className="h-2 w-2 bg-blue-500 rounded-full animate-bounce"
+                className="h-2 w-2 rounded-full bg-info animate-bounce"
                 style={{ animationDelay: "150ms" }}
               ></div>
               <div
-                className="h-2 w-2 bg-blue-500 rounded-full animate-bounce"
+                className="h-2 w-2 rounded-full bg-info animate-bounce"
                 style={{ animationDelay: "300ms" }}
               ></div>
               <span>
@@ -236,8 +236,8 @@ const ActivityCard = ({ activity }: { activity: any }) => {
 
               {/* Atomic Facts / Summary */}
               {activity.processed_data?.summary && (
-                <div className="bg-yellow-50 dark:bg-yellow-950/20 p-2 rounded border border-yellow-200 dark:border-yellow-800 text-xs">
-                  <span className="font-semibold text-yellow-700 dark:text-yellow-500 block mb-1">
+                <div className="rounded border border-warning/30 bg-warning/10 p-2 text-xs">
+                  <span className="mb-1 block font-semibold text-warning">
                     {translate("crm.activity_feed.label.summary")}
                   </span>
                   {activity.processed_data.summary}
@@ -274,15 +274,12 @@ const StatusBadge = ({ status }: { status: string }) => {
     case "claimed":
     case "processing":
       return (
-        <Badge
-          variant="outline"
-          className="border-blue-200 text-blue-600 bg-blue-50"
-        >
+        <Badge variant="info">
           {translate("crm.activity_feed.status.processing")}
         </Badge>
       );
     case "completed":
-      return <CheckCircle2 className="h-4 w-4 text-green-500" />;
+      return <CheckCircle2 className="h-4 w-4 text-success" />;
     case "failed":
       return <AlertCircle className="h-4 w-4 text-destructive" />;
     default:

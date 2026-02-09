@@ -1,7 +1,7 @@
 import { useRecordContext, useTranslate } from "ra-core";
 
-import { ReferenceField } from "@/components/admin/reference-field";
-import { TextField } from "@/components/admin/text-field";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
+import { TextField } from "@/components/ds/admin/text-field";
 import { Avatar } from "../contacts/Avatar";
 import { RelativeDate } from "../misc/RelativeDate";
 import { SaleName } from "../sales/SaleName";

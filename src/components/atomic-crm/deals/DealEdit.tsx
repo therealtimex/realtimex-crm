@@ -6,15 +6,15 @@ import {
   useRedirect,
 } from "ra-core";
 import { Link } from "react-router";
-import { DeleteButton } from "@/components/admin/delete-button";
-import { ReferenceField } from "@/components/admin/reference-field";
-import { Button } from "@/components/ui/button";
+import { DeleteButton } from "@/components/ds/admin/delete-button";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
+import { Button } from "@/components/ds/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/ds/ui/dialog";
 
 import { FormToolbar } from "../layout/FormToolbar";
 import { CompanyAvatar } from "../companies/CompanyAvatar";

@@ -9,7 +9,7 @@ import { InvoicesChart } from "./InvoicesChart";
 import { OutstandingInvoices } from "./OutstandingInvoices";
 import { TasksList } from "./TasksList";
 import { Welcome } from "./Welcome";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ds/ui/tabs";
 import { TrendingUp, DollarSign } from "lucide-react";
 
 export const Dashboard = () => {

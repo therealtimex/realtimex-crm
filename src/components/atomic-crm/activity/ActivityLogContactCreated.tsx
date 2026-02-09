@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { useTranslate } from "ra-core";
 
-import { ReferenceField } from "@/components/admin/reference-field";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
 import { Avatar } from "../contacts/Avatar";
 import { RelativeDate } from "../misc/RelativeDate";
 import { SaleName } from "../sales/SaleName";

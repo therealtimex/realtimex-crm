@@ -8,16 +8,16 @@ import {
 } from "ra-core";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { ReferenceField } from "@/components/admin/reference-field";
-import { DateField } from "@/components/admin/date-field";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
+import { DateField } from "@/components/ds/admin/date-field";
+import { Button } from "@/components/ds/ui/button";
+import { Checkbox } from "@/components/ds/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ds/ui/dropdown-menu";
 import { translateChoice } from "@/i18n/utils";
 
 import type { Contact, Task as TData } from "../types";

@@ -1,8 +1,8 @@
 import { CreateBase, Form, useGetIdentity, useTranslate } from "ra-core";
-import { Card, CardContent } from "@/components/ui/card";
-import { CancelButton } from "@/components/admin/cancel-button";
-import { SaveButton } from "@/components/admin/form";
-import { FormToolbar } from "@/components/admin/simple-form";
+import { Card, CardContent } from "@/components/ds/ui/card";
+import { CancelButton } from "@/components/ds/admin/cancel-button";
+import { SaveButton } from "@/components/ds/admin/form";
+import { FormToolbar } from "@/components/ds/admin/simple-form";
 
 import { CompanyInputs } from "./CompanyInputs";
 

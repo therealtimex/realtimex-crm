@@ -1,5 +1,5 @@
 import { Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ds/ui/button';
 import { useTranslate } from 'ra-core';
 import { TerminalLogs } from '../TerminalLogs';
 import { LogEntry } from '../types';

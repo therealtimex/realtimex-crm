@@ -11,11 +11,11 @@ import {
   useUpdate,
 } from "ra-core";
 import { useState } from "react";
-import { TextInput } from "@/components/admin/text-input";
-import { DateInput } from "@/components/admin/date-input";
-import { SelectInput } from "@/components/admin/select-input";
-import { SaveButton } from "@/components/admin/form";
-import { Button } from "@/components/ui/button";
+import { TextInput } from "@/components/ds/admin/text-input";
+import { DateInput } from "@/components/ds/admin/date-input";
+import { SelectInput } from "@/components/ds/admin/select-input";
+import { SaveButton } from "@/components/ds/admin/form";
+import { Button } from "@/components/ds/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -23,13 +23,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/ds/ui/dialog";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/ds/ui/tooltip";
 import { translateChoice } from "@/i18n/utils";
 
 import { useConfigurationContext } from "../root/ConfigurationContext";

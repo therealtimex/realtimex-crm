@@ -7,11 +7,11 @@ import {
 } from "ra-core";
 import { Link as RouterLink } from "react-router-dom";
 import { Receipt } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ReferenceField } from "@/components/admin/reference-field";
-import { ReferenceManyField } from "@/components/admin/reference-many-field";
-import { TextField } from "@/components/admin/text-field";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ds/ui/button";
+import { ReferenceField } from "@/components/ds/admin/reference-field";
+import { ReferenceManyField } from "@/components/ds/admin/reference-many-field";
+import { TextField } from "@/components/ds/admin/text-field";
+import { Card, CardContent } from "@/components/ds/ui/card";
 
 import { CompanyAvatar } from "../companies/CompanyAvatar";
 import { NoteCreate, NotesIterator } from "../notes";

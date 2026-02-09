@@ -1,6 +1,6 @@
 import { useGetIdentity, useListFilterContext, useTranslate } from "ra-core";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ds/ui/label";
+import { Switch } from "@/components/ds/ui/switch";
 
 export const MyTasksInput = ({
   source = "assigned_to",

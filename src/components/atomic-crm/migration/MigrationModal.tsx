@@ -33,6 +33,15 @@ import { getSupabaseConfig } from "@/lib/supabase-config";
 import type { MigrationStatus } from "@/lib/migration-check";
 
 interface MigrationModalProps {
+  /** Whether the modal is open */
+  open: boolean;
+  /** Callback when modal is closed */
+  onOpenChange: (open: boolean) => void;
+  /** Migration status */
+  status: MigrationStatus;
+}
+
+export function MigrationModal({
   open,
   onOpenChange,
   status,

@@ -7,6 +7,8 @@ import { Skeleton } from "@/components/ds/ui/skeleton";
 import Header from "./Header";
 import { LocaleSync } from "../root/LocaleSync";
 
+import { AIAssistant } from "../misc/AIAssistant";
+
 export const Layout = ({ children }: { children: ReactNode }) => (
   <>
     <LocaleSync />
@@ -19,5 +21,6 @@ export const Layout = ({ children }: { children: ReactNode }) => (
       </ErrorBoundary>
     </main>
     <Notification />
+    <AIAssistant />
   </>
 );

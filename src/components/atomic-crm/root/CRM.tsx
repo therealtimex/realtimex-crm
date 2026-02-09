@@ -48,6 +48,10 @@ import {
 import { i18nProvider } from "./i18nProvider";
 import { StartPage } from "../login/StartPage.tsx";
 import { DatabaseHealthCheck } from "./DatabaseHealthCheck";
+import { SDKProvider } from "./SDKProvider";
+import { AIPage } from "../ai/AIPage";
+import { Sparkles } from "lucide-react";
+import { AISettingsProvider } from "./AISettingsProvider";
 
 export type CRMProps = {
   dataProvider?: DataProvider;
@@ -135,7 +139,7 @@ export const CRM = ({
     img.src = `https://atomic-crm-telemetry.marmelab.com/atomic-crm-telemetry?domain=${window.location.hostname}`;
   }, [disableTelemetry]);
 
-  return (
+  const crmContent = (
     <ConfigurationProvider
       contactGender={contactGender}
       companySectors={companySectors}
@@ -164,58 +168,68 @@ export const CRM = ({
         {...rest}
       >
         <DatabaseHealthCheck dataProvider={dataProvider}>
-          <AdminUI
-            layout={Layout}
-            loginPage={StartPage}
-            dashboard={Dashboard}
-            requireAuth
-            disableTelemetry
-            {...rest}
-          >
-            <CustomRoutes noLayout>
-              <Route path={SignupPage.path} element={<SignupPage />} />
-              <Route
-                path={SetPasswordPage.path}
-                element={<SetPasswordPage />}
-              />
-              <Route
-                path={ForgotPasswordPage.path}
-                element={<ForgotPasswordPage />}
-              />
-              <Route
-                path={ChangePasswordPage.path}
-                element={<ChangePasswordPage />}
-              />
-              <Route path={OtpLoginPage.path} element={<OtpLoginPage />} />
-            </CustomRoutes>
+          <AISettingsProvider>
+            <AdminUI
+              layout={Layout}
+              loginPage={StartPage}
+              dashboard={Dashboard}
+              requireAuth
+              disableTelemetry
+              {...rest}
+            >
+              <CustomRoutes noLayout>
+                <Route path={SignupPage.path} element={<SignupPage />} />
+                <Route
+                  path={SetPasswordPage.path}
+                  element={<SetPasswordPage />}
+                />
+                <Route
+                  path={ForgotPasswordPage.path}
+                  element={<ForgotPasswordPage />}
+                />
+                <Route
+                  path={ChangePasswordPage.path}
+                  element={<ChangePasswordPage />}
+                />
+                <Route path={OtpLoginPage.path} element={<OtpLoginPage />} />
+              </CustomRoutes>
 
-            <CustomRoutes>
-              <Route path={SettingsPage.path} element={<SettingsPage />} />
-              <Route path={DatabasePage.path} element={<DatabasePage />} />
-              <Route
-                path={IntegrationsPage.path}
-                element={<IntegrationsPage />}
-              />
-            </CustomRoutes>
-            <Resource name="deals" {...deals} />
-            <Resource name="invoices" {...invoices} />
-            <Resource name="invoice_items" />
-            <Resource name="invoice_notes" />
-            <Resource name="invoices_summary" />
-            <Resource name="tax_presets" />
-            <Resource name="contacts" {...contacts} />
-            <Resource name="companies" {...companies} />
-            <Resource name="companyNotes" />
-            <Resource name="contactNotes" />
-            <Resource name="dealNotes" />
-            <Resource name="taskNotes" />
-            <Resource name="task_activity" />
-            <Resource name="tasks" {...tasks} />
-            <Resource name="sales" {...sales} />
-            <Resource name="tags" />
-          </AdminUI>
+              <CustomRoutes>
+                <Route path={SettingsPage.path} element={<SettingsPage />} />
+                <Route path={DatabasePage.path} element={<DatabasePage />} />
+                <Route
+                  path={IntegrationsPage.path}
+                  element={<IntegrationsPage />}
+                />
+                <Route path="/ai" element={<AIPage />} />
+              </CustomRoutes>
+              <Resource name="ai" list={AIPage} icon={Sparkles} />
+              <Resource name="deals" {...deals} />
+              <Resource name="invoices" {...invoices} />
+              <Resource name="invoice_items" />
+              <Resource name="invoice_notes" />
+              <Resource name="invoices_summary" />
+              <Resource name="tax_presets" />
+              <Resource name="contacts" {...contacts} />
+              <Resource name="companies" {...companies} />
+              <Resource name="companyNotes" />
+              <Resource name="contactNotes" />
+              <Resource name="dealNotes" />
+              <Resource name="taskNotes" />
+              <Resource name="task_activity" />
+              <Resource name="tasks" {...tasks} />
+              <Resource name="sales" {...sales} />
+              <Resource name="tags" />
+            </AdminUI>
+          </AISettingsProvider>
         </DatabaseHealthCheck>
       </AdminContext>
     </ConfigurationProvider>
+  );
+
+  return (
+    <SDKProvider>
+      {crmContent}
+    </SDKProvider>
   );
 };

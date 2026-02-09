@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { readFileSync } from "fs";
 import cors from "cors";
+import { SDKService } from "./services/SDKService.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -12,6 +13,9 @@ const __dirname = dirname(__filename);
 const packageJson = JSON.parse(
   readFileSync(join(__dirname, "..", "package.json"), "utf-8"),
 );
+
+// Initialize SDK Service
+SDKService.initialize();
 
 const app = express();
 // Use PORT environment variable (same as frontend) or fall back to 3002 to avoid conflict with RealTimeX desktop app (3001)
@@ -432,6 +436,211 @@ app.get("/api/health", (req, res) => {
     version: packageJson.version,
     description: packageJson.description,
   });
+});
+
+/**
+ * SDK Endpoints
+ */
+
+// GET /api/sdk/status - Check if RealTimeX SDK is available
+app.get("/api/sdk/status", async (req, res) => {
+  try {
+    const available = await SDKService.isAvailable();
+    res.json({ success: true, available });
+  } catch (error) {
+    res.json({ success: false, available: false, message: error.message });
+  }
+});
+
+// GET /api/sdk/providers/chat - Get available LLM chat providers
+app.get("/api/sdk/providers/chat", async (req, res) => {
+  try {
+    const providers = await SDKService.getChatProviders();
+    res.json(providers);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// GET /api/sdk/providers/embed - Get available embedding providers
+app.get("/api/sdk/providers/embed", async (req, res) => {
+  try {
+    const providers = await SDKService.getEmbedProviders();
+    res.json(providers);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// GET /api/sdk/providers/tts - Get available TTS providers
+app.get("/api/sdk/providers/tts", async (req, res) => {
+  try {
+    const providers = await SDKService.getTTSProviders();
+    res.json(providers);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// GET /api/tts/providers - Standardized TTS providers
+app.get("/api/tts/providers", async (req, res) => {
+  try {
+    const providers = await SDKService.getTTSProviders();
+    res.json(providers);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// POST /api/sdk/reset - Reset SDK instance
+app.post("/api/sdk/reset", async (req, res) => {
+  try {
+    await SDKService.reset();
+    res.json({ success: true, message: "SDK reset successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// GET /api/sdk/threads - Fetch conversation threads
+app.get("/api/sdk/threads", async (req, res) => {
+  try {
+    const sdk = SDKService.getSDK();
+    if (!sdk) return res.json({ success: false, threads: [] });
+
+    const threads = await SDKService.withTimeout(sdk.api.getThreads());
+    res.json({ success: true, threads });
+  } catch (error) {
+    res.json({ success: false, threads: [], message: error.message });
+  }
+});
+
+// POST /api/sdk/chat - LLM Chat Proxy
+app.post("/api/sdk/chat", async (req, res) => {
+  try {
+    const sdk = SDKService.getSDK();
+    if (!sdk) return res.json({ success: false, message: "SDK not initialized" });
+
+    const { messages, settings = {} } = req.body;
+
+    // Resolve provider/model
+    const { provider, model } = await SDKService.resolveChatProvider(settings);
+
+    const response = await SDKService.withTimeout(
+      sdk.llm.chat({
+        messages,
+        provider,
+        model,
+        ...settings
+      })
+    );
+
+    res.json({ success: true, content: response.content, raw: response });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+});
+
+// POST /api/sdk/embed - Embedding Proxy
+app.post("/api/sdk/embed", async (req, res) => {
+  try {
+    const sdk = SDKService.getSDK();
+    if (!sdk) return res.json({ success: false, message: "SDK not initialized" });
+
+    const { content, settings = {} } = req.body;
+
+    // Resolve provider/model
+    const { provider, model } = await SDKService.resolveEmbedProvider(settings);
+
+    const response = await SDKService.withTimeout(
+      sdk.llm.embed({
+        input: content,
+        provider,
+        model,
+        ...settings
+      })
+    );
+
+    res.json({ success: true, embedding: response.embedding, model: response.model, raw: response });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+});
+
+import multer from 'multer';
+
+const upload = multer();
+
+// POST /api/sdk/stt - Speech-to-Text Proxy
+app.post("/api/sdk/stt", upload.single('audio'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ success: false, message: "No audio file provided" });
+
+    const text = await SDKService.transcribeAudio(req.file.buffer, req.body.settings);
+    res.json({ success: true, text });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+});
+
+// POST /api/sdk/tts - Legacy TTS Proxy
+app.post("/api/sdk/tts", async (req, res) => {
+  try {
+    const audioBuffer = await SDKService.generateSpeech(req.body.text, req.body.settings);
+    res.set({
+      'Content-Type': 'audio/mpeg',
+      'Content-Length': audioBuffer.length
+    });
+    res.send(audioBuffer);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// POST /api/tts/speak - Standardized Speak
+app.post("/api/tts/speak", async (req, res) => {
+  try {
+    const audioBuffer = await SDKService.generateSpeech(req.body.text, req.body.settings);
+    res.set({
+      'Content-Type': 'audio/mpeg',
+      'Content-Length': audioBuffer.length
+    });
+    res.send(audioBuffer);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// POST /api/tts/stream - Standardized Streaming
+app.post("/api/tts/stream", async (req, res) => {
+  try {
+    const { text, settings = {} } = req.body;
+
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    res.write(`event: info\ndata: ${JSON.stringify({ message: 'Starting TTS generation...' })}\n\n`);
+
+    try {
+      for await (const chunk of SDKService.generateSpeechStream(text, settings)) {
+        // Match chunk format from email-automator
+        const base64Audio = Buffer.from(chunk.audio).toString('base64');
+        res.write(`event: chunk\ndata: ${JSON.stringify({
+          index: chunk.index,
+          total: chunk.total,
+          audio: base64Audio,
+          mimeType: chunk.mimeType
+        })}\n\n`);
+      }
+      res.write(`event: done\ndata: ${JSON.stringify({ message: 'TTS generation complete' })}\n\n`);
+    } catch (streamError) {
+      res.write(`event: error\ndata: ${JSON.stringify({ error: streamError.message })}\n\n`);
+    }
+    res.end();
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 });
 
 // SPA fallback - serve index.html for all non-API routes (client-side routing)

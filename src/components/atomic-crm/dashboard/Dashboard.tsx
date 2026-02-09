@@ -11,6 +11,7 @@ import { TasksList } from "./TasksList";
 import { Welcome } from "./Welcome";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ds/ui/tabs";
 import { TrendingUp, DollarSign } from "lucide-react";
+import { DailyBriefing } from "./DailyBriefing";
 
 export const Dashboard = () => {
   const translate = useTranslate();
@@ -106,7 +107,8 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      <div className="md:col-span-3">
+      <div className="md:col-span-3 space-y-6">
+        <DailyBriefing />
         <TasksList />
       </div>
     </div>

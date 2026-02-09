@@ -13,6 +13,7 @@ import { translateChoice } from "@/i18n/utils";
 import { Status } from "../misc/Status";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import { getCurrentDate } from "./utils";
+import { VoiceNoteButton } from "../misc/VoiceNoteButton";
 
 export const NoteInputs = ({ showStatus }: { showStatus?: boolean }) => {
   const { noteStatuses } = useConfigurationContext();
@@ -42,24 +43,33 @@ export const NoteInputs = ({ showStatus }: { showStatus?: boolean }) => {
         rows={6}
       />
 
-      {!displayMore && (
-        <div className="flex justify-end items-center gap-2">
-          <Button
-            variant="link"
-            size="sm"
-            onClick={() => {
-              setDisplayMore(!displayMore);
-              setValue("date", getCurrentDate());
-            }}
-            className="text-sm text-muted-foreground underline hover:no-underline p-0 h-auto cursor-pointer"
-          >
-            {translate("crm.note.show_options")}
-          </Button>
-          <span className="text-sm text-muted-foreground">
-            {translate("crm.note.options_hint")}
-          </span>
-        </div>
-      )}
+      <div className="flex justify-between items-center">
+        <VoiceNoteButton
+          onTranscription={(text) => {
+            const currentText = (record?.text || "");
+            setValue("text", currentText ? `${currentText}\n\n${text}` : text);
+          }}
+        />
+
+        {!displayMore && (
+          <div className="flex items-center gap-2">
+            <Button
+              variant="link"
+              size="sm"
+              onClick={() => {
+                setDisplayMore(!displayMore);
+                setValue("date", getCurrentDate());
+              }}
+              className="text-sm text-muted-foreground underline hover:no-underline p-0 h-auto cursor-pointer"
+            >
+              {translate("crm.note.show_options")}
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              {translate("crm.note.options_hint")}
+            </span>
+          </div>
+        )}
+      </div>
 
       <div
         className={cn(

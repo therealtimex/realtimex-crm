@@ -24,6 +24,7 @@ import { getContactAvatar } from "../commons/getContactAvatar";
 import { getIsInitialized } from "./authProvider";
 import { supabase } from "./supabase";
 import { getSupabaseConfig } from "@/lib/supabase-config";
+import { EmbeddingService } from "@/lib/ai/EmbeddingService";
 
 // Get config dynamically (from localStorage or env vars)
 // If no config, create a dummy provider that will never be used
@@ -653,6 +654,14 @@ export const dataProvider = withLifecycleCallbacks(
       beforeUpdate: async (params) => {
         return processContactAvatar(params);
       },
+      afterCreate: async (result) => {
+        EmbeddingService.embedRecord('contact', result.data);
+        return result;
+      },
+      afterUpdate: async (result) => {
+        EmbeddingService.embedRecord('contact', result.data);
+        return result;
+      },
       beforeGetList: async (params) => {
         return applyFullTextSearch(["search_text"])(params);
       },
@@ -675,6 +684,14 @@ export const dataProvider = withLifecycleCallbacks(
       },
       beforeUpdate: async (params) => {
         return await processCompanyLogo(params);
+      },
+      afterCreate: async (result) => {
+        EmbeddingService.embedRecord('company', result.data);
+        return result;
+      },
+      afterUpdate: async (result) => {
+        EmbeddingService.embedRecord('company', result.data);
+        return result;
       },
     },
     {

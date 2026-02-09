@@ -38,7 +38,8 @@ import type { SalesFormData } from "../types";
 import { TemplatesList } from "../invoices/TemplatesList";
 import { isDemoMode } from "@/lib/demo-utils";
 import { Alert, AlertDescription } from "@/components/ds/ui/alert";
-import { Info } from "lucide-react";
+import { Info, Brain } from "lucide-react";
+import { AgentToggle } from "./AgentToggle";
 
 export const SettingsPage = () => {
   const translate = useTranslate();
@@ -265,6 +266,15 @@ const OrganizationSettings = () => {
                   }
                   isEditMode={isEditMode}
                 />
+                <div className="pt-6 border-t font-sans">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Brain className="h-5 w-5 text-purple-500" />
+                    AI & Automation
+                  </h3>
+                  <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-dashed">
+                    <AgentToggle />
+                  </div>
+                </div>
               </div>
             </div>
 

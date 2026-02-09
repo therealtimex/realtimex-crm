@@ -4,7 +4,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ds/ui/dropdown-menu";
-import { Database, Settings, User, Webhook, ArrowLeft } from "lucide-react";
+import { Database, Settings, User, Webhook, ArrowLeft, Cpu } from "lucide-react";
 import { CanAccess, useTranslate } from "ra-core";
 import { Link, matchPath, useLocation, useNavigate } from "react-router";
 import { RefreshButton } from "@/components/ds/admin/refresh-button";
@@ -16,6 +16,7 @@ import { MigrationPulseIndicator } from "@/components/atomic-crm/migration";
 import { useMigrationContextSafe } from "@/contexts/MigrationContext";
 import { Button } from "@/components/ds/ui/button";
 import { ChangelogModal } from "./ChangelogModal";
+import { AISettingsModal } from "./AISettingsModal";
 
 import { useConfigurationContext } from "../root/ConfigurationContext";
 
@@ -26,6 +27,7 @@ const Header = () => {
   const translate = useTranslate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [changelogOpen, setChangelogOpen] = useState(false);
+  const [isAISettingsOpen, setIsAISettingsOpen] = useState(false);
 
   // Simplified path matching logic
   const navPaths = [
@@ -144,6 +146,15 @@ const Header = () => {
             )}
             <LocalesMenuButton />
             <ThemeModeToggle />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsAISettingsOpen(true)}
+              className="text-secondary-foreground/70 hover:text-secondary-foreground"
+              title="AI Settings"
+            >
+              <Cpu className="h-5 w-5" />
+            </Button>
             <RefreshButton />
             <UserMenu>
               <ConfigurationMenu />
@@ -165,6 +176,10 @@ const Header = () => {
             <ChangelogModal
               open={changelogOpen}
               onOpenChange={setChangelogOpen}
+            />
+            <AISettingsModal
+              open={isAISettingsOpen}
+              onOpenChange={setIsAISettingsOpen}
             />
           </div>
         </div>
@@ -229,11 +244,10 @@ const NavigationTab = ({
 }) => (
   <Link
     to={to}
-    className={`px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
-      isActive
-        ? "text-secondary-foreground border-secondary-foreground"
-        : "text-secondary-foreground/70 border-transparent hover:text-secondary-foreground/80"
-    }`}
+    className={`px-6 py-3 text-sm font-medium transition-colors border-b-2 ${isActive
+      ? "text-secondary-foreground border-secondary-foreground"
+      : "text-secondary-foreground/70 border-transparent hover:text-secondary-foreground/80"
+      }`}
   >
     {label}
   </Link>

@@ -8,8 +8,6 @@
 import { useMemo, useState, useEffect, useRef } from "react";
 import {
   AlertTriangle,
-  Copy,
-  Check,
   ExternalLink,
   Info,
   Loader2,

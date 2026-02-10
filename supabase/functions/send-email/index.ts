@@ -13,7 +13,8 @@ serve(async (req) => {
   try {
     // 1. Authenticate the user (or service role)
     const authHeader = req.headers.get("Authorization")!;
-    const isServiceRole = authHeader === `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`;
+    const isServiceRole =
+      authHeader === `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`;
 
     let _user = null;
     if (!isServiceRole) {
@@ -40,10 +41,17 @@ serve(async (req) => {
 
     // Use admin client for DB operations to ensure we bypass RLS correctly when needed
     const dbClient = isServiceRole
-      ? createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!)
-      : createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, {
-        global: { headers: { Authorization: authHeader } }
-      });
+      ? createClient(
+          Deno.env.get("SUPABASE_URL")!,
+          Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+        )
+      : createClient(
+          Deno.env.get("SUPABASE_URL")!,
+          Deno.env.get("SUPABASE_ANON_KEY")!,
+          {
+            global: { headers: { Authorization: authHeader } },
+          },
+        );
     // 2. Parse request body
     const { to, cc, subject, body, html, attachments } = await req.json();
 
@@ -134,8 +142,8 @@ serve(async (req) => {
       console.error("Resend API error:", data);
       throw new Error(
         data.message ||
-        JSON.stringify(data) ||
-        "Failed to send email via Resend",
+          JSON.stringify(data) ||
+          "Failed to send email via Resend",
       );
     }
 

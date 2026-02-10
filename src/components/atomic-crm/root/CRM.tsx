@@ -227,9 +227,5 @@ export const CRM = ({
     </ConfigurationProvider>
   );
 
-  return (
-    <SDKProvider>
-      {crmContent}
-    </SDKProvider>
-  );
+  return <SDKProvider>{crmContent}</SDKProvider>;
 };

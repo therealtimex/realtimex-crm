@@ -7,8 +7,7 @@ const DS_UI_DIR = join(process.cwd(), "src/components/ds/ui");
 describe("DS UI ownership guardrails", () => {
   it("contains no pass-through re-export wrappers", () => {
     const files = readdirSync(DS_UI_DIR).filter(
-      (f) =>
-        (f.endsWith(".ts") || f.endsWith(".tsx")) && !f.includes(".test."),
+      (f) => (f.endsWith(".ts") || f.endsWith(".tsx")) && !f.includes(".test."),
     );
 
     for (const file of files) {
@@ -19,8 +18,7 @@ describe("DS UI ownership guardrails", () => {
 
   it("contains no direct imports from upstream ui path", () => {
     const files = readdirSync(DS_UI_DIR).filter(
-      (f) =>
-        (f.endsWith(".ts") || f.endsWith(".tsx")) && !f.includes(".test."),
+      (f) => (f.endsWith(".ts") || f.endsWith(".tsx")) && !f.includes(".test."),
     );
 
     for (const file of files) {

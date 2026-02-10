@@ -19,7 +19,10 @@ export const InvoicesChart = memo(() => {
     ? navigator.languages || [navigator.language]
     : [DEFAULT_LOCALE];
 
-  const sixMonthsAgo = useMemo(() => subMonths(new Date(), 6).toISOString(), []);
+  const sixMonthsAgo = useMemo(
+    () => subMonths(new Date(), 6).toISOString(),
+    [],
+  );
 
   const { data, isPending } = useGetList<Invoice>("invoices", {
     pagination: { perPage: 100, page: 1 },
@@ -36,14 +39,17 @@ export const InvoicesChart = memo(() => {
     if (!data) return [];
 
     // Group invoices by month
-    const invoicesByMonth = data.reduce((acc, invoice) => {
-      const month = startOfMonth(new Date(invoice.issue_date)).toISOString();
-      if (!acc[month]) {
-        acc[month] = [];
-      }
-      acc[month].push(invoice);
-      return acc;
-    }, {} as Record<string, Invoice[]>);
+    const invoicesByMonth = data.reduce(
+      (acc, invoice) => {
+        const month = startOfMonth(new Date(invoice.issue_date)).toISOString();
+        if (!acc[month]) {
+          acc[month] = [];
+        }
+        acc[month].push(invoice);
+        return acc;
+      },
+      {} as Record<string, Invoice[]>,
+    );
 
     // Calculate totals for each month
     const result = Object.keys(invoicesByMonth).map((month) => {

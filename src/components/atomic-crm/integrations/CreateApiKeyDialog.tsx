@@ -139,11 +139,11 @@ export const CreateApiKeyDialog = ({
           <DialogDescription>
             {createdKey
               ? translate(
-                "crm.integrations.api_keys.dialog.created_description",
-              )
+                  "crm.integrations.api_keys.dialog.created_description",
+                )
               : translate(
-                "crm.integrations.api_keys.dialog.create_description",
-              )}
+                  "crm.integrations.api_keys.dialog.create_description",
+                )}
           </DialogDescription>
         </DialogHeader>
 

@@ -89,11 +89,17 @@ app.get("/api/setup/organizations", async (req, res) => {
  * Returns: Server-Sent Events stream with provisioning progress
  */
 app.post("/api/setup/auto-provision", async (req, res) => {
-  const { orgId, projectName: customProjectName, region: customRegion } = req.body;
+  const {
+    orgId,
+    projectName: customProjectName,
+    region: customRegion,
+  } = req.body;
   const authHeader = req.headers["authorization"];
 
   if (!orgId) {
-    return res.status(400).json({ error: "Missing required parameter (orgId)" });
+    return res
+      .status(400)
+      .json({ error: "Missing required parameter (orgId)" });
   }
 
   if (!authHeader) {
@@ -111,16 +117,24 @@ app.post("/api/setup/auto-provision", async (req, res) => {
 
   try {
     const crypto = await import("crypto");
-    const projectName = customProjectName || `RealTimeX-CRM-${crypto.randomBytes(2).toString("hex")}`;
+    const projectName =
+      customProjectName ||
+      `RealTimeX-CRM-${crypto.randomBytes(2).toString("hex")}`;
     const region = customRegion || "us-east-1";
 
     // Generate a secure DB password server-side
-    const dbPass = crypto.randomBytes(16).toString("base64")
-      .replace(/\+/g, "a")
-      .replace(/\//g, "b")
-      .replace(/=/g, "c") + "1!Aa";
+    const dbPass =
+      crypto
+        .randomBytes(16)
+        .toString("base64")
+        .replace(/\+/g, "a")
+        .replace(/\//g, "b")
+        .replace(/=/g, "c") + "1!Aa";
 
-    sendEvent("info", `🚀 Creating Supabase project: ${projectName} in ${region}...`);
+    sendEvent(
+      "info",
+      `🚀 Creating Supabase project: ${projectName} in ${region}...`,
+    );
 
     // 1. Create Project
     const createResponse = await fetch("https://api.supabase.com/v1/projects", {
@@ -145,7 +159,10 @@ app.post("/api/setup/auto-provision", async (req, res) => {
     const project = await createResponse.json();
     const projectRef = project.id;
 
-    sendEvent("info", `📦 Project created! ID: ${projectRef}. Waiting for it to go live...`);
+    sendEvent(
+      "info",
+      `📦 Project created! ID: ${projectRef}. Waiting for it to go live...`,
+    );
     sendEvent("project_id", projectRef);
 
     // 2. Poll for Readiness
@@ -162,13 +179,16 @@ app.post("/api/setup/auto-provision", async (req, res) => {
           `https://api.supabase.com/v1/projects/${projectRef}`,
           {
             headers: { Authorization: authHeader },
-          }
+          },
         );
 
         if (statusResponse.ok) {
           const statusData = await statusResponse.json();
           const status = statusData.status;
-          sendEvent("info", `⏳ Status: ${status} (Attempt ${attempts}/${maxAttempts})`);
+          sendEvent(
+            "info",
+            `⏳ Status: ${status} (Attempt ${attempts}/${maxAttempts})`,
+          );
 
           if (status === "ACTIVE_HEALTHY" || status === "ACTIVE") {
             isReady = true;
@@ -193,7 +213,10 @@ app.post("/api/setup/auto-provision", async (req, res) => {
     while (!anonKey && keyAttempts < maxKeyAttempts) {
       keyAttempts++;
       if (keyAttempts > 1) {
-        sendEvent("info", `⏳ API keys not ready yet. Retrying (Attempt ${keyAttempts}/${maxKeyAttempts})...`);
+        sendEvent(
+          "info",
+          `⏳ API keys not ready yet. Retrying (Attempt ${keyAttempts}/${maxKeyAttempts})...`,
+        );
         await new Promise((resolve) => setTimeout(resolve, 3000));
       }
 
@@ -202,7 +225,7 @@ app.post("/api/setup/auto-provision", async (req, res) => {
           `https://api.supabase.com/v1/projects/${projectRef}/api-keys`,
           {
             headers: { Authorization: authHeader },
-          }
+          },
         );
 
         if (keysResponse.ok) {
@@ -287,7 +310,9 @@ app.post("/api/migrate", async (req, res) => {
   const now = Date.now();
   const timeSinceLastMigration = now - lastMigrationTime;
   if (timeSinceLastMigration < MIGRATION_COOLDOWN) {
-    const waitTime = Math.ceil((MIGRATION_COOLDOWN - timeSinceLastMigration) / 1000);
+    const waitTime = Math.ceil(
+      (MIGRATION_COOLDOWN - timeSinceLastMigration) / 1000,
+    );
     return res.status(429).json({
       error: "Rate limit exceeded",
       message: `Please wait ${waitTime} seconds before running another migration`,
@@ -373,7 +398,9 @@ app.post("/api/migrate", async (req, res) => {
           sendLog("   - There's a network connectivity issue");
           sendLog("   - The migration is taking unusually long");
           sendLog("");
-          sendLog("Try running the migration manually to see what's blocking it.");
+          sendLog(
+            "Try running the migration manually to see what's blocking it.",
+          );
           res.end();
         }
       }, MIGRATION_TIMEOUT);
@@ -572,7 +599,8 @@ app.get("/api/sdk/threads", async (req, res) => {
 app.post("/api/sdk/chat", async (req, res) => {
   try {
     const sdk = SDKService.getSDK();
-    if (!sdk) return res.json({ success: false, message: "SDK not initialized" });
+    if (!sdk)
+      return res.json({ success: false, message: "SDK not initialized" });
 
     const { messages, settings = {}, threadId } = req.body;
 
@@ -584,30 +612,33 @@ app.post("/api/sdk/chat", async (req, res) => {
         provider,
         model,
         threadId, // Pass threadId if available
-        ...settings
-      })
+        ...settings,
+      }),
     );
 
     // Support both direct content and nested response.content (SDK version differences)
-    let content = response.content || response.response?.content || (typeof response === 'string' ? response : "");
+    let content =
+      response.content ||
+      response.response?.content ||
+      (typeof response === "string" ? response : "");
 
     // Robust Content Cleaning & Extraction
-    if (typeof content === 'string' && content.length > 0) {
+    if (typeof content === "string" && content.length > 0) {
       // 1. Strip internal platform tokens (e.g. <|channel|>, <|message|>, etc.)
-      content = content.replace(/<\|[\s\S]*?\|>/g, '').trim();
+      content = content.replace(/<\|[\s\S]*?\|>/g, "").trim();
 
       // 2. Handle Markdown JSON blocks (common in long LLM outputs)
-      if (content.includes('```json')) {
-        content = content.split('```json')[1].split('```')[0].trim();
-      } else if (content.includes('```') && (content.match(/\{[\s\S]*\}/))) {
+      if (content.includes("```json")) {
+        content = content.split("```json")[1].split("```")[0].trim();
+      } else if (content.includes("```") && content.match(/\{[\s\S]*\}/)) {
         // If it's a generic code block but contains JSON-like structure
-        const block = content.split('```')[1].split('```')[0].trim();
-        if (block.startsWith('{')) content = block;
+        const block = content.split("```")[1].split("```")[0].trim();
+        if (block.startsWith("{")) content = block;
       }
 
       // 3. Extract JSON object if the string contains one (handles preamble/postamble)
       // Only do this if it looks like the model was trying to return structured data
-      if (content.includes('{') && content.includes('}')) {
+      if (content.includes("{") && content.includes("}")) {
         const jsonMatch = content.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
           try {
@@ -616,7 +647,10 @@ app.post("/api/sdk/chat", async (req, res) => {
             // If it has our known response fields, extract them
             if (parsed.response || parsed.content || parsed.message) {
               content = parsed.response || parsed.content || parsed.message;
-            } else if (Object.keys(parsed).length > 0 && !content.includes('\n')) {
+            } else if (
+              Object.keys(parsed).length > 0 &&
+              !content.includes("\n")
+            ) {
               // If it's a valid small JSON object and NOT markdown, maybe it's the whole response
               // but we stay conservative here to avoid breaking actual markdown lists
             }
@@ -627,11 +661,11 @@ app.post("/api/sdk/chat", async (req, res) => {
       }
     }
 
-    res.json({ 
-      success: response.success !== false, 
-      content, 
+    res.json({
+      success: response.success !== false,
+      content,
       raw: response,
-      error: response.error
+      error: response.error,
     });
   } catch (error) {
     res.json({ success: false, message: error.message });
@@ -642,7 +676,8 @@ app.post("/api/sdk/chat", async (req, res) => {
 app.post("/api/sdk/embed", async (req, res) => {
   try {
     const sdk = SDKService.getSDK();
-    if (!sdk) return res.json({ success: false, message: "SDK not initialized" });
+    if (!sdk)
+      return res.json({ success: false, message: "SDK not initialized" });
 
     const { content, settings = {} } = req.body;
 
@@ -653,28 +688,39 @@ app.post("/api/sdk/embed", async (req, res) => {
       sdk.llm.embed(content, {
         provider,
         model,
-        ...settings
-      })
+        ...settings,
+      }),
     );
 
     const embedding = response.embedding || response.embeddings?.[0];
 
-    res.json({ success: true, embedding, model: response.model, raw: response });
+    res.json({
+      success: true,
+      embedding,
+      model: response.model,
+      raw: response,
+    });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
 });
 
-import multer from 'multer';
+import multer from "multer";
 
 const upload = multer();
 
 // POST /api/sdk/stt - Speech-to-Text Proxy
-app.post("/api/sdk/stt", upload.single('audio'), async (req, res) => {
+app.post("/api/sdk/stt", upload.single("audio"), async (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ success: false, message: "No audio file provided" });
+    if (!req.file)
+      return res
+        .status(400)
+        .json({ success: false, message: "No audio file provided" });
 
-    const text = await SDKService.transcribeAudio(req.file.buffer, req.body.settings);
+    const text = await SDKService.transcribeAudio(
+      req.file.buffer,
+      req.body.settings,
+    );
     res.json({ success: true, text });
   } catch (error) {
     res.json({ success: false, message: error.message });
@@ -684,10 +730,13 @@ app.post("/api/sdk/stt", upload.single('audio'), async (req, res) => {
 // POST /api/sdk/tts - Legacy TTS Proxy
 app.post("/api/sdk/tts", async (req, res) => {
   try {
-    const audioBuffer = await SDKService.generateSpeech(req.body.text, req.body.settings);
+    const audioBuffer = await SDKService.generateSpeech(
+      req.body.text,
+      req.body.settings,
+    );
     res.set({
-      'Content-Type': 'audio/mpeg',
-      'Content-Length': audioBuffer.length
+      "Content-Type": "audio/mpeg",
+      "Content-Length": audioBuffer.length,
     });
     res.send(audioBuffer);
   } catch (error) {
@@ -698,10 +747,13 @@ app.post("/api/sdk/tts", async (req, res) => {
 // POST /api/tts/speak - Standardized Speak
 app.post("/api/tts/speak", async (req, res) => {
   try {
-    const audioBuffer = await SDKService.generateSpeech(req.body.text, req.body.settings);
+    const audioBuffer = await SDKService.generateSpeech(
+      req.body.text,
+      req.body.settings,
+    );
     res.set({
-      'Content-Type': 'audio/mpeg',
-      'Content-Length': audioBuffer.length
+      "Content-Type": "audio/mpeg",
+      "Content-Length": audioBuffer.length,
     });
     res.send(audioBuffer);
   } catch (error) {
@@ -714,26 +766,37 @@ app.post("/api/tts/stream", async (req, res) => {
   try {
     const { text, settings = {} } = req.body;
 
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
 
-    res.write(`event: info\ndata: ${JSON.stringify({ message: 'Starting TTS generation...' })}\n\n`);
+    res.write(
+      `event: info\ndata: ${JSON.stringify({ message: "Starting TTS generation..." })}\n\n`,
+    );
 
     try {
-      for await (const chunk of SDKService.generateSpeechStream(text, settings)) {
+      for await (const chunk of SDKService.generateSpeechStream(
+        text,
+        settings,
+      )) {
         // Match chunk format from email-automator
-        const base64Audio = Buffer.from(chunk.audio).toString('base64');
-        res.write(`event: chunk\ndata: ${JSON.stringify({
-          index: chunk.index,
-          total: chunk.total,
-          audio: base64Audio,
-          mimeType: chunk.mimeType
-        })}\n\n`);
+        const base64Audio = Buffer.from(chunk.audio).toString("base64");
+        res.write(
+          `event: chunk\ndata: ${JSON.stringify({
+            index: chunk.index,
+            total: chunk.total,
+            audio: base64Audio,
+            mimeType: chunk.mimeType,
+          })}\n\n`,
+        );
       }
-      res.write(`event: done\ndata: ${JSON.stringify({ message: 'TTS generation complete' })}\n\n`);
+      res.write(
+        `event: done\ndata: ${JSON.stringify({ message: "TTS generation complete" })}\n\n`,
+      );
     } catch (streamError) {
-      res.write(`event: error\ndata: ${JSON.stringify({ error: streamError.message })}\n\n`);
+      res.write(
+        `event: error\ndata: ${JSON.stringify({ error: streamError.message })}\n\n`,
+      );
     }
     res.end();
   } catch (error) {

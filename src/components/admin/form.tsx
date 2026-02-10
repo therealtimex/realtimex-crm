@@ -196,17 +196,17 @@ const SaveButton = <RecordType extends RaRecord = RaRecord>(
       ? undefined
       : !alwaysEnable,
     disabledProp ||
-    (!isDirty && recordFromLocation == null) ||
-    isValidating ||
-    isSubmitting ||
-    saveContext?.saving,
+      (!isDirty && recordFromLocation == null) ||
+      isValidating ||
+      isSubmitting ||
+      saveContext?.saving,
   );
 
   warning(
     type === "submit" &&
-    ((mutationOptions &&
-      (mutationOptions.onSuccess || mutationOptions.onError)) ||
-      transform),
+      ((mutationOptions &&
+        (mutationOptions.onSuccess || mutationOptions.onError)) ||
+        transform),
     'Cannot use <SaveButton mutationOptions> props on a button of type "submit". To override the default mutation options on a particular save button, set the <SaveButton type="button"> prop, or set mutationOptions in the main view component (<Create> or <Edit>).',
   );
 
@@ -282,19 +282,19 @@ interface Props<
   >;
   transform?: TransformData;
   variant?:
-  | "default"
-  | "destructive"
-  | "outline"
-  | "secondary"
-  | "ghost"
-  | "link";
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link";
 }
 
 export type SaveButtonProps<RecordType extends RaRecord = RaRecord> =
   Props<RecordType> &
-  React.ComponentProps<"button"> & {
-    alwaysEnable?: boolean;
-  };
+    React.ComponentProps<"button"> & {
+      alwaysEnable?: boolean;
+    };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const valueOrDefault = (value: any, defaultValue: any) =>

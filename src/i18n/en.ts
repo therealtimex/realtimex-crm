@@ -24,7 +24,8 @@ export const enMessages = {
   },
   setup: {
     welcomeTitle: "Welcome to %{title}",
-    welcomeSubtitle: "To get started, you'll need to connect to a Supabase database.",
+    welcomeSubtitle:
+      "To get started, you'll need to connect to a Supabase database.",
     encryptedTitle: "Secured",
     encryptedDesc: "Your data is secured with AES-256",
     turboTitle: "Turbo",
@@ -57,7 +58,8 @@ export const enMessages = {
     initializeSystem: "Initialize System",
     provisioning: "Provisioning",
     provisioningFailed: "Provisioning Failed",
-    provisioningFailedDetails: "Provisioning failed. Check logs above for details.",
+    provisioningFailedDetails:
+      "Provisioning failed. Check logs above for details.",
     assemblingInfrastructure: "Assembling infrastructure...",
     checkLogs: "Check logs for details",
     tryAgain: "Try Again",
@@ -72,15 +74,19 @@ export const enMessages = {
     installDatabaseSchema: "Install Database Schema",
     retryInstallation: "Retry Installation",
     projectIdRequired: "Project ID is required for migration.",
-    tokenDescription: "A Supabase access token is required to install the database schema and sync existing users.",
+    tokenDescription:
+      "A Supabase access token is required to install the database schema and sync existing users.",
     connectingProvisioning: "Connecting to Supabase provisioning engine...",
     projectReady: "✨ Project ready! Initializing database...",
     startingMigration: "Starting database migration...",
     setupCompleteLog: "🎉 Setup complete!",
     checkingDatabase: "Checking database status...",
-    dbNotInitialized: "Database not initialized. Migration required to set up schema.",
-    dbVersionBehind: "Database version (%{dbVersion}) is behind app version (%{appVersion}). Migration recommended.",
-    dbLegacySchema: "Database uses legacy schema but is already initialized and working.",
+    dbNotInitialized:
+      "Database not initialized. Migration required to set up schema.",
+    dbVersionBehind:
+      "Database version (%{dbVersion}) is behind app version (%{appVersion}). Migration recommended.",
+    dbLegacySchema:
+      "Database uses legacy schema but is already initialized and working.",
     skippingMigration: "✅ Skipping migration. Database ready to use!",
     reloadingApp: "Reloading app with new credentials...",
     dbReady: "✅ Database already set up and ready!",

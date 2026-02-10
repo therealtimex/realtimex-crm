@@ -50,7 +50,9 @@ export const DealsChart = memo(() => {
   const months = useMemo(() => {
     if (!data) return [];
     const dealsByMonth = data.reduce((acc, deal) => {
-      const month = startOfMonth(deal.expected_closing_date ?? new Date()).toISOString();
+      const month = startOfMonth(
+        deal.expected_closing_date ?? new Date(),
+      ).toISOString();
       if (!acc[month]) {
         acc[month] = [];
       }

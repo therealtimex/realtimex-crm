@@ -34,7 +34,8 @@ export const frMessages = {
     initializeSystem: "Initialiser le Système",
     provisioning: "Provisionnement",
     provisioningFailed: "Échec du Provisionnement",
-    provisioningFailedDetails: "Échec du provisionnement. Voir les logs ci-dessus pour les détails.",
+    provisioningFailedDetails:
+      "Échec du provisionnement. Voir les logs ci-dessus pour les détails.",
     assemblingInfrastructure: "Assemblage de l'infrastructure...",
     checkLogs: "Voir les logs pour détails",
     tryAgain: "Réessayer",
@@ -49,17 +50,24 @@ export const frMessages = {
     installDatabaseSchema: "Installer le Schéma",
     retryInstallation: "Réessayer l'Installation",
     projectIdRequired: "L'identifiant du projet est requis pour la migration.",
-    tokenDescription: "Un jeton d'accès Supabase est requis pour installer le schéma et synchroniser les utilisateurs.",
-    connectingProvisioning: "Connexion au moteur de provisionnement Supabase...",
+    tokenDescription:
+      "Un jeton d'accès Supabase est requis pour installer le schéma et synchroniser les utilisateurs.",
+    connectingProvisioning:
+      "Connexion au moteur de provisionnement Supabase...",
     projectReady: "✨ Projet prêt ! Initialisation de la base de données...",
     startingMigration: "Démarrage de la migration de la base de données...",
     setupCompleteLog: "🎉 Configuration terminée !",
     checkingDatabase: "Vérification de l'état de la base de données...",
-    dbNotInitialized: "Base de données non initialisée. Migration requise pour configurer le schéma.",
-    dbVersionBehind: "La version de la base de données (%{dbVersion}) est en retard sur la version de l'application (%{appVersion}). Migration recommandée.",
-    dbLegacySchema: "La base de données utilise un ancien schéma mais est déjà initialisée et fonctionnelle.",
-    skippingMigration: "✅ Migration ignorée. Base de données prête à l'emploi !",
-    reloadingApp: "Rechargement de l'application avec les nouveaux identifiants...",
+    dbNotInitialized:
+      "Base de données non initialisée. Migration requise pour configurer le schéma.",
+    dbVersionBehind:
+      "La version de la base de données (%{dbVersion}) est en retard sur la version de l'application (%{appVersion}). Migration recommandée.",
+    dbLegacySchema:
+      "La base de données utilise un ancien schéma mais est déjà initialisée et fonctionnelle.",
+    skippingMigration:
+      "✅ Migration ignorée. Base de données prête à l'emploi !",
+    reloadingApp:
+      "Rechargement de l'application avec les nouveaux identifiants...",
     dbReady: "✅ Base de données déjà configurée et prête !",
     setupComplete: "Configuration terminée !",
     redirecting: "Redirection vers votre CRM...",

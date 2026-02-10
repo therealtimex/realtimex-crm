@@ -24,7 +24,12 @@ import { RecordField } from "@/components/ds/admin/record-field";
 import { TextInput } from "@/components/ds/admin/text-input";
 import { Button } from "@/components/ds/ui/button";
 import { Card, CardContent } from "@/components/ds/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ds/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ds/ui/tabs";
 import {
   Tooltip,
   TooltipContent,
@@ -223,7 +228,7 @@ const OrganizationSettings = () => {
       setEditMode(false);
       notify(
         translate("resources.business_profile.notification.updated") ||
-        "Organization profile updated",
+          "Organization profile updated",
       );
     },
     onError: (error: any) => {

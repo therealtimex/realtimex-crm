@@ -1,4 +1,9 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ds/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ds/ui/tabs";
 import { ApiKeysTab } from "./ApiKeysTab";
 import { WebhooksTab } from "./WebhooksTab";
 import { IngestionChannelsTab } from "./IngestionChannelsTab";

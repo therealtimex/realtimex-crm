@@ -237,7 +237,9 @@ const dataProviderWithCustomMethods = {
       // If no data exists, create a default record (safe for singleton tables)
       // This ensures the app works even if migrations haven't been run yet
       if (!data) {
-        console.warn("[DataProvider] business_profile record missing, creating default...");
+        console.warn(
+          "[DataProvider] business_profile record missing, creating default...",
+        );
         const { data: newData, error: insertError } = await supabase
           .from("business_profile")
           .insert({ id: 1, name: "My Company" })
@@ -245,8 +247,13 @@ const dataProviderWithCustomMethods = {
           .single();
 
         if (insertError) {
-          console.error("[DataProvider] Failed to create business_profile:", insertError);
-          throw new Error(`Failed to create business profile: ${insertError.message}`);
+          console.error(
+            "[DataProvider] Failed to create business_profile:",
+            insertError,
+          );
+          throw new Error(
+            `Failed to create business profile: ${insertError.message}`,
+          );
         }
 
         return { data: newData };
@@ -322,8 +329,13 @@ const dataProviderWithCustomMethods = {
           .single();
 
         if (insertError) {
-          console.error("[DataProvider] Failed to create business_profile:", insertError);
-          throw new Error(`Failed to create business profile: ${insertError.message}`);
+          console.error(
+            "[DataProvider] Failed to create business_profile:",
+            insertError,
+          );
+          throw new Error(
+            `Failed to create business profile: ${insertError.message}`,
+          );
         }
 
         return { data: newData };
@@ -655,11 +667,11 @@ export const dataProvider = withLifecycleCallbacks(
         return processContactAvatar(params);
       },
       afterCreate: async (result) => {
-        EmbeddingService.embedRecord('contact', result.data);
+        EmbeddingService.embedRecord("contact", result.data);
         return result;
       },
       afterUpdate: async (result) => {
-        EmbeddingService.embedRecord('contact', result.data);
+        EmbeddingService.embedRecord("contact", result.data);
         return result;
       },
       beforeGetList: async (params) => {
@@ -686,11 +698,11 @@ export const dataProvider = withLifecycleCallbacks(
         return await processCompanyLogo(params);
       },
       afterCreate: async (result) => {
-        EmbeddingService.embedRecord('company', result.data);
+        EmbeddingService.embedRecord("company", result.data);
         return result;
       },
       afterUpdate: async (result) => {
-        EmbeddingService.embedRecord('company', result.data);
+        EmbeddingService.embedRecord("company", result.data);
         return result;
       },
     },

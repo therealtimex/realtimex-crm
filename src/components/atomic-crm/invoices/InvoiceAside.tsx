@@ -8,7 +8,12 @@ import {
 } from "ra-core";
 import { Check, Download, Printer, Send, XCircle } from "lucide-react";
 import { Button } from "@/components/ds/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ds/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ds/ui/card";
 import { DateField } from "@/components/ds/admin/date-field";
 import { ReferenceField } from "@/components/ds/admin/reference-field";
 import { TextField } from "@/components/ds/admin/text-field";

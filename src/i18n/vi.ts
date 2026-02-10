@@ -34,7 +34,8 @@ export const viMessages = {
     initializeSystem: "Khởi tạo hệ thống",
     provisioning: "Đang thiết lập",
     provisioningFailed: "Thiết lập thất bại",
-    provisioningFailedDetails: "Thiết lập thất bại. Kiểm tra nhật ký phía trên để biết chi tiết.",
+    provisioningFailedDetails:
+      "Thiết lập thất bại. Kiểm tra nhật ký phía trên để biết chi tiết.",
     assemblingInfrastructure: "Đang lắp ráp hạ tầng...",
     checkLogs: "Kiểm tra nhật ký để biết chi tiết",
     tryAgain: "Thử lại",
@@ -49,15 +50,19 @@ export const viMessages = {
     installDatabaseSchema: "Cài đặt cấu trúc cơ sở dữ liệu",
     retryInstallation: "Thử lại cài đặt",
     projectIdRequired: "Cần có ID dự án để thực hiện cài đặt.",
-    tokenDescription: "Cần có mã truy cập Supabase để cài đặt cấu trúc cơ sở dữ liệu và đồng bộ người dùng hiện tại.",
+    tokenDescription:
+      "Cần có mã truy cập Supabase để cài đặt cấu trúc cơ sở dữ liệu và đồng bộ người dùng hiện tại.",
     connectingProvisioning: "Đang kết nối với công cụ thiết lập Supabase...",
     projectReady: "✨ Dự án đã sẵn sàng! Đang khởi tạo cơ sở dữ liệu...",
     startingMigration: "Đang bắt đầu cài đặt cơ sở dữ liệu...",
     setupCompleteLog: "🎉 Cài đặt hoàn tất!",
     checkingDatabase: "Đang kiểm tra trạng thái cơ sở dữ liệu...",
-    dbNotInitialized: "Cơ sở dữ liệu chưa được khởi tạo. Cần cài đặt cấu trúc dữ liệu.",
-    dbVersionBehind: "Phiên bản cơ sở dữ liệu (%{dbVersion}) cũ hơn phiên bản ứng dụng (%{appVersion}). Khuyến nghị cập nhật.",
-    dbLegacySchema: "Cơ sở dữ liệu sử dụng cấu trúc cũ nhưng đã được khởi tạo và đang hoạt động.",
+    dbNotInitialized:
+      "Cơ sở dữ liệu chưa được khởi tạo. Cần cài đặt cấu trúc dữ liệu.",
+    dbVersionBehind:
+      "Phiên bản cơ sở dữ liệu (%{dbVersion}) cũ hơn phiên bản ứng dụng (%{appVersion}). Khuyến nghị cập nhật.",
+    dbLegacySchema:
+      "Cơ sở dữ liệu sử dụng cấu trúc cũ nhưng đã được khởi tạo và đang hoạt động.",
     skippingMigration: "✅ Bỏ qua cài đặt. Cơ sở dữ liệu đã sẵn sàng!",
     reloadingApp: "Đang tải lại ứng dụng với thông tin mới...",
     dbReady: "✅ Cơ sở dữ liệu đã được thiết lập và sẵn sàng!",

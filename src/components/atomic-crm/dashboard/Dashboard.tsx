@@ -9,7 +9,12 @@ import { InvoicesChart } from "./InvoicesChart";
 import { OutstandingInvoices } from "./OutstandingInvoices";
 import { TasksList } from "./TasksList";
 import { Welcome } from "./Welcome";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ds/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ds/ui/tabs";
 import { TrendingUp, DollarSign } from "lucide-react";
 import { DailyBriefing } from "./DailyBriefing";
 
@@ -36,12 +41,9 @@ export const Dashboard = () => {
       pagination: { page: 1, perPage: 1 },
     });
 
-  const { isPending: isPendingDeal } = useGetList<Contact>(
-    "deals",
-    {
-      pagination: { page: 1, perPage: 1 },
-    },
-  );
+  const { isPending: isPendingDeal } = useGetList<Contact>("deals", {
+    pagination: { page: 1, perPage: 1 },
+  });
 
   const isPending =
     isPendingContact ||

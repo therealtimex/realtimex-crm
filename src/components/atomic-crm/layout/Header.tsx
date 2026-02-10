@@ -4,7 +4,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ds/ui/dropdown-menu";
-import { Database, Settings, User, Webhook, ArrowLeft, Cpu } from "lucide-react";
+import {
+  Database,
+  Settings,
+  User,
+  Webhook,
+  ArrowLeft,
+  Cpu,
+} from "lucide-react";
 import { CanAccess, useTranslate } from "ra-core";
 import { Link, matchPath, useLocation, useNavigate } from "react-router";
 import { RefreshButton } from "@/components/ds/admin/refresh-button";
@@ -250,10 +257,11 @@ const NavigationTab = ({
 }) => (
   <Link
     to={to}
-    className={`px-6 py-3 text-sm font-medium transition-colors border-b-2 ${isActive
-      ? "text-secondary-foreground border-secondary-foreground"
-      : "text-secondary-foreground/70 border-transparent hover:text-secondary-foreground/80"
-      }`}
+    className={`px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
+      isActive
+        ? "text-secondary-foreground border-secondary-foreground"
+        : "text-secondary-foreground/70 border-transparent hover:text-secondary-foreground/80"
+    }`}
   >
     {label}
   </Link>

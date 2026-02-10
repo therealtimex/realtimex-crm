@@ -156,11 +156,9 @@ const getSaleFromCache = async () => {
       if (dataSale == null || errorSale) {
         console.error("[Auth] Failed to get sale record:", errorSale);
         console.error(
-          "[Auth] This usually means the database trigger didn't create a sales record."
+          "[Auth] This usually means the database trigger didn't create a sales record.",
         );
-        console.error(
-          "[Auth] Run this migration to fix: npx supabase db push"
-        );
+        console.error("[Auth] Run this migration to fix: npx supabase db push");
         return undefined;
       }
 

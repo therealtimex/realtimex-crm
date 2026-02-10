@@ -9,7 +9,12 @@ import {
 import { useForm } from "react-hook-form";
 import { generateApiKey } from "@/lib/api-key-utils";
 import { Button } from "@/components/ds/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ds/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ds/ui/card";
 import { Plus, Trash2, Power, PowerOff, Pencil } from "lucide-react";
 import { Badge } from "@/components/ds/ui/badge";
 import { format } from "date-fns";

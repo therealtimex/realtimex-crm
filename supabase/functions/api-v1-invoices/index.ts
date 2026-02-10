@@ -158,12 +158,15 @@ async function createInvoice(apiKey: any, req: Request) {
   const body = await req.json();
 
   // Use RPC for atomic creation of invoice and items
-  const { data: invoiceId, error } = await supabaseAdmin.rpc("create_invoice_with_items", {
-    p_invoice_data: {
-      ...body,
-      sales_id: apiKey.sales_id,
-    }
-  });
+  const { data: invoiceId, error } = await supabaseAdmin.rpc(
+    "create_invoice_with_items",
+    {
+      p_invoice_data: {
+        ...body,
+        sales_id: apiKey.sales_id,
+      },
+    },
+  );
 
   if (error) return createErrorResponse(400, error.message);
 
@@ -242,8 +245,7 @@ async function sendInvoice(apiKey: any, invoiceId: string, _req: Request) {
 
   // 2. Determine recipient (email_jsonb is JSONB array, companies may have email field)
   const recipientEmail =
-    invoice.contacts?.email_jsonb?.[0]?.email ||
-    invoice.companies?.email;
+    invoice.contacts?.email_jsonb?.[0]?.email || invoice.companies?.email;
   if (!recipientEmail) {
     return createErrorResponse(
       400,
@@ -334,15 +336,15 @@ function generateInvoiceEmailHTML(data: any): string {
       </thead>
       <tbody>
         ${items
-      ?.map(
-        (item: any) => `
+          ?.map(
+            (item: any) => `
           <tr style="border-bottom: 1px solid #eee;">
             <td style="padding: 10px;">${item.description} (x${item.quantity})</td>
             <td style="padding: 10px; text-align: right;">${invoice.currency} ${item.line_total_with_tax.toFixed(2)}</td>
           </tr>
         `,
-      )
-      .join("")}
+          )
+          .join("")}
       </tbody>
     </table>
     <p style="margin-top: 40px; font-size: 14px; color: #666;">

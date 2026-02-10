@@ -14,7 +14,12 @@ import { ReferenceManyField } from "@/components/ds/admin/reference-many-field";
 import { TextField } from "@/components/ds/admin/text-field";
 import { DateField } from "@/components/ds/admin/date-field";
 import { FunctionField } from "@/components/ds/admin/function-field";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ds/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ds/ui/card";
 import { Separator } from "@/components/ds/ui/separator";
 
 import { CompanyLogo } from "../companies/CompanyLogo";

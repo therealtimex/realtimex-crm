@@ -1,7 +1,12 @@
 import { useEffect, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/components/atomic-crm/providers/supabase/supabase";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ds/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ds/ui/card";
 import { Badge } from "@/components/ds/ui/badge";
 import { Skeleton } from "@/components/ds/ui/skeleton";
 import {
@@ -123,8 +128,7 @@ export const ActivityFeed = ({
 
 const ActivityCard = ({ activity }: { activity: any }) => {
   const isPending =
-    activity.status === "pending" ||
-    activity.status === "claimed";
+    activity.status === "pending" || activity.status === "claimed";
   const isFailed = activity.status === "failed";
   const translate = useTranslate();
   const locale = useLocale();

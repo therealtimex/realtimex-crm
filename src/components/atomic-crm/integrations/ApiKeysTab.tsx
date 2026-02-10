@@ -2,7 +2,12 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDataProvider, useNotify, useTranslate } from "ra-core";
 import { Button } from "@/components/ds/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ds/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ds/ui/card";
 import { Plus, Trash2, Copy } from "lucide-react";
 import { CreateApiKeyDialog } from "./CreateApiKeyDialog";
 import { Badge } from "@/components/ds/ui/badge";

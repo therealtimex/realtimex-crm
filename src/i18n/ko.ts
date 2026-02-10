@@ -34,7 +34,8 @@ export const koMessages = {
     initializeSystem: "시스템 초기화",
     provisioning: "프로비저닝 중",
     provisioningFailed: "프로비저닝 실패",
-    provisioningFailedDetails: "프로비저닝에 실패했습니다. 자세한 내용은 위 로그를 확인하세요.",
+    provisioningFailedDetails:
+      "프로비저닝에 실패했습니다. 자세한 내용은 위 로그를 확인하세요.",
     assemblingInfrastructure: "인프라 구축 중...",
     checkLogs: "자세한 내용은 로그를 확인하십시오",
     tryAgain: "다시 시도",
@@ -49,16 +50,21 @@ export const koMessages = {
     installDatabaseSchema: "데이터베이스 스키마 설치",
     retryInstallation: "설치 다시 시도",
     projectIdRequired: "마이그레이션을 위해 프로젝트 ID가 필요합니다.",
-    tokenDescription: "데이터베이스 스키마를 설치하고 기존 사용자를 동기화하려면 Supabase 액세스 토큰이 필요합니다.",
+    tokenDescription:
+      "데이터베이스 스키마를 설치하고 기존 사용자를 동기화하려면 Supabase 액세스 토큰이 필요합니다.",
     connectingProvisioning: "Supabase 프로비저닝 엔진에 연결 중...",
-    projectReady: "✨ 프로젝트 준비 완료! 데이터베이스 초기화 중..." ,
+    projectReady: "✨ 프로젝트 준비 완료! 데이터베이스 초기화 중...",
     startingMigration: "데이터베이스 마이그레이션 시작 중...",
     setupCompleteLog: "🎉 설정 완료!",
     checkingDatabase: "데이터베이스 상태 확인 중...",
-    dbNotInitialized: "데이터베이스가 초기화되지 않았습니다. 스키마 설정을 위해 마이그레이션이 필요합니다.",
-    dbVersionBehind: "데이터베이스 버전(%{dbVersion})이 앱 버전(%{appVersion})보다 낮습니다. 마이그레이션을 권장합니다.",
-    dbLegacySchema: "데이터베이스가 레거시 스키마를 사용하지만 이미 초기화되어 작동 중입니다.",
-    skippingMigration: "✅ 마이그레이션을 건너뜁니다. 데이터베이스가 준비되었습니다!",
+    dbNotInitialized:
+      "데이터베이스가 초기화되지 않았습니다. 스키마 설정을 위해 마이그레이션이 필요합니다.",
+    dbVersionBehind:
+      "데이터베이스 버전(%{dbVersion})이 앱 버전(%{appVersion})보다 낮습니다. 마이그레이션을 권장합니다.",
+    dbLegacySchema:
+      "데이터베이스가 레거시 스키마를 사용하지만 이미 초기화되어 작동 중입니다.",
+    skippingMigration:
+      "✅ 마이그레이션을 건너뜁니다. 데이터베이스가 준비되었습니다!",
     reloadingApp: "새로운 자격 증명으로 앱을 다시 로드하는 중...",
     dbReady: "✅ 데이터베이스가 이미 설정되어 준비되었습니다!",
     setupComplete: "설정 완료!",
@@ -1068,7 +1074,8 @@ export const koMessages = {
       },
       notification: {
         invite_sent: "초대 이메일이 성공적으로 재전송되었습니다",
-        created_invite_sent: "사용자가 생성되었습니다. 초대 이메일이 발송되었습니다.",
+        created_invite_sent:
+          "사용자가 생성되었습니다. 초대 이메일이 발송되었습니다.",
         invite_error: "초대 이메일 재전송에 실패했습니다",
         reset_sent: "비밀번호 재설정 이메일이 성공적으로 전송되었습니다",
         reset_error: "비밀번호 재설정 이메일 전송에 실패했습니다",

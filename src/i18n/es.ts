@@ -1,7 +1,8 @@
 export const esMessages = {
   setup: {
     welcomeTitle: "Bienvenido a %{title}",
-    welcomeSubtitle: "Para comenzar, debes conectarte a una base de datos de Supabase.",
+    welcomeSubtitle:
+      "Para comenzar, debes conectarte a una base de datos de Supabase.",
     encryptedTitle: "Seguro",
     encryptedDesc: "Tus datos están protegidos con AES-256",
     turboTitle: "Turbo",
@@ -16,9 +17,11 @@ export const esMessages = {
     abortAccess: "Abortar Acceso",
     injectCoordinates: "Inyectar coordenadas de base de datos",
     platformUrl: "URL de la plataforma",
-    urlHelp: "Encontrado en Configuración del Proyecto > API > URL del Proyecto",
+    urlHelp:
+      "Encontrado en Configuración del Proyecto > API > URL del Proyecto",
     anonMatrixKey: "Clave Anon / Matrix",
-    keyHelp: "Encontrado en Configuración del Proyecto > API > clave anon (pública)",
+    keyHelp:
+      "Encontrado en Configuración del Proyecto > API > clave anon (pública)",
     back: "Volver",
     engage: "Conectar",
     managedTokenTitle: "Token de Forja",
@@ -34,7 +37,8 @@ export const esMessages = {
     initializeSystem: "Inicializar Sistema",
     provisioning: "Provisionando",
     provisioningFailed: "Fallo en el Provisionamiento",
-    provisioningFailedDetails: "Error en el provisionamiento. Consulta los registros anteriores para más detalles.",
+    provisioningFailedDetails:
+      "Error en el provisionamiento. Consulta los registros anteriores para más detalles.",
     assemblingInfrastructure: "Ensamblando infraestructura...",
     checkLogs: "Ver logs para detalles",
     tryAgain: "Reintentar",
@@ -49,16 +53,22 @@ export const esMessages = {
     installDatabaseSchema: "Instalar Esquema de Base de Datos",
     retryInstallation: "Reintentar Instalación",
     projectIdRequired: "Se requiere el ID del proyecto para la migración.",
-    tokenDescription: "Se requiere un token de acceso de Supabase para instalar el esquema y sincronizar usuarios.",
-    connectingProvisioning: "Conectando al motor de provisionamiento de Supabase...",
+    tokenDescription:
+      "Se requiere un token de acceso de Supabase para instalar el esquema y sincronizar usuarios.",
+    connectingProvisioning:
+      "Conectando al motor de provisionamiento de Supabase...",
     projectReady: "✨ ¡Proyecto listo! Inicializando base de datos...",
     startingMigration: "Iniciando migración de la base de datos...",
     setupCompleteLog: "🎉 ¡Configuración completada!",
     checkingDatabase: "Comprobando el estado de la base de datos...",
-    dbNotInitialized: "Base de datos no inicializada. Se requiere migración para configurar el esquema.",
-    dbVersionBehind: "La versión de la base de datos (%{dbVersion}) es anterior a la versión de la aplicación (%{appVersion}). Se recomienda la migración.",
-    dbLegacySchema: "La base de datos utiliza un esquema antiguo pero ya está inicializada y funcionando.",
-    skippingMigration: "✅ Omitiendo migración. ¡Base de datos lista para usar!",
+    dbNotInitialized:
+      "Base de datos no inicializada. Se requiere migración para configurar el esquema.",
+    dbVersionBehind:
+      "La versión de la base de datos (%{dbVersion}) es anterior a la versión de la aplicación (%{appVersion}). Se recomienda la migración.",
+    dbLegacySchema:
+      "La base de datos utiliza un esquema antiguo pero ya está inicializada y funcionando.",
+    skippingMigration:
+      "✅ Omitiendo migración. ¡Base de datos lista para usar!",
     reloadingApp: "Recargando la aplicación con las nuevas credenciales...",
     dbReady: "✅ ¡Base de datos ya configurada y lista!",
     setupComplete: "¡Configuración completada!",

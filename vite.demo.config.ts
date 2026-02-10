@@ -61,7 +61,12 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ["react", "react-dom", "react-router-dom", "react-router"],
-          mui: ["@mui/material", "@mui/icons-material", "@emotion/react", "@emotion/styled"],
+          mui: [
+            "@mui/material",
+            "@mui/icons-material",
+            "@emotion/react",
+            "@emotion/styled",
+          ],
           ra: ["ra-core", "ra-i18n-polyglot"],
           supabase: ["@supabase/supabase-js", "ra-supabase-core"],
           tanstack: ["@tanstack/react-query"],

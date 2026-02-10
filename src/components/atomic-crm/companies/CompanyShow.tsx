@@ -20,7 +20,12 @@ import {
 } from "react-router-dom";
 import { Button } from "@/components/ds/ui/button";
 import { Card, CardContent } from "@/components/ds/ui/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ds/ui/tabs";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "@/components/ds/ui/tabs";
 import { ReferenceManyField } from "@/components/ds/admin/reference-many-field";
 import { SortButton } from "@/components/ds/admin/sort-button";
 

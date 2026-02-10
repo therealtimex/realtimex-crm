@@ -1,7 +1,8 @@
 export const jaMessages = {
   setup: {
     welcomeTitle: "%{title}へようこそ",
-    welcomeSubtitle: "開始するには、Supabaseデータベースに接続する必要があります。",
+    welcomeSubtitle:
+      "開始するには、Supabaseデータベースに接続する必要があります。",
     encryptedTitle: "セキュア",
     encryptedDesc: "データはAES-256で保護されています",
     turboTitle: "ターボ",
@@ -34,7 +35,8 @@ export const jaMessages = {
     initializeSystem: "システムを初期化",
     provisioning: "プロビジョニング中",
     provisioningFailed: "プロビジョニング失敗",
-    provisioningFailedDetails: "プロビジョニングに失敗しました。詳細は上記のログを確認してください。",
+    provisioningFailedDetails:
+      "プロビジョニングに失敗しました。詳細は上記のログを確認してください。",
     assemblingInfrastructure: "インフラを構築中...",
     checkLogs: "詳細はログを確認してください",
     tryAgain: "再試行",
@@ -49,16 +51,22 @@ export const jaMessages = {
     installDatabaseSchema: "データベーススキーマをインストール",
     retryInstallation: "インストールを再試行",
     projectIdRequired: "マイグレーションにはプロジェクトIDが必要です。",
-    tokenDescription: "データベーススキーマをインストールし、既存のユーザーを同期するには、Supabaseアクセストークンが必要です。",
+    tokenDescription:
+      "データベーススキーマをインストールし、既存のユーザーを同期するには、Supabaseアクセストークンが必要です。",
     connectingProvisioning: "Supabaseプロビジョニングエンジンに接続中...",
-    projectReady: "✨ プロジェクトの準備ができました！データベースを初期化中...",
+    projectReady:
+      "✨ プロジェクトの準備ができました！データベースを初期化中...",
     startingMigration: "データベースのマイグレーションを開始中...",
     setupCompleteLog: "🎉 セットアップ完了！",
     checkingDatabase: "データベースの状態を確認中...",
-    dbNotInitialized: "データベースが初期化されていません。スキーマを設定するためにマイグレーションが必要です。",
-    dbVersionBehind: "データベースのバージョン (%{dbVersion}) がアプリのバージョン (%{appVersion}) より古いです。マイグレーションを推奨します。",
-    dbLegacySchema: "データベースはレガシースキーマを使用していますが、すでに初期化されており動作しています。",
-    skippingMigration: "✅ マイグレーションをスキップします。データベースの準備ができました！",
+    dbNotInitialized:
+      "データベースが初期化されていません。スキーマを設定するためにマイグレーションが必要です。",
+    dbVersionBehind:
+      "データベースのバージョン (%{dbVersion}) がアプリのバージョン (%{appVersion}) より古いです。マイグレーションを推奨します。",
+    dbLegacySchema:
+      "データベースはレガシースキーマを使用していますが、すでに初期化されており動作しています。",
+    skippingMigration:
+      "✅ マイグレーションをスキップします。データベースの準備ができました！",
     reloadingApp: "新しい認証情報でアプリを再読み込み中...",
     dbReady: "✅ データベースはすでに設定されており、準備ができています！",
     setupComplete: "セットアップ完了！",
@@ -1073,7 +1081,8 @@ export const jaMessages = {
       },
       notification: {
         invite_sent: "招待メールを再送信しました",
-        created_invite_sent: "ユーザーが作成されました。招待メールが送信されました。",
+        created_invite_sent:
+          "ユーザーが作成されました。招待メールが送信されました。",
         invite_error: "招待メールの再送信に失敗しました",
         reset_sent: "パスワードリセットメールを送信しました",
         reset_error: "パスワードリセットメールの送信に失敗しました",

@@ -2,7 +2,12 @@ import { useMutation } from "@tanstack/react-query";
 import { useDataProvider, useNotify, useRedirect, useTranslate } from "ra-core";
 import type { SubmitHandler } from "react-hook-form";
 import { SimpleForm } from "@/components/ds/admin/simple-form";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ds/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ds/ui/card";
 
 import type { CrmDataProvider } from "../providers/types";
 import type { SalesFormData } from "../types";

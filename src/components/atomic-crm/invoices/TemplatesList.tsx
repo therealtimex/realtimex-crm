@@ -2,7 +2,12 @@ import { useState } from "react";
 import { useGetList, useTranslate, useNotify, useDataProvider } from "ra-core";
 import { Plus, FileText, Trash2, Edit } from "lucide-react";
 import { Button } from "@/components/ds/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ds/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ds/ui/card";
 import { Badge } from "@/components/ds/ui/badge";
 import { format } from "date-fns";
 import type { InvoiceTemplate } from "../types";

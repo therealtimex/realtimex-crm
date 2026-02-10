@@ -2,7 +2,12 @@ import { format } from "date-fns";
 import { AlertCircle, Clock } from "lucide-react";
 import { useGetList, useTranslate } from "ra-core";
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ds/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ds/ui/card";
 import { Badge } from "@/components/ds/ui/badge";
 
 import type { Invoice } from "../types";

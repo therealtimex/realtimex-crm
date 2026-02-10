@@ -46,7 +46,7 @@ export const NoteInputs = ({ showStatus }: { showStatus?: boolean }) => {
       <div className="flex justify-between items-center">
         <VoiceNoteButton
           onTranscription={(text) => {
-            const currentText = (record?.text || "");
+            const currentText = record?.text || "";
             setValue("text", currentText ? `${currentText}\n\n${text}` : text);
           }}
         />

@@ -13,7 +13,12 @@ import { Input } from "@/components/ds/ui/input";
 import { Label } from "@/components/ds/ui/label";
 import { Select, SelectTrigger, SelectValue } from "@/components/ds/ui/select";
 import { Separator } from "@/components/ds/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ds/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ds/ui/tabs";
 
 describe("DS UI a11y contracts", () => {
   it("keeps label and input programmatically associated", () => {
@@ -94,4 +99,3 @@ describe("DS UI a11y contracts", () => {
     expect(html).toContain('role="separator"');
   });
 });
-

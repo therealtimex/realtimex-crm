@@ -2,12 +2,7 @@ import { useTranslate } from "ra-core";
 import { Badge } from "@/components/ds/ui/badge";
 import { cn } from "@/lib/utils";
 
-type InvoiceDisplayStatus =
-  | "draft"
-  | "sent"
-  | "paid"
-  | "overdue"
-  | "cancelled";
+type InvoiceDisplayStatus = "draft" | "sent" | "paid" | "overdue" | "cancelled";
 
 const invoiceStatusVariants = {
   draft: "neutral",

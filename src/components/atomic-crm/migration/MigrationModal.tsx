@@ -129,7 +129,10 @@ export function MigrationModal({
           setMigrationLogs((prev) => [...prev, ...lines]);
 
           // Check if migration succeeded
-          if (text.includes("Migration completed successfully") || text.includes("✅")) {
+          if (
+            text.includes("Migration completed successfully") ||
+            text.includes("✅")
+          ) {
             migrationSucceeded = true;
           }
         }
@@ -149,8 +152,8 @@ export function MigrationModal({
       }
     } catch (err) {
       // Don't show error if request was aborted (user closed modal)
-      if (err instanceof Error && err.name === 'AbortError') {
-        console.log('Migration request aborted');
+      if (err instanceof Error && err.name === "AbortError") {
+        console.log("Migration request aborted");
         return;
       }
 
@@ -206,92 +209,92 @@ export function MigrationModal({
 
           {/* Auto-Migration Interface */}
           <div className="space-y-4 py-2">
-              <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
-                <h3 className="text-lg font-semibold mb-2">
-                  {translate("crm.migration.modal.auto.title")}
-                </h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  {translate("crm.migration.modal.auto.description")}
-                </p>
+            <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+              <h3 className="text-lg font-semibold mb-2">
+                {translate("crm.migration.modal.auto.title")}
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                {translate("crm.migration.modal.auto.description")}
+              </p>
 
-                <div className="grid gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="project-id">
-                      {translate("crm.migration.modal.auto.project_id")}
-                    </Label>
-                    <Input
-                      id="project-id"
-                      value={projectId}
-                      disabled
-                      readOnly
-                      className="bg-muted"
-                    />
-                  </div>
-
-                  <div className="grid gap-2">
-                    <div className="flex justify-between items-center">
-                      <Label htmlFor="access-token">
-                        {translate("crm.migration.modal.auto.access_token")}
-                      </Label>
-                      <a
-                        href="https://supabase.com/dashboard/account/tokens"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-primary hover:underline flex items-center gap-1"
-                      >
-                        {translate("crm.migration.modal.auto.generate_token")}{" "}
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
-                    </div>
-                    <Input
-                      id="access-token"
-                      type="password"
-                      placeholder="sbp_..."
-                      value={accessToken}
-                      onChange={(e) => setAccessToken(e.target.value)}
-                      disabled={isMigrating}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      {translate("crm.migration.modal.auto.access_token_hint")}
-                    </p>
-                  </div>
-
-                  <Button
-                    onClick={handleAutoMigrate}
-                    disabled={isMigrating}
-                    className="w-full"
-                  >
-                    {isMigrating ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {translate("crm.migration.modal.auto.migrating")}
-                      </>
-                    ) : (
-                      <>
-                        <Terminal className="mr-2 h-4 w-4" />
-                        {translate("crm.migration.modal.auto.start")}
-                      </>
-                    )}
-                  </Button>
+              <div className="grid gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="project-id">
+                    {translate("crm.migration.modal.auto.project_id")}
+                  </Label>
+                  <Input
+                    id="project-id"
+                    value={projectId}
+                    disabled
+                    readOnly
+                    className="bg-muted"
+                  />
                 </div>
-              </div>
 
-              {/* Logs Terminal */}
-              <div className="rounded-lg border bg-black text-white font-mono text-xs p-4 h-64 overflow-y-auto">
-                {migrationLogs.length === 0 ? (
-                  <div className="text-muted-foreground italic">
-                    {translate("crm.migration.modal.auto.logs_placeholder")}
+                <div className="grid gap-2">
+                  <div className="flex justify-between items-center">
+                    <Label htmlFor="access-token">
+                      {translate("crm.migration.modal.auto.access_token")}
+                    </Label>
+                    <a
+                      href="https://supabase.com/dashboard/account/tokens"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-primary hover:underline flex items-center gap-1"
+                    >
+                      {translate("crm.migration.modal.auto.generate_token")}{" "}
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
                   </div>
-                ) : (
-                  migrationLogs.map((log, i) => (
-                    <div key={i} className="mb-1 whitespace-pre-wrap">
-                      {log}
-                    </div>
-                  ))
-                )}
-                <div ref={logsEndRef} />
+                  <Input
+                    id="access-token"
+                    type="password"
+                    placeholder="sbp_..."
+                    value={accessToken}
+                    onChange={(e) => setAccessToken(e.target.value)}
+                    disabled={isMigrating}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    {translate("crm.migration.modal.auto.access_token_hint")}
+                  </p>
+                </div>
+
+                <Button
+                  onClick={handleAutoMigrate}
+                  disabled={isMigrating}
+                  className="w-full"
+                >
+                  {isMigrating ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {translate("crm.migration.modal.auto.migrating")}
+                    </>
+                  ) : (
+                    <>
+                      <Terminal className="mr-2 h-4 w-4" />
+                      {translate("crm.migration.modal.auto.start")}
+                    </>
+                  )}
+                </Button>
               </div>
             </div>
+
+            {/* Logs Terminal */}
+            <div className="rounded-lg border bg-black text-white font-mono text-xs p-4 h-64 overflow-y-auto">
+              {migrationLogs.length === 0 ? (
+                <div className="text-muted-foreground italic">
+                  {translate("crm.migration.modal.auto.logs_placeholder")}
+                </div>
+              ) : (
+                migrationLogs.map((log, i) => (
+                  <div key={i} className="mb-1 whitespace-pre-wrap">
+                    {log}
+                  </div>
+                ))
+              )}
+              <div ref={logsEndRef} />
+            </div>
+          </div>
 
           {/* Troubleshooting */}
           <Alert className="border-critical/30 bg-critical/10">

@@ -88,9 +88,10 @@ const SaleEditTitle = () => {
 
   if (!record) return null;
 
-  const name = record.first_name && record.last_name
-    ? `${record.first_name} ${record.last_name}`
-    : record.email || "User";
+  const name =
+    record.first_name && record.last_name
+      ? `${record.first_name} ${record.last_name}`
+      : record.email || "User";
 
   return (
     <h2 className="text-lg font-semibold mb-4">

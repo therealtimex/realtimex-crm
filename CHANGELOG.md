@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.54.0] - 2026-02-10
+
+### Added
+- **AI Infrastructure**: Implemented dynamic AI provider and model discovery via `SDKService`, allowing the CRM to automatically adapt to the user's RealTimeX Desktop configuration.
+- **AI Infrastructure**: Added `withTimeout` wrapper to all SDK calls to ensure backend resilience and prevent hanging requests.
+- **AI Infrastructure**: New intelligent fallback strategy for chat and embedding providers that prioritizes `realtimexai` but gracefully degrades to any available provider.
+
+### Changed
+- **AI Infrastructure**: Refactored `SDKService` to use a singleton-safe initialization pattern and improved connectivity logging.
+- **AI Infrastructure**: Hardcoded the default API key to ensure out-of-the-box connectivity for local application environments.
+
 ## [0.53.0] - 2026-02-09
 
 ### Changed

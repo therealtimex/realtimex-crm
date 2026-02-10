@@ -6,14 +6,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ds/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ds/ui/tabs";
-import { ScrollArea } from "@/components/ds/ui/scroll-area";
 import {
-  Brain,
-  Code,
-  FileJson,
-  Terminal as TerminalIcon,
-} from "lucide-react";
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ds/ui/tabs";
+import { ScrollArea } from "@/components/ds/ui/scroll-area";
+import { Brain, Code, FileJson, Terminal as TerminalIcon } from "lucide-react";
 import { supabase } from "../providers/supabase";
 import { LiveTerminal } from "./LiveTerminal";
 

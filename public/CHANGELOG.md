@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.57.0] - 2026-02-10
+
+### Changed
+- **Architecture**: Unified the server implementation by refactoring `api/server.js` to export the Express `app` instance.
+- **CLI**: Updated the `realtimex-crm` binary to use the shared Express app from `api/server.js` instead of a custom HTTP server, ensuring consistent behavior between the CLI and the backend server.
+
 ## [0.56.0] - 2026-02-10
 
 ### Added

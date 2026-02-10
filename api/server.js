@@ -835,12 +835,17 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(
-    `🚀 RealTimeX CRM v${packageJson.version} server running on http://localhost:${PORT}`,
-  );
-  console.log(`📦 Package: ${packageJson.name}`);
-  console.log(`📁 Serving static files from: ${distPath}`);
-  console.log(`📡 Migration API: POST http://localhost:${PORT}/api/migrate`);
-  console.log(`🏥 Health check: GET http://localhost:${PORT}/api/health`);
-});
+// Start server only if run directly
+if (process.argv[1] === __filename) {
+  app.listen(PORT, () => {
+    console.log(
+      `🚀 RealTimeX CRM v${packageJson.version} server running on http://localhost:${PORT}`,
+    );
+    console.log(`📦 Package: ${packageJson.name}`);
+    console.log(`📁 Serving static files from: ${distPath}`);
+    console.log(`📡 Migration API: POST http://localhost:${PORT}/api/migrate`);
+    console.log(`🏥 Health check: GET http://localhost:${PORT}/api/health`);
+  });
+}
+
+export { app };

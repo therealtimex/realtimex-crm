@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.58.0] - 2026-02-10
+
+### Fixed
+- **Packaging**: Included the `api/` directory in the published npm package to ensure the `realtimex-crm` binary can correctly import the unified Express server in production environments.
+
 ## [0.57.0] - 2026-02-10
 
 ### Changed

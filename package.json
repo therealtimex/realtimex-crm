@@ -1,6 +1,6 @@
 {
   "name": "@realtimex/realtimex-crm",
-  "version": "0.57.0",
+  "version": "0.58.0",
   "description": "RealTimeX CRM - A full-featured CRM with zero cloud costs and complete privacy.",
   "type": "module",
   "main": "./dist/index.js",
@@ -21,6 +21,7 @@
   "files": [
     "dist",
     "bin",
+    "api",
     "src",
     "scripts",
     "supabase/",

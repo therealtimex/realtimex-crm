@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.54.1] - 2026-02-10
+
+### Fixed
+- **Code Quality**: Fixed Prettier formatting issues in `SDKService.js` and AI components that were missed in the previous release.
+
 ## [0.54.0] - 2026-02-10
 
 ### Added

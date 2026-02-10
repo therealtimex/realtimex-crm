@@ -64,7 +64,9 @@ export class SDKService {
         this.instance
           .ping()
           .then((status) =>
-            console.log("[SDKService] ✅ Connected to RealTimeX Desktop", { status }),
+            console.log("[SDKService] ✅ Connected to RealTimeX Desktop", {
+              status,
+            }),
           )
           .catch((err) =>
             console.warn(

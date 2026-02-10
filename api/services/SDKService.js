@@ -24,6 +24,7 @@ export class SDKService {
     // Cache for default providers
     static defaultChatProvider = null;
     static defaultEmbedProvider = null;
+    static defaultTTSProvider = null;
 
     /**
      * Initialize SDK with required permissions
@@ -183,6 +184,31 @@ export class SDKService {
     }
 
     /**
+     * Resolve TTS Provider
+     */
+    static async resolveTTSProvider(settings = {}) {
+        if (settings.provider) return settings;
+
+        if (this.defaultTTSProvider) return this.defaultTTSProvider;
+
+        try {
+            const { providers } = await this.getTTSProviders();
+            if (providers.length > 0) {
+                const provider = providers[0];
+                this.defaultTTSProvider = {
+                    provider: provider.id,
+                    voice: provider.config?.voices?.[0] || ''
+                };
+                return this.defaultTTSProvider;
+            }
+        } catch (err) {
+            console.warn('[SDKService] Failed to resolve default TTS:', err.message);
+        }
+
+        return null;
+    }
+
+    /**
      * Transcribe audio buffer
      */
     static async transcribeAudio(audioBuffer, settings = {}) {
@@ -206,7 +232,6 @@ export class SDKService {
             try {
                 console.log('[SDKService] Fetching chat providers...');
                 const result = await this.withTimeout(sdk.llm.chatProviders(), 10000);
-                console.log('[SDKService] Chat providers result:', JSON.stringify(result));
                 return result;
             } catch (err) {
                 console.warn('[SDKService] Failed to get chat providers:', err.message);
@@ -248,24 +273,30 @@ export class SDKService {
      * Get available TTS providers (with deduplication)
      */
     static async getTTSProviders() {
+        if (this.ttsProvidersPromise) return this.ttsProvidersPromise;
+
         const sdk = this.getSDK();
         if (!sdk) return { success: false, providers: [] };
 
-        try {
-            console.log('[SDKService] Fetching TTS providers...');
-            let providers = [];
-            if (sdk.tts && typeof sdk.tts.listProviders === 'function') {
-                providers = await this.withTimeout(sdk.tts.listProviders(), 10000);
-            } else if (sdk.audio && typeof sdk.audio.providers === 'function') {
-                providers = await this.withTimeout(sdk.audio.providers(), 10000);
+        this.ttsProvidersPromise = (async () => {
+            try {
+                console.log('[SDKService] Fetching TTS providers...');
+                let providers = [];
+                if (sdk.tts && typeof sdk.tts.listProviders === 'function') {
+                    providers = await this.withTimeout(sdk.tts.listProviders(), 10000);
+                } else if (sdk.audio && typeof sdk.audio.providers === 'function') {
+                    providers = await this.withTimeout(sdk.audio.providers(), 10000);
+                }
+                return { success: true, providers: providers || [] };
+            } catch (err) {
+                console.warn('[SDKService] Failed to get TTS providers:', err.message);
+                return { success: false, providers: [] };
+            } finally {
+                this.ttsProvidersPromise = null;
             }
+        })();
 
-            console.log('[SDKService] TTS providers result:', JSON.stringify(providers));
-            return { success: true, providers: providers || [] };
-        } catch (err) {
-            console.warn('[SDKService] Failed to get TTS providers:', err.message);
-            return { success: false, providers: [] };
-        }
+        return this.ttsProvidersPromise;
     }
 
     /**
@@ -285,10 +316,15 @@ export class SDKService {
         const sdk = this.getSDK();
         if (!sdk) throw new Error("SDK not initialized");
 
+        const resolvedSettings = await this.resolveTTSProvider(settings);
+        if (!resolvedSettings) {
+            throw new Error("TTS Provider not specified and no default found. Please configure AI settings.");
+        }
+
         if (sdk.tts && typeof sdk.tts.speak === 'function') {
-            console.log('[SDKService] Generating speech for text:', text.substring(0, 20) + '...');
+            console.log(`[SDKService] Generating speech using ${resolvedSettings.provider} (${resolvedSettings.voice || 'default voice'})...`);
             const audioBuffer = await this.withTimeout(
-                sdk.tts.speak(text, settings), 30000
+                sdk.tts.speak(text, resolvedSettings), 30000
             );
             const buffer = Buffer.from(audioBuffer);
             console.log(`[SDKService] Speech generated, buffer size: ${buffer.length} bytes`);

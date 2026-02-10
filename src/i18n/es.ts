@@ -138,6 +138,7 @@ export const esMessages = {
       deals: "Negocios",
       invoices: "Facturas",
       tasks: "Tareas",
+      ai: "AI",
       users: "Usuarios",
       settings: "Mi información",
       database: "Base de datos",

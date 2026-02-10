@@ -152,6 +152,7 @@ export const frMessages = {
       deals: "Affaires",
       invoices: "Factures",
       tasks: "Tâches",
+      ai: "AI",
       users: "Utilisateurs",
       settings: "Mes infos",
       database: "Base de données",

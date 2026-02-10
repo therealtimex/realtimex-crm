@@ -52,6 +52,7 @@ export function MigrationModal({
   const [migrationLogs, setMigrationLogs] = useState<string[]>([]);
   const [accessToken, setAccessToken] = useState("");
   const logsEndRef = useRef<HTMLDivElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const projectId = useMemo(() => {
     const url = config?.url;
@@ -71,6 +72,16 @@ export function MigrationModal({
     }
   }, [migrationLogs]);
 
+  // Cleanup: abort migration if component unmounts or modal closes
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
+    };
+  }, []);
+
   const handleAutoMigrate = async () => {
     if (!projectId) {
       toast.error(translate("crm.migration.modal.auto.missing_project_id"));
@@ -80,6 +91,10 @@ export function MigrationModal({
     setIsMigrating(true);
     setMigrationLogs([translate("crm.migration.modal.auto.init_log")]);
 
+    // Create AbortController for proper cleanup
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
     try {
       const response = await fetch("/api/migrate", {
         method: "POST",
@@ -88,6 +103,7 @@ export function MigrationModal({
           projectRef: projectId,
           accessToken,
         }),
+        signal: abortController.signal,
       });
 
       if (!response.ok) {
@@ -102,18 +118,23 @@ export function MigrationModal({
       const decoder = new TextDecoder();
       let migrationSucceeded = false;
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
 
-        const text = decoder.decode(value);
-        const lines = text.split("\n").filter(Boolean);
-        setMigrationLogs((prev) => [...prev, ...lines]);
+          // Use stream: true for proper multi-byte character handling
+          const text = decoder.decode(value, { stream: true });
+          const lines = text.split("\n").filter(Boolean);
+          setMigrationLogs((prev) => [...prev, ...lines]);
 
-        // Check if migration succeeded
-        if (text.includes("Migration completed successfully") || text.includes("✅")) {
-          migrationSucceeded = true;
+          // Check if migration succeeded
+          if (text.includes("Migration completed successfully") || text.includes("✅")) {
+            migrationSucceeded = true;
+          }
         }
+      } finally {
+        reader.releaseLock();
       }
 
       // Auto-reload on success
@@ -127,6 +148,12 @@ export function MigrationModal({
         }, 2000);
       }
     } catch (err) {
+      // Don't show error if request was aborted (user closed modal)
+      if (err instanceof Error && err.name === 'AbortError') {
+        console.log('Migration request aborted');
+        return;
+      }
+
       console.error(err);
       setMigrationLogs((prev) => [
         ...prev,
@@ -135,6 +162,7 @@ export function MigrationModal({
       toast.error(translate("crm.migration.modal.auto.failure_toast"));
     } finally {
       setIsMigrating(false);
+      abortControllerRef.current = null;
     }
   };
 

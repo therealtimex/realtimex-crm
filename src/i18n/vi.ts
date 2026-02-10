@@ -135,6 +135,7 @@ export const viMessages = {
       deals: "Giao dịch",
       invoices: "Hóa đơn",
       tasks: "Công việc",
+      ai: "AI",
       users: "Người dùng",
       settings: "Thông tin của tôi",
       database: "Cơ sở dữ liệu",

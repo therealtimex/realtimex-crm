@@ -2,8 +2,9 @@ import express from "express";
 import { spawn } from "child_process";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import { readFileSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 import cors from "cors";
+import { createClient } from "@supabase/supabase-js";
 import { SDKService } from "./services/SDKService.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -20,6 +21,10 @@ SDKService.initialize();
 const app = express();
 // Use PORT environment variable (same as frontend) or fall back to 3002 to avoid conflict with RealTimeX desktop app (3001)
 const PORT = process.env.PORT || 3002;
+
+// Rate limiting for migration endpoint
+let lastMigrationTime = 0;
+const MIGRATION_COOLDOWN = 60 * 1000; // 1 minute between migrations
 
 // Middleware
 app.use(cors());
@@ -278,6 +283,18 @@ app.post("/api/setup/auto-provision", async (req, res) => {
 app.post("/api/migrate", async (req, res) => {
   const { projectRef, dbPassword, accessToken } = req.body;
 
+  // Rate limiting: Prevent migration spam
+  const now = Date.now();
+  const timeSinceLastMigration = now - lastMigrationTime;
+  if (timeSinceLastMigration < MIGRATION_COOLDOWN) {
+    const waitTime = Math.ceil((MIGRATION_COOLDOWN - timeSinceLastMigration) / 1000);
+    return res.status(429).json({
+      error: "Rate limit exceeded",
+      message: `Please wait ${waitTime} seconds before running another migration`,
+      retryAfter: waitTime,
+    });
+  }
+
   // Validation
   if (!projectRef) {
     return res.status(400).json({ error: "projectRef is required" });
@@ -288,6 +305,9 @@ app.post("/api/migrate", async (req, res) => {
       error: "Either accessToken or dbPassword must be provided",
     });
   }
+
+  // Update last migration time
+  lastMigrationTime = now;
 
   // Set up Server-Sent Events
   res.setHeader("Content-Type", "text/plain");
@@ -326,98 +346,131 @@ app.post("/api/migrate", async (req, res) => {
     sendLog("─".repeat(60));
     sendLog("");
 
-    // Execute migration script
-    const child = spawn("bash", [scriptPath], {
-      env,
-      cwd: join(__dirname, ".."),
-    });
-
-    let hasError = false;
-
-    // Stream stdout
-    child.stdout.on("data", (data) => {
-      const lines = data.toString().split("\n");
-      lines.forEach((line) => {
-        if (line.trim()) {
-          sendLog(line);
-        }
+    // Small delay to ensure proper event loop timing for handler attachment
+    // This prevents a race condition where stdout/stderr data events fire
+    // before handlers are attached
+    setImmediate(() => {
+      // Execute migration script
+      const child = spawn("bash", [scriptPath], {
+        env,
+        cwd: join(__dirname, ".."),
+        stdio: ["ignore", "pipe", "pipe"],
       });
-    });
 
-    // Stream stderr
-    child.stderr.on("data", (data) => {
-      const lines = data.toString().split("\n");
-      lines.forEach((line) => {
-        if (line.trim()) {
-          // Check for common error patterns
-          if (
-            line.includes("error") ||
-            line.includes("Error") ||
-            line.includes("ERROR")
-          ) {
-            sendLog(`❌ ${line}`);
-            hasError = true;
-          } else {
-            sendLog(`⚠️  ${line}`);
+      let hasError = false;
+      let isCompleted = false;
+
+      // Timeout protection: Kill migration if it takes longer than 10 minutes
+      const MIGRATION_TIMEOUT = 10 * 60 * 1000; // 10 minutes
+      const timeoutId = setTimeout(() => {
+        if (!isCompleted && !child.killed) {
+          child.kill();
+          sendLog("");
+          sendLog("⏱️  Migration timed out after 10 minutes");
+          sendLog("");
+          sendLog("💡 This usually means:");
+          sendLog("   - The migration is stuck waiting for user input");
+          sendLog("   - There's a network connectivity issue");
+          sendLog("   - The migration is taking unusually long");
+          sendLog("");
+          sendLog("Try running the migration manually to see what's blocking it.");
+          res.end();
+        }
+      }, MIGRATION_TIMEOUT);
+
+      // Stream stdout
+      child.stdout.on("data", (data) => {
+        const lines = data.toString().split("\n");
+        lines.forEach((line) => {
+          if (line.trim()) {
+            sendLog(line);
           }
+        });
+      });
+
+      // Stream stderr
+      child.stderr.on("data", (data) => {
+        const lines = data.toString().split("\n");
+        lines.forEach((line) => {
+          if (line.trim()) {
+            // Check for common error patterns
+            if (
+              line.includes("error") ||
+              line.includes("Error") ||
+              line.includes("ERROR")
+            ) {
+              sendLog(`❌ ${line}`);
+              hasError = true;
+            } else {
+              sendLog(`⚠️  ${line}`);
+            }
+          }
+        });
+      });
+
+      // Handle process completion
+      child.on("close", (code) => {
+        isCompleted = true;
+        clearTimeout(timeoutId);
+
+        sendLog("");
+        sendLog("─".repeat(60));
+
+        if (code === 0 && !hasError) {
+          sendLog("");
+          sendLog("✅ Migration completed successfully!");
+          sendLog("");
+          sendLog("🎉 Your database is now ready to use.");
+          sendLog("📝 The application will reload automatically...");
+        } else {
+          sendLog("");
+          sendLog(`❌ Migration failed with exit code: ${code}`);
+          sendLog("");
+          sendLog("💡 Troubleshooting tips:");
+          sendLog("   1. Verify your Supabase credentials are correct");
+          sendLog("   2. Ensure your project has the required permissions");
+          sendLog(
+            "   3. Check if Supabase CLI is installed (npm install -g supabase)",
+          );
+          sendLog("   4. Review the error messages above for specific issues");
+          sendLog("");
+          sendLog(
+            "📚 For more help, visit: https://github.com/therealtimex/realtimex-crm/issues",
+          );
+        }
+
+        res.end();
+      });
+
+      // Handle process errors
+      child.on("error", (error) => {
+        isCompleted = true;
+        clearTimeout(timeoutId);
+
+        sendLog("");
+        sendLog(`❌ Failed to start migration process: ${error.message}`);
+        sendLog("");
+        sendLog("💡 This usually means:");
+        sendLog("   - Bash is not available on your system");
+        sendLog("   - The migration script is not executable");
+        sendLog("   - There are permission issues");
+        sendLog("");
+        sendLog(
+          "Please try running the migration manually using the CLI instructions.",
+        );
+        res.end();
+      });
+
+      // Handle client disconnect
+      req.on("close", () => {
+        if (!child.killed) {
+          isCompleted = true;
+          clearTimeout(timeoutId);
+          child.kill();
+          console.log("Migration process terminated - client disconnected");
         }
       });
-    });
-
-    // Handle process completion
-    child.on("close", (code) => {
-      sendLog("");
-      sendLog("─".repeat(60));
-
-      if (code === 0 && !hasError) {
-        sendLog("");
-        sendLog("✅ Migration completed successfully!");
-        sendLog("");
-        sendLog("🎉 Your database is now ready to use.");
-        sendLog("📝 The application will reload automatically...");
-      } else {
-        sendLog("");
-        sendLog(`❌ Migration failed with exit code: ${code}`);
-        sendLog("");
-        sendLog("💡 Troubleshooting tips:");
-        sendLog("   1. Verify your Supabase credentials are correct");
-        sendLog("   2. Ensure your project has the required permissions");
-        sendLog(
-          "   3. Check if Supabase CLI is installed (npm install -g supabase)",
-        );
-        sendLog("   4. Review the error messages above for specific issues");
-        sendLog("");
-        sendLog(
-          "📚 For more help, visit: https://github.com/therealtimex/realtimex-crm/issues",
-        );
-      }
-
-      res.end();
-    });
-
-    // Handle process errors
-    child.on("error", (error) => {
-      sendLog("");
-      sendLog(`❌ Failed to start migration process: ${error.message}`);
-      sendLog("");
-      sendLog("💡 This usually means:");
-      sendLog("   - Bash is not available on your system");
-      sendLog("   - The migration script is not executable");
-      sendLog("   - There are permission issues");
-      sendLog("");
-      sendLog(
-        "Please try running the migration manually using the CLI instructions.",
-      );
-      res.end();
-    });
-
-    // Handle client disconnect
-    req.on("close", () => {
-      if (!child.killed) {
-        child.kill();
-        console.log("Migration process terminated - client disconnected");
-      }
-    });
+    }); // End setImmediate
   } catch (error) {
     sendLog("");
     sendLog(`❌ Unexpected error: ${error.message}`);
@@ -521,21 +574,65 @@ app.post("/api/sdk/chat", async (req, res) => {
     const sdk = SDKService.getSDK();
     if (!sdk) return res.json({ success: false, message: "SDK not initialized" });
 
-    const { messages, settings = {} } = req.body;
+    const { messages, settings = {}, threadId } = req.body;
 
     // Resolve provider/model
     const { provider, model } = await SDKService.resolveChatProvider(settings);
 
     const response = await SDKService.withTimeout(
-      sdk.llm.chat({
-        messages,
+      sdk.llm.chat(messages, {
         provider,
         model,
+        threadId, // Pass threadId if available
         ...settings
       })
     );
 
-    res.json({ success: true, content: response.content, raw: response });
+    // Support both direct content and nested response.content (SDK version differences)
+    let content = response.content || response.response?.content || (typeof response === 'string' ? response : "");
+
+    // Robust Content Cleaning & Extraction
+    if (typeof content === 'string' && content.length > 0) {
+      // 1. Strip internal platform tokens (e.g. <|channel|>, <|message|>, etc.)
+      content = content.replace(/<\|[\s\S]*?\|>/g, '').trim();
+
+      // 2. Handle Markdown JSON blocks (common in long LLM outputs)
+      if (content.includes('```json')) {
+        content = content.split('```json')[1].split('```')[0].trim();
+      } else if (content.includes('```') && (content.match(/\{[\s\S]*\}/))) {
+        // If it's a generic code block but contains JSON-like structure
+        const block = content.split('```')[1].split('```')[0].trim();
+        if (block.startsWith('{')) content = block;
+      }
+
+      // 3. Extract JSON object if the string contains one (handles preamble/postamble)
+      // Only do this if it looks like the model was trying to return structured data
+      if (content.includes('{') && content.includes('}')) {
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          try {
+            const potentialJson = jsonMatch[0];
+            const parsed = JSON.parse(potentialJson);
+            // If it has our known response fields, extract them
+            if (parsed.response || parsed.content || parsed.message) {
+              content = parsed.response || parsed.content || parsed.message;
+            } else if (Object.keys(parsed).length > 0 && !content.includes('\n')) {
+              // If it's a valid small JSON object and NOT markdown, maybe it's the whole response
+              // but we stay conservative here to avoid breaking actual markdown lists
+            }
+          } catch (e) {
+            // Not valid JSON or partial, keep original (cleaned) string
+          }
+        }
+      }
+    }
+
+    res.json({ 
+      success: response.success !== false, 
+      content, 
+      raw: response,
+      error: response.error
+    });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
@@ -553,15 +650,16 @@ app.post("/api/sdk/embed", async (req, res) => {
     const { provider, model } = await SDKService.resolveEmbedProvider(settings);
 
     const response = await SDKService.withTimeout(
-      sdk.llm.embed({
-        input: content,
+      sdk.llm.embed(content, {
         provider,
         model,
         ...settings
       })
     );
 
-    res.json({ success: true, embedding: response.embedding, model: response.model, raw: response });
+    const embedding = response.embedding || response.embeddings?.[0];
+
+    res.json({ success: true, embedding, model: response.model, raw: response });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }

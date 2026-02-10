@@ -37,6 +37,7 @@ const Header = () => {
     { path: "/deals", pattern: "/deals/*" },
     { path: "/invoices", pattern: "/invoices/*" },
     { path: "/tasks", pattern: "/tasks/*" },
+    { path: "/ai", pattern: "/ai/*" },
   ];
 
   const currentPath =
@@ -135,6 +136,11 @@ const Header = () => {
               label={translate("crm.nav.tasks")}
               to="/tasks"
               isActive={currentPath === "/tasks"}
+            />
+            <NavigationTab
+              label={translate("crm.nav.ai")}
+              to="/ai"
+              isActive={currentPath === "/ai"}
             />
           </nav>
 

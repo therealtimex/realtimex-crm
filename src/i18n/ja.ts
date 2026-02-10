@@ -131,6 +131,7 @@ export const jaMessages = {
       deals: "案件",
       invoices: "請求書",
       tasks: "タスク",
+      ai: "AI",
       users: "ユーザー",
       settings: "マイ情報",
       database: "データベース",

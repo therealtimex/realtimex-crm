@@ -87,13 +87,13 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Check if we're running from a bundled context (dist/scripts/) or local repo
 if [ -d "$SCRIPT_DIR/../supabase/migrations" ]; then
     # Bundled context (dist/scripts/migrate.sh) or local dev (scripts/migrate.sh)
-    echo "✅ Detected bundled migrations. Using local files."
+    echo "✅ Using bundled migrations from local directory"
     WORK_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
     USE_LOCAL=true
 
     # No cleanup needed for local/bundled files
     cleanup() {
-        echo "✅ Migration complete (used bundled migrations)."
+        echo "✅ Migration complete"
     }
     trap cleanup EXIT
 else
@@ -136,7 +136,7 @@ fi
 # This connects the CLI to the remote project.
 # It will pause and ask for the password if not found in env vars.
 # SUPABASE_ACCESS_TOKEN is automatically used by CLI when set
-if ! $SUPABASE_CMD link --project-ref "$SUPABASE_PROJECT_ID" 2>&1; then
+if ! $SUPABASE_CMD link --project-ref "$SUPABASE_PROJECT_ID"; then
     echo ""
     echo "❌ Failed to link to Supabase project."
     echo ""
@@ -161,8 +161,9 @@ fi
 
 echo "---------------------------------------------------------"
 echo "📂 Pushing Database Schema Changes..."
-# This compares local SQL migrations with the remote DB and applies differences.
-$SUPABASE_CMD db push
+# Apply all migrations, including ones with older timestamps (--include-all)
+# This ensures all local migrations are applied regardless of timestamp ordering
+$SUPABASE_CMD db push --include-all
 
 echo "---------------------------------------------------------"
 echo "⚙️  Pushing Project Configuration..."

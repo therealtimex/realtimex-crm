@@ -160,6 +160,7 @@ export const enMessages = {
       deals: "Deals",
       invoices: "Invoices",
       tasks: "Tasks",
+      ai: "AI",
       users: "Users",
       settings: "My info",
       database: "Database",

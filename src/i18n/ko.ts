@@ -129,6 +129,7 @@ export const koMessages = {
       deals: "딜",
       invoices: "청구서",
       tasks: "작업",
+      ai: "AI",
       users: "사용자",
       settings: "내 정보",
       database: "데이터베이스",

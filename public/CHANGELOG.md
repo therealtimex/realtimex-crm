@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.50.0] - 2026-02-09
+
+### Added
+- **AI Intelligence**: Introduced "LiveTerminal", a real-time, terminal-style feed of AI processing events (analysis, actions, errors) for increased transparency.
+- **AI Intelligence**: Implemented "AI Trace" allowing users to inspect granular processing logs, including raw LLM prompts and responses for every automated action.
+- **AI Assistant**: New context-aware floating AI Assistant that can answer questions about CRM data and perform natural language actions.
+- **Daily Briefing**: Added an intelligent summary component to the Dashboard that highlights critical updates, pending tasks, and suggested focus areas.
+- **Voice Capabilities**: Introduced a "Voice Note Button" with automatic transcription and AI-powered summarization for quick note-taking.
+- **Voice Capabilities**: Added integrated Text-to-Speech (TTS) for AI Chat responses with support for multiple providers and auto-play options.
+- **Database**: Added vector storage and search capabilities via `entity_vectors` for future semantic search and RAG features.
+- **Infrastructure**: New `SDKService` and enhanced API server to support complex agentic workflows and real-time event streaming via Supabase.
+- **Settings**: Comprehensive new AI Settings management for configuring model providers, agent personas, and feature visibility.
+
+### Fixed
+- **AI Chat**: Fixed thread switching in the AI tab so conversation history resets correctly per selected thread instead of showing stale messages.
+- **AI Chat**: Fixed first-message thread initialization flow in both AI tab and floating assistant to prevent dropped messages when no thread exists yet.
+- **AI Chat**: Fixed thread history ordering by recent activity and added chat table indexes to improve thread/message query performance under RLS.
+
 ## [0.49.2] - 2026-02-08
 
 ### Added

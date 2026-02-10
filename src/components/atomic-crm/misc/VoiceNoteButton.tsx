@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Mic, Square, Loader2, Sparkles } from "lucide-react";
+import { Mic, Square, Loader2 } from "lucide-react";
 import { Button } from "@/components/ds/ui/button";
 import { useNotify } from "ra-core";
 import axios from "axios";

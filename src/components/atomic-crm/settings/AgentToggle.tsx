@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { AgentService } from "@/lib/agents/AgentService";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Brain, Power } from "lucide-react";
+import { Switch } from "@/components/ds/ui/switch";
+import { Label } from "@/components/ds/ui/label";
+import { Brain } from "lucide-react";
 import { useSDK } from "../root/SDKProvider";
 
 export const AgentToggle = () => {

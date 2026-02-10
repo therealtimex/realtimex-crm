@@ -474,18 +474,14 @@ const AIPageContent = () => {
             const content = response.data.content || "";
 
             // 3. Save assistant response to DB
-            let messageId: string | undefined;
             if (content) {
-              const { data: insertedMessage } = await supabase
+              await supabase
                 .from("chat_messages")
                 .insert({
                   thread_id: effectiveThreadId,
                   role: "assistant",
                   content: content,
-                })
-                .select("id")
-                .single();
-              messageId = insertedMessage?.id;
+                });
             }
 
             // 4. Update only the current thread in state (performance optimization)

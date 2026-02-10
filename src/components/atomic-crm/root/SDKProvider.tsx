@@ -26,7 +26,7 @@ export const SDKProvider: React.FC<{ children: React.ReactNode }> = ({
 
         setIsAvailable(available);
         setSdkStatus(available ? "connected" : "disconnected");
-      } catch (error) {
+      } catch {
         setSdkStatus("disconnected");
         setIsAvailable(false);
       }
@@ -49,10 +49,10 @@ export const SDKProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useSDK = () => {
+export function useSDK() {
   const context = useContext(SDKContext);
   if (context === undefined) {
     throw new Error("useSDK must be used within a SDKProvider");
   }
   return context;
-};
+}

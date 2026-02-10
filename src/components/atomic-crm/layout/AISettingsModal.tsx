@@ -23,7 +23,8 @@ import {
   TabsTrigger,
 } from "@/components/ds/ui/tabs";
 import { Cpu, Database, Volume2, Save, Loader2, Play } from "lucide-react";
-import { useAISettings, AISettings } from "../root/AISettingsProvider";
+import { useAISettings } from "../root/AISettingsProvider";
+import type { AISettings } from "../root/AISettingsProvider";
 import axios from "axios";
 
 interface AISettingsModalProps {
@@ -32,7 +33,7 @@ interface AISettingsModalProps {
 }
 
 export function AISettingsModal({ open, onOpenChange }: AISettingsModalProps) {
-  const { settings, updateSettings, loading: contextLoading } = useAISettings();
+  const { settings, updateSettings } = useAISettings();
   const [localSettings, setLocalSettings] = useState<AISettings>(settings);
   const [saving, setSaving] = useState(false);
   const [testingTTS, setTestingTTS] = useState(false);
@@ -75,7 +76,7 @@ export function AISettingsModal({ open, onOpenChange }: AISettingsModalProps) {
     try {
       await updateSettings(localSettings);
       onOpenChange(false);
-    } catch (error) {
+    } catch {
       // Error handled by provider/notify
     } finally {
       setSaving(false);

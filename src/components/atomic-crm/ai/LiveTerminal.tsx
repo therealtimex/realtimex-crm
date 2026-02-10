@@ -8,7 +8,7 @@ import {
   Brain,
   Activity,
 } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Card } from "@/components/ds/ui/card";
 import { useSDK } from "../root/SDKProvider";
 import { supabase } from "../providers/supabase";
 import { cn } from "@/lib/utils";

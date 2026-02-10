@@ -5,14 +5,13 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@/components/ds/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ds/ui/tabs";
+import { ScrollArea } from "@/components/ds/ui/scroll-area";
 import {
   Brain,
   Code,
   FileJson,
-  Activity,
   Terminal as TerminalIcon,
 } from "lucide-react";
 import { supabase } from "../providers/supabase";
@@ -30,12 +29,10 @@ export const AITraceModal = ({
   activityId,
 }: AITraceModalProps) => {
   const [activity, setActivity] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (isOpen && activityId) {
       const fetchActivity = async () => {
-        setLoading(true);
         const { data } = await supabase
           .from("activities")
           .select("*")
@@ -43,7 +40,6 @@ export const AITraceModal = ({
           .single();
 
         setActivity(data);
-        setLoading(false);
       };
       fetchActivity();
     }

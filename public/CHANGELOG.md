@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.51.0] - 2026-02-09
+
+### Added
+- **Login**: Pre-filled demo credentials and "Demo Mode" badge in the login page for improved onboarding and easier evaluation.
+- **AI Infrastructure**: Robust fallback strategy in `SDKService` for SDK availability checks, automatically falling back to provider verification if direct ping fails.
+
+### Changed
+- **Developer Tools**: Migrated ESLint configuration to the new flat config format (`eslint.config.js`) and unified rules between local and CI environments.
+- **Maintenance**: Enhanced Makefile with conditional linting support (`--if-present`) for more resilient CI pipelines.
+
+### Fixed
+- **AI Infrastructure**: Improved connection logging in `SDKService` to provide clearer feedback on RealTimeX Desktop connectivity.
+- **CI**: Resolved critical linting and formatting errors that were affecting the build and publication pipeline.
+
 ## [0.50.0] - 2026-02-09
 
 ### Added

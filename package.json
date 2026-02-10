@@ -1,6 +1,6 @@
 {
   "name": "@realtimex/realtimex-crm",
-  "version": "0.55.0",
+  "version": "0.56.0",
   "description": "RealTimeX CRM - A full-featured CRM with zero cloud costs and complete privacy.",
   "type": "module",
   "main": "./dist/index.js",
@@ -60,7 +60,8 @@
     "build": "cp CHANGELOG.md public/ && tsc && vite build",
     "build:demo": "cp CHANGELOG.md public/ && tsc && vite build --config vite.demo.config",
     "typecheck": "tsc --noEmit",
-    "preview": "vite preview",
+    "preview": "node api/server.js",
+    "start": "node api/server.js",
     "serve": "node api/server.js",
     "serve:legacy": "serve -l tcp://127.0.0.1:3000 dist",
     "lint:apply": "eslint **/*.{mjs,ts,tsx} --fix",

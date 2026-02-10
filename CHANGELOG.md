@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.56.0] - 2026-02-10
+
+### Added
+- **NPM Scripts**: Added `start` script to `package.json` which launches the Express backend server (`node api/server.js`), improving compatibility with deployment platforms like Vercel and Heroku.
+
 ## [0.55.0] - 2026-02-10
 
 ### Changed

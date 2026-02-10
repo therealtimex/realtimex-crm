@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.55.0] - 2026-02-10
+
+### Changed
+- **Dependencies**: Moved `@realtimex/sdk` from `devDependencies` to `dependencies` to ensure it is available in production and when running via `npx`.
+
 ## [0.54.1] - 2026-02-10
 
 ### Fixed

@@ -1,6 +1,6 @@
 {
   "name": "@realtimex/realtimex-crm",
-  "version": "0.51.0",
+  "version": "0.52.0",
   "description": "RealTimeX CRM - A full-featured CRM with zero cloud costs and complete privacy.",
   "type": "module",
   "main": "./dist/index.js",
@@ -127,7 +127,7 @@
     "jspdf": "^4.0.0",
     "lodash": "^4.17.21",
     "lucide-react": "^0.542.0",
-    "multer": "^1.4.5-lts.1",
+    "multer": "^2.0.2",
     "next-themes": "^0.4.6",
     "papaparse": "^5.5.3",
     "postal-mime": "^2.7.1",

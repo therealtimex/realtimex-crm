@@ -526,7 +526,19 @@ app.get("/api/health", (req, res) => {
 app.get("/api/sdk/status", async (req, res) => {
   try {
     const available = await SDKService.isAvailable();
-    res.json({ success: true, available });
+    res.json({
+      success: true,
+      available,
+      environment: {
+        RTX_APP_ID: process.env.RTX_APP_ID || null,
+        RTX_APP_NAME: process.env.RTX_APP_NAME || null,
+        RTX_PORT: process.env.RTX_PORT || null,
+        REALTTIMEX_API_KEY: process.env.REALTTIMEX_API_KEY
+          ? "***" + process.env.REALTTIMEX_API_KEY.slice(-4)
+          : "default",
+        NODE_ENV: process.env.NODE_ENV || "development",
+      },
+    });
   } catch (error) {
     res.json({ success: false, available: false, message: error.message });
   }

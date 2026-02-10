@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.52.0] - 2026-02-09
+
+### Added
+- **AI Infrastructure**: Introduced "Production Mode" in `SDKService` which automatically handles App ID provisioning when running within RealTimeX Desktop.
+- **AI Infrastructure**: Enhanced `/api/sdk/status` endpoint to report environment variables (RTX_APP_ID, RTX_PORT, etc.) for better debugging and observability.
+
+### Changed
+- **AI Infrastructure**: Refactored `SDKService` to cleanly differentiate between Developer Mode (using API Keys) and Production Mode (using Desktop App provisioning).
+
 ## [0.51.0] - 2026-02-09
 
 ### Added
@@ -14,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **AI Infrastructure**: Robust fallback strategy in `SDKService` for SDK availability checks, automatically falling back to provider verification if direct ping fails.
 
 ### Changed
+- **Security**: Upgraded `multer` to `^2.0.2` to resolve known vulnerabilities in the 1.x branch.
 - **Developer Tools**: Migrated ESLint configuration to the new flat config format (`eslint.config.js`) and unified rules between local and CI environments.
 - **Maintenance**: Enhanced Makefile with conditional linting support (`--if-present`) for more resilient CI pipelines.
 

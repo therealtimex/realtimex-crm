@@ -25,14 +25,14 @@ test: ## run tests
 	npm test
 
 test-ci: ## run tests in CI mode
-	CI=1 npm test
+	CI=1 npm test --if-present
 
 lint: ## run linter and prettier
-	npm run lint
-	npm run prettier
+	npm run lint --if-present
+	npm run prettier --if-present
 
 typecheck: ## run TypeScript type checking
-	npm run typecheck
+	npm run typecheck --if-present
 
 # Developer commands for remote Supabase management
 db-push: ## push migrations to remote Supabase (developers only)

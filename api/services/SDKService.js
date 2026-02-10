@@ -36,7 +36,6 @@ export class SDKService {
       try {
         this.instance = new RealtimeXSDK({
           realtimex: {
-            // Placeholder key for development/local access
             apiKey:
               process.env.REALTTIMEX_API_KEY ||
               "SXKX93J-QSWMB04-K9E0GRE-J5DA8J0",
@@ -59,16 +58,19 @@ export class SDKService {
           ],
         });
 
-        console.log("[SDKService] RealTimeX SDK initialized");
+        console.log("[SDKService] RealTimeX SDK initialized successfully");
 
-        // Verify connection (ping)
+        // Verify connection (ping) - with fallback
         this.instance
           .ping()
           .then(() =>
-            console.log("[SDKService] Connected to RealTimeX Desktop"),
+            console.log("[SDKService] ✅ Connected to RealTimeX Desktop"),
           )
           .catch((err) =>
-            console.warn("[SDKService] Desktop App not found:", err.message),
+            console.warn(
+              "[SDKService] Desktop App Connection failed (this is OK if providers work):",
+              err.message,
+            ),
           );
       } catch (error) {
         console.error("[SDKService] Failed to initialize SDK:", error);
@@ -90,15 +92,25 @@ export class SDKService {
   }
 
   /**
-   * Check if SDK is available
+   * Check if SDK is available and working
+   * Uses fallback strategy: try ping first, then providers
    */
   static async isAvailable() {
     try {
       const sdk = this.getSDK();
       if (!sdk) return false;
-      await sdk.ping();
-      return true;
-    } catch {
+
+      // Try to ping first (faster)
+      try {
+        await sdk.ping();
+        return true;
+      } catch (e) {
+        // Fallback to providers check if ping not available/fails
+        await sdk.llm.chatProviders();
+        return true;
+      }
+    } catch (error) {
+      console.warn("[SDKService] SDK not available:", error.message);
       return false;
     }
   }

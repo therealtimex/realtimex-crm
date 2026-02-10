@@ -34,11 +34,11 @@ export default defineConfig(({ mode }) => {
     "import.meta.env.VITE_LATEST_MIGRATION_TIMESTAMP": JSON.stringify(
       latestMigrationTimestamp,
     ),
+    "import.meta.env.VITE_IS_DEMO": JSON.stringify(env.VITE_IS_DEMO),
   };
 
   if (mode === "production") {
     Object.assign(define, {
-      "import.meta.env.VITE_IS_DEMO": JSON.stringify(env.VITE_IS_DEMO),
       "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(
         env.VITE_SUPABASE_URL,
       ),

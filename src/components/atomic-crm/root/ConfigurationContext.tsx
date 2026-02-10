@@ -34,6 +34,7 @@ export interface ConfigurationContextValue {
   darkModeLogo: string;
   lightModeLogo: string;
   contactGender: ContactGender[];
+  isDemo?: boolean;
   externalHeartbeatStatuses?: { id: string; name: string; color: string }[];
   internalHeartbeatStatuses?: { id: string; name: string; color: string }[];
 }
@@ -56,6 +57,7 @@ export const ConfigurationContext = createContext<ConfigurationContextValue>({
   darkModeLogo: defaultDarkModeLogo,
   lightModeLogo: defaultLightModeLogo,
   contactGender: defaultContactGender,
+  isDemo: false,
 });
 
 export const ConfigurationProvider = ({
@@ -76,6 +78,7 @@ export const ConfigurationProvider = ({
   taskStatuses,
   title,
   contactGender,
+  isDemo,
   externalHeartbeatStatuses,
   internalHeartbeatStatuses,
 }: ConfigurationProviderProps) => (
@@ -97,6 +100,7 @@ export const ConfigurationProvider = ({
       taskPriorities,
       taskStatuses,
       contactGender,
+      isDemo,
       externalHeartbeatStatuses,
       internalHeartbeatStatuses,
     }}

@@ -157,6 +157,7 @@ export const CRM = ({
       taskPriorities={taskPriorities}
       taskStatuses={taskStatuses}
       title={title}
+      isDemo={rest.isDemo ?? import.meta.env.VITE_IS_DEMO === "true"}
       externalHeartbeatStatuses={externalHeartbeatStatuses}
       internalHeartbeatStatuses={internalHeartbeatStatuses}
     >

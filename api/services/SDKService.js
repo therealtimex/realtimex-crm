@@ -34,43 +34,29 @@ export class SDKService {
       this.initAttempted = true;
 
       try {
-        const permissions = [
-          "api.agents", // List agents
-          "api.workspaces", // List workspaces
-          "api.threads", // For AI Tab history
-          "webhook.trigger", // Trigger agents
-          "activities.read", // For Smart Ingestion
-          "activities.write",
-          "llm.chat", // For Assistant/Agent
-          "llm.embed", // For Semantic Search
-          "llm.providers", // For dynamic model resolution
-          "vectors.read", // For RAG
-          "vectors.write",
-          "audio.transcribe", // For STT
-          "tts.generate", // Standard TTS
-          "tts.providers", // Standard TTS Providers
-        ];
-
-        // Production Mode: RealTimeX Desktop auto-provisions APP ID
-        if (process.env.RTX_APP_ID) {
-          console.log(
-            "[SDKService] Production Mode - App ID:",
-            process.env.RTX_APP_ID,
-          );
-          this.instance = new RealtimeXSDK({ permissions });
-        }
-        // Developer Mode: Use API key for local development
-        else {
-          console.log("[SDKService] Developer Mode - Using API Key");
-          this.instance = new RealtimeXSDK({
-            realtimex: {
-              apiKey:
-                process.env.REALTTIMEX_API_KEY ||
-                "SXKX93J-QSWMB04-K9E0GRE-J5DA8J0",
-            },
-            permissions,
-          });
-        }
+        this.instance = new RealtimeXSDK({
+          realtimex: {
+            apiKey:
+              process.env.REALTTIMEX_API_KEY ||
+              "SXKX93J-QSWMB04-K9E0GRE-J5DA8J0",
+          },
+          permissions: [
+            "api.agents", // List agents
+            "api.workspaces", // List workspaces
+            "api.threads", // For AI Tab history
+            "webhook.trigger", // Trigger agents
+            "activities.read", // For Smart Ingestion
+            "activities.write",
+            "llm.chat", // For Assistant/Agent
+            "llm.embed", // For Semantic Search
+            "llm.providers", // For dynamic model resolution
+            "vectors.read", // For RAG
+            "vectors.write",
+            "audio.transcribe", // For STT
+            "tts.generate", // Standard TTS
+            "tts.providers", // Standard TTS Providers
+          ],
+        });
 
         console.log("[SDKService] RealTimeX SDK initialized successfully");
 

@@ -265,6 +265,67 @@ const dataProviderWithCustomMethods = {
     return baseDataProvider.getOne(resource, params);
   },
   async create(resource: string, params: any) {
+    // Special handling for contacts to ensure proper response format
+    if (resource === "contacts") {
+      const { data, error } = await supabase
+        .from("contacts")
+        .insert(params.data)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("[DataProvider] contacts create error:", error);
+        throw new Error(`Failed to create contact: ${error.message}`);
+      }
+
+      // Fetch enriched record from contacts_summary for embedding (includes company_name from join)
+      const { data: enrichedData, error: enrichError } = await supabase
+        .from("contacts_summary")
+        .select("*")
+        .eq("id", data.id)
+        .single();
+
+      if (enrichError) {
+        console.warn("[DataProvider] Failed to fetch enriched contact data:", enrichError);
+        return { data }; // Return base data if enriched fetch fails
+      }
+
+      // Return enriched data for react-admin and embedding
+      return { data: enrichedData };
+    }
+
+    // Special handling for companies to ensure proper response format
+    if (resource === "companies") {
+      const { data, error } = await supabase
+        .from("companies")
+        .insert({
+          ...params.data,
+          created_at: new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error("[DataProvider] companies create error:", error);
+        throw new Error(`Failed to create company: ${error.message}`);
+      }
+
+      // Fetch enriched record from companies_summary for embedding (includes aggregations)
+      const { data: enrichedData, error: enrichError } = await supabase
+        .from("companies_summary")
+        .select("*")
+        .eq("id", data.id)
+        .single();
+
+      if (enrichError) {
+        console.warn("[DataProvider] Failed to fetch enriched company data:", enrichError);
+        return { data }; // Return base data if enriched fetch fails
+      }
+
+      // Return enriched data for react-admin and embedding
+      return { data: enrichedData };
+    }
+
     if (resource === "invoices") {
       const {
         items,
@@ -306,6 +367,54 @@ const dataProviderWithCustomMethods = {
   },
 
   async update(resource: string, params: any) {
+    // Special handling for contacts to ensure proper response format
+    if (resource === "contacts") {
+      // Filter out computed/view-only fields from contacts_summary
+      const {
+        company_name: _company_name,
+        search_text: _search_text,  // Computed in view as c.search_text || company.name
+        email_fts: _email_fts,
+        phone_fts: _phone_fts,
+        nb_tasks: _nb_tasks,
+        nb_notes: _nb_notes,
+        nb_invoices: _nb_invoices,
+        nb_open_tasks: _nb_open_tasks,
+        nb_completed_tasks: _nb_completed_tasks,
+        task_completion_rate: _task_completion_rate,
+        last_note_date: _last_note_date,
+        last_task_activity: _last_task_activity,
+        days_since_last_activity: _days_since_last_activity,
+        ...contactData
+      } = params.data;
+
+      const { data, error } = await supabase
+        .from("contacts")
+        .update(contactData)
+        .eq("id", params.id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("[DataProvider] contacts update error:", error);
+        throw new Error(`Failed to update contact: ${error.message}`);
+      }
+
+      // Fetch enriched record from contacts_summary for embedding (includes company_name from join)
+      const { data: enrichedData, error: enrichError } = await supabase
+        .from("contacts_summary")
+        .select("*")
+        .eq("id", params.id)
+        .single();
+
+      if (enrichError) {
+        console.warn("[DataProvider] Failed to fetch enriched contact data:", enrichError);
+        return { data }; // Return base data if enriched fetch fails
+      }
+
+      // Return enriched data for react-admin and embedding
+      return { data: enrichedData };
+    }
+
     // Special handling for business_profile (singleton table)
     if (resource === "business_profile") {
       const { data, error } = await supabase
@@ -342,6 +451,52 @@ const dataProviderWithCustomMethods = {
       }
 
       return { data };
+    }
+
+    // Special handling for companies to ensure proper response format
+    if (resource === "companies") {
+      // Filter out computed/view-only fields from companies_summary
+      const {
+        search_text: _search_text,  // Generated column - cannot be written
+        nb_deals: _nb_deals,
+        nb_contacts: _nb_contacts,
+        nb_notes: _nb_notes,
+        nb_invoices: _nb_invoices,
+        nb_tasks: _nb_tasks,
+        total_deal_amount: _total_deal_amount,
+        last_note_date: _last_note_date,
+        last_deal_activity: _last_deal_activity,
+        last_task_activity: _last_task_activity,
+        days_since_last_activity: _days_since_last_activity,
+        ...companyData
+      } = params.data;
+
+      const { data, error } = await supabase
+        .from("companies")
+        .update(companyData)
+        .eq("id", params.id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("[DataProvider] companies update error:", error);
+        throw new Error(`Failed to update company: ${error.message}`);
+      }
+
+      // Fetch enriched record from companies_summary for embedding (includes aggregations)
+      const { data: enrichedData, error: enrichError } = await supabase
+        .from("companies_summary")
+        .select("*")
+        .eq("id", params.id)
+        .single();
+
+      if (enrichError) {
+        console.warn("[DataProvider] Failed to fetch enriched company data:", enrichError);
+        return { data }; // Return base data if enriched fetch fails
+      }
+
+      // Return enriched data for react-admin and embedding
+      return { data: enrichedData };
     }
 
     if (resource === "tasks") {
@@ -667,11 +822,17 @@ export const dataProvider = withLifecycleCallbacks(
         return processContactAvatar(params);
       },
       afterCreate: async (result) => {
-        EmbeddingService.embedRecord("contact", result.data);
+        // Fire-and-forget embedding (don't block contact creation)
+        EmbeddingService.embedRecord("contact", result.data).catch((err) =>
+          console.error("[DataProvider] Embedding failed for contact:", err),
+        );
         return result;
       },
       afterUpdate: async (result) => {
-        EmbeddingService.embedRecord("contact", result.data);
+        // Fire-and-forget embedding (don't block contact update)
+        EmbeddingService.embedRecord("contact", result.data).catch((err) =>
+          console.error("[DataProvider] Embedding failed for contact:", err),
+        );
         return result;
       },
       beforeGetList: async (params) => {
@@ -684,25 +845,23 @@ export const dataProvider = withLifecycleCallbacks(
         return applyFullTextSearch(["search_text"])(params);
       },
       beforeCreate: async (params) => {
-        const createParams = await processCompanyLogo(params);
-
-        return {
-          ...createParams,
-          data: {
-            ...createParams.data,
-            created_at: new Date().toISOString(),
-          },
-        };
+        return await processCompanyLogo(params);
       },
       beforeUpdate: async (params) => {
         return await processCompanyLogo(params);
       },
       afterCreate: async (result) => {
-        EmbeddingService.embedRecord("company", result.data);
+        // Fire-and-forget embedding (don't block company creation)
+        EmbeddingService.embedRecord("company", result.data).catch((err) =>
+          console.error("[DataProvider] Embedding failed for company:", err),
+        );
         return result;
       },
       afterUpdate: async (result) => {
-        EmbeddingService.embedRecord("company", result.data);
+        // Fire-and-forget embedding (don't block company update)
+        EmbeddingService.embedRecord("company", result.data).catch((err) =>
+          console.error("[DataProvider] Embedding failed for company:", err),
+        );
         return result;
       },
     },

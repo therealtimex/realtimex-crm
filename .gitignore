@@ -42,3 +42,10 @@ supabase/.temp
 # Shadcn Registry
 public/r/
 .vercel
+
+# Collaboration Framework (keep config private for API keys)
+.collaboration/config.json
+
+# Collaboration framework logs
+.collaboration/
+.collaboration.backup/

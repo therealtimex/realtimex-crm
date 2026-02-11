@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.59.0] - 2026-02-11
+
+### Added
+- **Semantic Search**: Enhanced `entity_vectors` table to support variable dimensions (384, 768, 1024, 1536) for cross-model compatibility.
+- **Semantic Search**: Implemented contextual embedding logic that enriches CRM entities with related data (tags, company names, task context) before vectorization.
+- **Semantic Search**: Added multi-model support allowing multiple embeddings per entity (one per model) with unique constraints.
+- **Semantic Search**: Added partial HNSW indexes for optimized similarity search across different vector dimensions.
+- **Semantic Search**: New `match_entities` RPC function with dynamic dimension casting for fast, model-aware semantic search.
+- **AI Infrastructure**: Added a 30-second timeout and improved logging for embedding requests to prevent backend hangs.
+
+### Changed
+- **Data Provider**: Refactored `contacts` and `companies` create/update flows to fetch enriched data from summary views, ensuring high-quality metadata for semantic search.
+- **Data Provider**: Migrated embedding generation to an asynchronous fire-and-forget pattern to improve UI responsiveness.
+- **Infrastructure**: Updated `entity_vectors` schema to use `BIGINT` for `entity_id`, aligning with the core CRM database schema.
+
+### Fixed
+- **AI Infrastructure**: Improved SDK response handling to correctly support both singular `embedding` and plural `embeddings` formats from various providers.
+
 ## [0.58.0] - 2026-02-10
 
 ### Fixed

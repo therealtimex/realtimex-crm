@@ -696,23 +696,42 @@ app.post("/api/sdk/embed", async (req, res) => {
     // Resolve provider/model
     const { provider, model } = await SDKService.resolveEmbedProvider(settings);
 
+    console.log(
+      `[SDK/Embed] Calling embedding with provider=${provider}, model=${model}, content length=${content.length}`,
+    );
+
+    // Wrap with timeout to prevent indefinite hangs if provider/desktop bridge stops responding
+    // 30 second timeout is reasonable for embeddings (collab finding: missing timeout wrapper)
     const response = await SDKService.withTimeout(
       sdk.llm.embed(content, {
         provider,
         model,
-        ...settings,
       }),
+      30000,
+      "Embedding request timed out",
     );
 
-    const embedding = response.embedding || response.embeddings?.[0];
+    console.log(
+      `[SDK/Embed] Got response, embeddings count=${response.embeddings?.length || (response.embedding ? 1 : 0)}`,
+    );
+
+    // Return embeddings[0] (plural) like alchemy does
+    const embedding = response.embeddings?.[0] || response.embedding || null;
+
+    if (!embedding) {
+      return res.json({
+        success: false,
+        message: "No embedding returned from SDK",
+      });
+    }
 
     res.json({
       success: true,
       embedding,
-      model: response.model,
-      raw: response,
+      model: response.model || model,
     });
   } catch (error) {
+    console.error("[SDK/Embed] Error:", error);
     res.json({ success: false, message: error.message });
   }
 });

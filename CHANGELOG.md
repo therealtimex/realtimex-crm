@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Semantic Search**: Improved task and task note embeddings to include full related-entity context (contact, company, and deal), including company/deal-linked tasks.
+- **Data Provider**: Tasks now return enriched `tasks_summary` records after create/update, ensuring consistent UI metadata and higher-quality embedding payloads.
+
 ## [0.59.0] - 2026-02-11
 
 ### Added

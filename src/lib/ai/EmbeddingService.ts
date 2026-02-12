@@ -1,6 +1,13 @@
 import { supabase } from '../../components/atomic-crm/providers/supabase/supabase';
 import axios from 'axios';
 
+type TaskContext = {
+    taskText: string;
+    contactName: string | null;
+    companyName: string | null;
+    dealName: string | null;
+};
+
 /**
  * EmbeddingService
  *
@@ -11,6 +18,11 @@ export class EmbeddingService {
     // Cache for AI settings (5 minute TTL)
     private static aiSettingsCache: { data: any; timestamp: number } | null = null;
     private static readonly CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+    private static buildFullName(firstName?: string | null, lastName?: string | null): string | null {
+        const fullName = [firstName, lastName].filter(Boolean).join(' ').trim();
+        return fullName || null;
+    }
 
     /**
      * Fetch user's AI settings from database (with caching)
@@ -99,15 +111,85 @@ export class EmbeddingService {
     }
 
     /**
+     * Fetch company context for tasks (company name)
+     */
+    private static async fetchCompanyContext(companyId: number): Promise<string | null> {
+        if (!companyId) return null;
+
+        try {
+            const { data: company, error } = await supabase
+                .from('companies')
+                .select('name')
+                .eq('id', companyId)
+                .maybeSingle();
+
+            if (error || !company) {
+                console.warn('[EmbeddingService] Failed to fetch company context:', error);
+                return null;
+            }
+
+            return company.name || null;
+        } catch (error) {
+            console.warn('[EmbeddingService] Error fetching company context:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Fetch deal context for tasks (deal name)
+     */
+    private static async fetchDealContext(dealId: number): Promise<string | null> {
+        if (!dealId) return null;
+
+        try {
+            const { data: deal, error } = await supabase
+                .from('deals')
+                .select('name')
+                .eq('id', dealId)
+                .maybeSingle();
+
+            if (error || !deal) {
+                console.warn('[EmbeddingService] Failed to fetch deal context:', error);
+                return null;
+            }
+
+            return deal.name || null;
+        } catch (error) {
+            console.warn('[EmbeddingService] Error fetching deal context:', error);
+            return null;
+        }
+    }
+
+    /**
      * Fetch task context for taskNotes (task text and contact)
      */
-    private static async fetchTaskContext(taskId: number): Promise<{ taskText: string; contactName: string | null } | null> {
+    private static async fetchTaskContext(taskId: number): Promise<TaskContext | null> {
         if (!taskId) return null;
 
         try {
+            const { data: taskSummary, error: summaryError } = await supabase
+                .from('tasks_summary')
+                .select('text, contact_first_name, contact_last_name, company_name, deal_name')
+                .eq('id', taskId)
+                .maybeSingle();
+
+            if (!summaryError && taskSummary) {
+                return {
+                    taskText: taskSummary.text || '',
+                    contactName: this.buildFullName(taskSummary.contact_first_name, taskSummary.contact_last_name),
+                    companyName: taskSummary.company_name || null,
+                    dealName: taskSummary.deal_name || null,
+                };
+            }
+
+            if (summaryError) {
+                console.warn('[EmbeddingService] Failed to fetch task context from tasks_summary, falling back to tasks table:', summaryError);
+            }
+
+            // Fallback for databases where tasks_summary is missing or stale
             const { data: task, error } = await supabase
                 .from('tasks')
-                .select('text, contact_id')
+                .select('text, contact_id, company_id, deal_id')
                 .eq('id', taskId)
                 .maybeSingle();
 
@@ -116,15 +198,17 @@ export class EmbeddingService {
                 return null;
             }
 
-            // Fetch contact name if contact_id exists
-            let contactName: string | null = null;
-            if (task.contact_id) {
-                contactName = await this.fetchContactContext(task.contact_id);
-            }
+            const [contactName, companyName, dealName] = await Promise.all([
+                task.contact_id ? this.fetchContactContext(task.contact_id) : Promise.resolve(null),
+                task.company_id ? this.fetchCompanyContext(task.company_id) : Promise.resolve(null),
+                task.deal_id ? this.fetchDealContext(task.deal_id) : Promise.resolve(null),
+            ]);
 
             return {
                 taskText: task.text || '',
-                contactName
+                contactName,
+                companyName,
+                dealName,
             };
         } catch (error) {
             console.warn('[EmbeddingService] Error fetching task context:', error);
@@ -142,41 +226,76 @@ export class EmbeddingService {
             return;
         }
 
+        // Ensure record has an ID before embedding
+        if (!record.id) {
+            console.warn(`[EmbeddingService] Skipping embedding for ${type} - missing ID`, record);
+            return;
+        }
+
         // Enrich record with contextual data for embedding
         let enrichedRecord = record;
-        
+
         // Fetch tag names if present
         if (record.tags && record.tags.length > 0) {
             const tagNames = await this.fetchTagNames(record.tags);
-            enrichedRecord = { ...record, tagNames };
+            enrichedRecord = { ...enrichedRecord, tagNames };
         }
 
-        // Fetch contact context for tasks
-        if (type === 'task' && record.contact_id) {
-            const contactName = await this.fetchContactContext(record.contact_id);
-            enrichedRecord = { ...enrichedRecord, contactName };
+        // Fetch relationship context for tasks
+        if (type === 'task') {
+            const inlineContactName =
+                enrichedRecord.contactName ||
+                this.buildFullName(enrichedRecord.contact_first_name, enrichedRecord.contact_last_name);
+            const inlineCompanyName = enrichedRecord.companyName || enrichedRecord.company_name || null;
+            const inlineDealName = enrichedRecord.dealName || enrichedRecord.deal_name || null;
+
+            let contactName = inlineContactName || null;
+            let companyName = inlineCompanyName;
+            let dealName = inlineDealName;
+
+            if (!contactName && !companyName && !dealName) {
+                const taskContext = await this.fetchTaskContext(record.id);
+                if (taskContext) {
+                    contactName = taskContext.contactName;
+                    companyName = taskContext.companyName;
+                    dealName = taskContext.dealName;
+                }
+            }
+
+            if (!contactName && record.contact_id) {
+                contactName = await this.fetchContactContext(record.contact_id);
+            }
+            if (!companyName && record.company_id) {
+                companyName = await this.fetchCompanyContext(record.company_id);
+            }
+            if (!dealName && record.deal_id) {
+                dealName = await this.fetchDealContext(record.deal_id);
+            }
+
+            enrichedRecord = {
+                ...enrichedRecord,
+                contactName,
+                companyName,
+                dealName,
+            };
         }
 
         // Fetch task context for taskNotes
         if (type === 'taskNote' && record.task_id) {
             const taskContext = await this.fetchTaskContext(record.task_id);
             if (taskContext) {
-                enrichedRecord = { 
-                    ...enrichedRecord, 
+                enrichedRecord = {
+                    ...enrichedRecord,
                     taskText: taskContext.taskText,
-                    contactName: taskContext.contactName
+                    contactName: taskContext.contactName,
+                    companyName: taskContext.companyName,
+                    dealName: taskContext.dealName,
                 };
             }
         }
 
         const content = this.flattenRecord(type, enrichedRecord);
         if (!content) return;
-
-        // Ensure record has an ID before embedding
-        if (!record.id) {
-            console.warn(`[EmbeddingService] Skipping embedding for ${type} - missing ID`, record);
-            return;
-        }
 
         try {
             // Log what we're actually embedding to verify completeness
@@ -330,46 +449,50 @@ export class EmbeddingService {
                 const taskParts = [
                     // Core task information
                     `${record.type || 'Task'}: ${record.text}`,
-                    
+
                     // Priority and status for filtering/relevance
                     record.priority ? `Priority: ${record.priority}` : null,
                     record.status ? `Status: ${record.status}` : null,
-                    
+
                     // Temporal context
                     record.due_date ? `Due: ${new Date(record.due_date).toLocaleDateString()}` : null,
                     record.done_date ? `Completed: ${new Date(record.done_date).toLocaleDateString()}` : null,
-                    
+
                     // Assignment context
                     record.assigned_to ? `Assigned to sales rep ID ${record.assigned_to}` : null,
-                    
+
                     // Relationship context - critical for semantic search
-                    record.contactName ? `Related to: ${record.contactName}` : null,
-                    
+                    record.contactName ? `Contact: ${record.contactName}` : null,
+                    record.companyName ? `Company: ${record.companyName}` : null,
+                    record.dealName ? `Deal: ${record.dealName}` : null,
+
                     // Archival status
                     record.archived ? 'Archived' : null,
                 ];
-                
+
                 return taskParts.filter(Boolean).join('. ') + '.';
-                
+
             case 'taskNote':
                 // Task notes with hierarchical context
                 const taskNoteParts = [
                     // Core note content
                     `Task Note: ${record.text}`,
-                    
+
                     // Status context
                     record.status ? `Status: ${record.status}` : null,
-                    
+
                     // Temporal context
                     record.date ? `Date: ${new Date(record.date).toLocaleDateString()}` : null,
-                    
+
                     // Hierarchical context - task and contact
                     record.taskText ? `Task: ${record.taskText}` : null,
                     record.contactName ? `Contact: ${record.contactName}` : null,
+                    record.companyName ? `Company: ${record.companyName}` : null,
+                    record.dealName ? `Deal: ${record.dealName}` : null,
                 ];
-                
+
                 return taskNoteParts.filter(Boolean).join('. ') + '.';
-                
+
             case 'note':
                 // For notes, we embed the text but also include the context (contact/company name)
                 return `Note: ${record.text} (Context: ${record.context_name || 'General'})`;

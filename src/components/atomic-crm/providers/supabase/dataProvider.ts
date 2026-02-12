@@ -100,103 +100,59 @@ const dataProviderWithCustomMethods = {
     if (resource === "invoices") {
       return baseDataProvider.getList("invoices_summary", params);
     }
-
+    if (resource === "companyNotes") {
+      // Return all notes for company
+      return baseDataProvider.getList(resource, {
+        ...params,
+        sort: { field: "date", order: "DESC" },
+      });
+    }
+    if (resource === "contactNotes") {
+      // Return all notes for contact
+      return baseDataProvider.getList(resource, {
+        ...params,
+        sort: { field: "date", order: "DESC" },
+      });
+    }
+    if (resource === "dealNotes") {
+      return baseDataProvider.getList(resource, {
+        ...params,
+        sort: { field: "date", order: "DESC" },
+      });
+    }
+    if (resource === "taskNotes") {
+      return baseDataProvider.getList(resource, {
+        ...params,
+        sort: { field: "date", order: "DESC" },
+      });
+    }
     return baseDataProvider.getList(resource, params);
   },
-  async getOne(resource: string, params: any) {
-    if (resource === "companies") {
-      // Use direct Supabase query for better error handling
-      const { data, error } = await supabase
-        .from("companies_summary")
-        .select("*")
-        .eq("id", params.id)
-        .maybeSingle();
 
-      if (error) {
-        console.error("[DataProvider] companies_summary query error:", error);
-        throw new Error(`Failed to fetch company: ${error.message}`);
-      }
-
-      if (!data) {
-        throw new Error(`Company with id ${params.id} not found`);
-      }
-
-      return { data };
-    }
-    if (resource === "contacts") {
-      const { data, error } = await supabase
-        .from("contacts_summary")
-        .select("*")
-        .eq("id", params.id)
-        .maybeSingle();
-
-      if (error) {
-        console.error("[DataProvider] contacts_summary query error:", error);
-        throw new Error(`Failed to fetch contact: ${error.message}`);
-      }
-
-      if (!data) {
-        throw new Error(`Contact with id ${params.id} not found`);
-      }
-
-      return { data };
-    }
-
-    if (resource === "tasks") {
-      const { data, error } = await supabase
-        .from("tasks_summary")
-        .select("*")
-        .eq("id", params.id)
-        .maybeSingle();
-
-      if (error) {
-        console.error("[DataProvider] tasks_summary query error:", error);
-        throw new Error(`Failed to fetch task: ${error.message}`);
-      }
-
-      if (!data) {
-        throw new Error(`Task with id ${params.id} not found`);
-      }
-
-      return { data };
-    }
-
-    if (resource === "deals") {
-      const { data, error } = await supabase
-        .from("deals_summary")
-        .select("*")
-        .eq("id", params.id)
-        .maybeSingle();
-
-      if (error) {
-        console.error("[DataProvider] deals_summary query error:", error);
-        throw new Error(`Failed to fetch deal: ${error.message}`);
-      }
-
-      if (!data) {
-        throw new Error(`Deal with id ${params.id} not found`);
-      }
-
-      return { data };
-    }
-
+  async getOne(resource: string, params: { id: Identifier }) {
     if (resource === "invoices") {
       const { data, error } = await supabase
         .from("invoices_summary")
         .select("*")
         .eq("id", params.id)
-        .maybeSingle();
+        .single();
 
       if (error) {
         console.error("[DataProvider] invoices_summary query error:", error);
         throw new Error(`Failed to fetch invoice: ${error.message}`);
       }
 
-      if (!data) {
-        throw new Error(`Invoice with id ${params.id} not found`);
+      // Also fetch items
+      const { data: items, error: itemsError } = await supabase
+        .from("invoice_items")
+        .select("*")
+        .eq("invoice_id", params.id);
+
+      if (itemsError) {
+        console.error("[DataProvider] invoice_items query error:", itemsError);
       }
 
-      return { data };
+      return { data: { ...data, items: items || [] } };
     }
 
     // Special handling for business_profile (singleton table)
@@ -323,6 +279,27 @@ const dataProviderWithCustomMethods = {
       }
 
       // Return enriched data for react-admin and embedding
+      return { data: enrichedData };
+    }
+
+    if (resource === "tasks") {
+      const result = await baseDataProvider.create(resource, params);
+
+      // Fetch enriched task from tasks_summary for UI consistency and richer embeddings
+      const { data: enrichedData, error: enrichError } = await supabase
+        .from("tasks_summary")
+        .select("*")
+        .eq("id", result.data.id)
+        .single();
+
+      if (enrichError) {
+        console.warn(
+          "[DataProvider] Failed to fetch enriched task data:",
+          enrichError,
+        );
+        return result;
+      }
+
       return { data: enrichedData };
     }
 
@@ -516,10 +493,27 @@ const dataProviderWithCustomMethods = {
         ...data
       } = params.data;
 
-      return baseDataProvider.update(resource, {
+      const result = await baseDataProvider.update(resource, {
         ...params,
         data,
       });
+
+      // Fetch enriched task from tasks_summary for UI consistency and richer embeddings
+      const { data: enrichedData, error: enrichError } = await supabase
+        .from("tasks_summary")
+        .select("*")
+        .eq("id", params.id)
+        .single();
+
+      if (enrichError) {
+        console.warn(
+          "[DataProvider] Failed to fetch enriched task data:",
+          enrichError,
+        );
+        return result;
+      }
+
+      return { data: enrichedData };
     }
 
     if (resource === "invoices") {
@@ -803,6 +797,20 @@ export const dataProvider = withLifecycleCallbacks(
         }
         return data;
       },
+      afterCreate: async (result) => {
+        // Fire-and-forget embedding (don't block taskNote creation)
+        EmbeddingService.embedRecord("taskNote", result.data).catch((err) =>
+          console.error("[DataProvider] Embedding failed for taskNote:", err),
+        );
+        return result;
+      },
+      afterUpdate: async (result) => {
+        // Fire-and-forget embedding (don't block taskNote update)
+        EmbeddingService.embedRecord("taskNote", result.data).catch((err) =>
+          console.error("[DataProvider] Embedding failed for taskNote:", err),
+        );
+        return result;
+      },
     },
     {
       resource: "sales",
@@ -875,6 +883,20 @@ export const dataProvider = withLifecycleCallbacks(
       resource: "tasks",
       beforeGetList: async (params) => {
         return applyFullTextSearch(["text", "contact_first_name"])(params);
+      },
+      afterCreate: async (result) => {
+        // Fire-and-forget embedding (don't block task creation)
+        EmbeddingService.embedRecord("task", result.data).catch((err) =>
+          console.error("[DataProvider] Embedding failed for task:", err),
+        );
+        return result;
+      },
+      afterUpdate: async (result) => {
+        // Fire-and-forget embedding (don't block task update)
+        EmbeddingService.embedRecord("task", result.data).catch((err) =>
+          console.error("[DataProvider] Embedding failed for task:", err),
+        );
+        return result;
       },
     },
     {

@@ -49,3 +49,5 @@ public/r/
 # Collaboration framework logs
 .collaboration/
 .collaboration.backup/
+# Collaboration framework logs
+.collaboration/logs/

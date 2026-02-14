@@ -100,103 +100,59 @@ const dataProviderWithCustomMethods = {
     if (resource === "invoices") {
       return baseDataProvider.getList("invoices_summary", params);
     }
-
+    if (resource === "companyNotes") {
+      // Return all notes for company
+      return baseDataProvider.getList(resource, {
+        ...params,
+        sort: { field: "date", order: "DESC" },
+      });
+    }
+    if (resource === "contactNotes") {
+      // Return all notes for contact
+      return baseDataProvider.getList(resource, {
+        ...params,
+        sort: { field: "date", order: "DESC" },
+      });
+    }
+    if (resource === "dealNotes") {
+      return baseDataProvider.getList(resource, {
+        ...params,
+        sort: { field: "date", order: "DESC" },
+      });
+    }
+    if (resource === "taskNotes") {
+      return baseDataProvider.getList(resource, {
+        ...params,
+        sort: { field: "date", order: "DESC" },
+      });
+    }
     return baseDataProvider.getList(resource, params);
   },
-  async getOne(resource: string, params: any) {
-    if (resource === "companies") {
-      // Use direct Supabase query for better error handling
-      const { data, error } = await supabase
-        .from("companies_summary")
-        .select("*")
-        .eq("id", params.id)
-        .maybeSingle();
 
-      if (error) {
-        console.error("[DataProvider] companies_summary query error:", error);
-        throw new Error(`Failed to fetch company: ${error.message}`);
-      }
-
-      if (!data) {
-        throw new Error(`Company with id ${params.id} not found`);
-      }
-
-      return { data };
-    }
-    if (resource === "contacts") {
-      const { data, error } = await supabase
-        .from("contacts_summary")
-        .select("*")
-        .eq("id", params.id)
-        .maybeSingle();
-
-      if (error) {
-        console.error("[DataProvider] contacts_summary query error:", error);
-        throw new Error(`Failed to fetch contact: ${error.message}`);
-      }
-
-      if (!data) {
-        throw new Error(`Contact with id ${params.id} not found`);
-      }
-
-      return { data };
-    }
-
-    if (resource === "tasks") {
-      const { data, error } = await supabase
-        .from("tasks_summary")
-        .select("*")
-        .eq("id", params.id)
-        .maybeSingle();
-
-      if (error) {
-        console.error("[DataProvider] tasks_summary query error:", error);
-        throw new Error(`Failed to fetch task: ${error.message}`);
-      }
-
-      if (!data) {
-        throw new Error(`Task with id ${params.id} not found`);
-      }
-
-      return { data };
-    }
-
-    if (resource === "deals") {
-      const { data, error } = await supabase
-        .from("deals_summary")
-        .select("*")
-        .eq("id", params.id)
-        .maybeSingle();
-
-      if (error) {
-        console.error("[DataProvider] deals_summary query error:", error);
-        throw new Error(`Failed to fetch deal: ${error.message}`);
-      }
-
-      if (!data) {
-        throw new Error(`Deal with id ${params.id} not found`);
-      }
-
-      return { data };
-    }
-
+  async getOne(resource: string, params: { id: Identifier }) {
     if (resource === "invoices") {
       const { data, error } = await supabase
         .from("invoices_summary")
         .select("*")
         .eq("id", params.id)
-        .maybeSingle();
+        .single();
 
       if (error) {
         console.error("[DataProvider] invoices_summary query error:", error);
         throw new Error(`Failed to fetch invoice: ${error.message}`);
       }
 
-      if (!data) {
-        throw new Error(`Invoice with id ${params.id} not found`);
+      // Also fetch items
+      const { data: items, error: itemsError } = await supabase
+        .from("invoice_items")
+        .select("*")
+        .eq("invoice_id", params.id);
+
+      if (itemsError) {
+        console.error("[DataProvider] invoice_items query error:", itemsError);
       }
 
-      return { data };
+      return { data: { ...data, items: items || [] } };
     }
 
     // Special handling for business_profile (singleton table)
@@ -319,6 +275,95 @@ const dataProviderWithCustomMethods = {
 
       if (enrichError) {
         console.warn("[DataProvider] Failed to fetch enriched company data:", enrichError);
+        return { data }; // Return base data if enriched fetch fails
+      }
+
+      // Return enriched data for react-admin and embedding
+      return { data: enrichedData };
+    }
+
+    if (resource === "tasks") {
+      // Strip read-only fields from tasks_summary view before insertion
+      const {
+        contact_first_name: _contact_first_name,
+        contact_last_name: _contact_last_name,
+        contact_email: _contact_email,
+        company_name: _company_name,
+        deal_name: _deal_name,
+        company_id_computed: _company_id_computed,
+        assigned_first_name: _assigned_first_name,
+        assigned_last_name: _assigned_last_name,
+        creator_first_name: _creator_first_name,
+        creator_last_name: _creator_last_name,
+        nb_notes: _nb_notes,
+        last_note_date: _last_note_date,
+        ...cleanData
+      } = params.data;
+
+      // Use direct Supabase insert to ensure proper response format
+      const { data, error } = await supabase
+        .from("tasks")
+        .insert(cleanData)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("[DataProvider] tasks create error:", error);
+        throw new Error(`Failed to create task: ${error.message}`);
+      }
+
+      // Fetch enriched task from tasks_summary for UI consistency and richer embeddings
+      const { data: enrichedData, error: enrichError } = await supabase
+        .from("tasks_summary")
+        .select("*")
+        .eq("id", data.id)
+        .single();
+
+      if (enrichError) {
+        console.warn(
+          "[DataProvider] Failed to fetch enriched task data:",
+          enrichError,
+        );
+        return { data }; // Return base data if enriched fetch fails
+      }
+
+      // Return enriched data for react-admin and embedding
+      return { data: enrichedData };
+    }
+
+    if (resource === "deals") {
+      // Strip read-only fields from deals_summary view before insertion
+      const {
+        company_name: _company_name,
+        nb_invoices: _nb_invoices,
+        nb_notes: _nb_notes,
+        ...cleanData
+      } = params.data;
+
+      // Use direct Supabase insert to ensure proper response format
+      const { data, error } = await supabase
+        .from("deals")
+        .insert(cleanData)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("[DataProvider] deals create error:", error);
+        throw new Error(`Failed to create deal: ${error.message}`);
+      }
+
+      // Fetch enriched deal from deals_summary for UI consistency and richer embeddings
+      const { data: enrichedData, error: enrichError } = await supabase
+        .from("deals_summary")
+        .select("*")
+        .eq("id", data.id)
+        .single();
+
+      if (enrichError) {
+        console.warn(
+          "[DataProvider] Failed to fetch enriched deal data:",
+          enrichError,
+        );
         return { data }; // Return base data if enriched fetch fails
       }
 
@@ -516,10 +561,67 @@ const dataProviderWithCustomMethods = {
         ...data
       } = params.data;
 
-      return baseDataProvider.update(resource, {
+      const result = await baseDataProvider.update(resource, {
         ...params,
         data,
       });
+
+      // Fetch enriched task from tasks_summary for UI consistency and richer embeddings
+      const { data: enrichedData, error: enrichError } = await supabase
+        .from("tasks_summary")
+        .select("*")
+        .eq("id", params.id)
+        .single();
+
+      if (enrichError) {
+        console.warn(
+          "[DataProvider] Failed to fetch enriched task data:",
+          enrichError,
+        );
+        return result;
+      }
+
+      return { data: enrichedData };
+    }
+
+    if (resource === "deals") {
+      // Strip read-only fields from deals_summary view before update
+      const {
+        company_name: _company_name,
+        nb_invoices: _nb_invoices,
+        nb_notes: _nb_notes,
+        ...cleanData
+      } = params.data;
+
+      const { data, error } = await supabase
+        .from("deals")
+        .update(cleanData)
+        .eq("id", params.id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("[DataProvider] deals update error:", error);
+        throw new Error(`Failed to update deal: ${error.message}`);
+      }
+
+      // Fetch enriched deal from deals_summary for UI consistency and richer embeddings
+      const { data: enrichedData, error: enrichError } = await supabase
+        .from("deals_summary")
+        .select("*")
+        .eq("id", params.id)
+        .single();
+
+      if (enrichError) {
+        console.warn(
+          "[DataProvider] Failed to fetch enriched deal data:",
+          enrichError,
+        );
+        return { data }; // Return base data if enriched fetch fails
+      }
+
+      // Return enriched data for react-admin and embedding
+      return { data: enrichedData };
     }
 
     if (resource === "invoices") {
@@ -803,6 +905,53 @@ export const dataProvider = withLifecycleCallbacks(
         }
         return data;
       },
+      afterCreate: async (result) => {
+        // Fire-and-forget embedding (don't block taskNote creation)
+        if (result.data && typeof result.data === 'object' && result.data.id) {
+          EmbeddingService.embedRecord("taskNote", result.data).catch((err) =>
+            console.error("[DataProvider] Embedding failed for taskNote:", err),
+          );
+        }
+        return result;
+      },
+      afterUpdate: async (result, params) => {
+        // Safety check: ensure result.data and params.data exist
+        if (!result.data || typeof result.data !== 'object' || !result.data.id) {
+          return result;
+        }
+        if (!params.data || typeof params.data !== 'object') {
+          return result;
+        }
+
+        // Only re-embed if semantic fields changed
+        const semanticFields = ['text', 'status', 'date', 'task_id'];
+
+        const changedFields = Object.keys(params.data);
+        const semanticChanged = changedFields.some(field => semanticFields.includes(field));
+
+        if (semanticChanged) {
+          // Fire-and-forget embedding (don't block taskNote update)
+          EmbeddingService.embedRecord("taskNote", result.data).catch((err) =>
+            console.error("[DataProvider] Embedding failed for taskNote:", err),
+          );
+        }
+
+        return result;
+      },
+      afterDelete: async (result) => {
+        // Clean up embedding on delete
+        if (result.data?.id) {
+          supabase
+            .from("entity_vectors")
+            .delete()
+            .eq("entity_type", "taskNote")
+            .eq("entity_id", result.data.id)
+            .then(({ error }) => {
+              if (error) console.error("[DataProvider] Failed to delete taskNote embedding:", error);
+            });
+        }
+        return result;
+      },
     },
     {
       resource: "sales",
@@ -823,16 +972,52 @@ export const dataProvider = withLifecycleCallbacks(
       },
       afterCreate: async (result) => {
         // Fire-and-forget embedding (don't block contact creation)
-        EmbeddingService.embedRecord("contact", result.data).catch((err) =>
-          console.error("[DataProvider] Embedding failed for contact:", err),
-        );
+        if (result.data && typeof result.data === 'object' && result.data.id) {
+          EmbeddingService.embedRecord("contact", result.data).catch((err) =>
+            console.error("[DataProvider] Embedding failed for contact:", err),
+          );
+        }
         return result;
       },
-      afterUpdate: async (result) => {
-        // Fire-and-forget embedding (don't block contact update)
-        EmbeddingService.embedRecord("contact", result.data).catch((err) =>
-          console.error("[DataProvider] Embedding failed for contact:", err),
-        );
+      afterUpdate: async (result, params) => {
+        // Safety check: ensure result.data and params.data exist
+        if (!result.data || typeof result.data !== 'object' || !result.data.id) {
+          return result;
+        }
+        if (!params.data || typeof params.data !== 'object') {
+          return result;
+        }
+
+        // Only re-embed if semantic fields changed (not metadata like last_seen)
+        const semanticFields = [
+          'first_name', 'last_name', 'title', 'gender', 'email_jsonb', 'phone_jsonb',
+          'company_id', 'background', 'avatar', 'tags', 'linkedin_url', 'twitter'
+        ];
+
+        const changedFields = Object.keys(params.data);
+        const semanticChanged = changedFields.some(field => semanticFields.includes(field));
+
+        if (semanticChanged) {
+          // Fire-and-forget embedding (don't block contact update)
+          EmbeddingService.embedRecord("contact", result.data).catch((err) =>
+            console.error("[DataProvider] Embedding failed for contact:", err),
+          );
+        }
+
+        return result;
+      },
+      afterDelete: async (result) => {
+        // Clean up embedding on delete
+        if (result.data?.id) {
+          supabase
+            .from("entity_vectors")
+            .delete()
+            .eq("entity_type", "contact")
+            .eq("entity_id", result.data.id)
+            .then(({ error }) => {
+              if (error) console.error("[DataProvider] Failed to delete contact embedding:", error);
+            });
+        }
         return result;
       },
       beforeGetList: async (params) => {
@@ -852,16 +1037,52 @@ export const dataProvider = withLifecycleCallbacks(
       },
       afterCreate: async (result) => {
         // Fire-and-forget embedding (don't block company creation)
-        EmbeddingService.embedRecord("company", result.data).catch((err) =>
-          console.error("[DataProvider] Embedding failed for company:", err),
-        );
+        if (result.data && typeof result.data === 'object' && result.data.id) {
+          EmbeddingService.embedRecord("company", result.data).catch((err) =>
+            console.error("[DataProvider] Embedding failed for company:", err),
+          );
+        }
         return result;
       },
-      afterUpdate: async (result) => {
-        // Fire-and-forget embedding (don't block company update)
-        EmbeddingService.embedRecord("company", result.data).catch((err) =>
-          console.error("[DataProvider] Embedding failed for company:", err),
-        );
+      afterUpdate: async (result, params) => {
+        // Safety check: ensure result.data and params.data exist
+        if (!result.data || typeof result.data !== 'object' || !result.data.id) {
+          return result;
+        }
+        if (!params.data || typeof params.data !== 'object') {
+          return result;
+        }
+
+        // Only re-embed if semantic fields changed (not metadata)
+        const semanticFields = [
+          'name', 'sector', 'size', 'description', 'address', 'city', 'state',
+          'zipcode', 'country', 'website', 'phone_number', 'social_profiles', 'logo', 'tags'
+        ];
+
+        const changedFields = Object.keys(params.data);
+        const semanticChanged = changedFields.some(field => semanticFields.includes(field));
+
+        if (semanticChanged) {
+          // Fire-and-forget embedding (don't block company update)
+          EmbeddingService.embedRecord("company", result.data).catch((err) =>
+            console.error("[DataProvider] Embedding failed for company:", err),
+          );
+        }
+
+        return result;
+      },
+      afterDelete: async (result) => {
+        // Clean up embedding on delete
+        if (result.data?.id) {
+          supabase
+            .from("entity_vectors")
+            .delete()
+            .eq("entity_type", "company")
+            .eq("entity_id", result.data.id)
+            .then(({ error }) => {
+              if (error) console.error("[DataProvider] Failed to delete company embedding:", error);
+            });
+        }
         return result;
       },
     },
@@ -876,11 +1097,111 @@ export const dataProvider = withLifecycleCallbacks(
       beforeGetList: async (params) => {
         return applyFullTextSearch(["text", "contact_first_name"])(params);
       },
+      afterCreate: async (result) => {
+        // Fire-and-forget embedding (don't block task creation)
+        if (result.data && typeof result.data === 'object' && result.data.id) {
+          EmbeddingService.embedRecord("task", result.data).catch((err) =>
+            console.error("[DataProvider] Embedding failed for task:", err),
+          );
+        }
+        return result;
+      },
+      afterUpdate: async (result, params) => {
+        // Safety check: ensure result.data and params.data exist
+        if (!result.data || typeof result.data !== 'object' || !result.data.id) {
+          return result;
+        }
+        if (!params.data || typeof params.data !== 'object') {
+          return result;
+        }
+
+        // Only re-embed if semantic fields changed (not just index/position)
+        const semanticFields = [
+          'text', 'type', 'status', 'priority', 'due_date', 'done_date',
+          'contact_id', 'company_id', 'deal_id', 'archived'
+        ];
+
+        const changedFields = Object.keys(params.data);
+        const semanticChanged = changedFields.some(field => semanticFields.includes(field));
+
+        if (semanticChanged) {
+          // Fire-and-forget embedding (don't block task update)
+          EmbeddingService.embedRecord("task", result.data).catch((err) =>
+            console.error("[DataProvider] Embedding failed for task:", err),
+          );
+        }
+
+        return result;
+      },
+      afterDelete: async (result) => {
+        // Clean up embedding on delete
+        if (result.data?.id) {
+          supabase
+            .from("entity_vectors")
+            .delete()
+            .eq("entity_type", "task")
+            .eq("entity_id", result.data.id)
+            .then(({ error }) => {
+              if (error) console.error("[DataProvider] Failed to delete task embedding:", error);
+            });
+        }
+        return result;
+      },
     },
     {
       resource: "deals",
       beforeGetList: async (params) => {
         return applyFullTextSearch(["name", "category", "description"])(params);
+      },
+      afterCreate: async (result) => {
+        // Fire-and-forget embedding (don't block deal creation)
+        // Safety check: ensure result.data exists and has an id
+        if (result.data && typeof result.data === 'object' && result.data.id) {
+          EmbeddingService.embedRecord("deal", result.data).catch((err) =>
+            console.error("[DataProvider] Embedding failed for deal:", err),
+          );
+        }
+        return result;
+      },
+      afterUpdate: async (result, params) => {
+        // Safety check: ensure result.data and params.data exist
+        if (!result.data || typeof result.data !== 'object' || !result.data.id) {
+          return result;
+        }
+        if (!params.data || typeof params.data !== 'object') {
+          return result;
+        }
+
+        // Only re-embed if semantic fields changed (not stage/index/amount)
+        const semanticFields = [
+          'name', 'company_id', 'category', 'description'
+        ];
+
+        const changedFields = Object.keys(params.data);
+        const semanticChanged = changedFields.some(field => semanticFields.includes(field));
+
+        if (semanticChanged) {
+          // Fire-and-forget embedding (don't block deal update)
+          EmbeddingService.embedRecord("deal", result.data).catch((err) =>
+            console.error("[DataProvider] Embedding failed for deal:", err),
+          );
+        }
+
+        return result;
+      },
+      afterDelete: async (result) => {
+        // Clean up embedding on delete
+        if (result.data?.id) {
+          supabase
+            .from("entity_vectors")
+            .delete()
+            .eq("entity_type", "deal")
+            .eq("entity_id", result.data.id)
+            .then(({ error }) => {
+              if (error) console.error("[DataProvider] Failed to delete deal embedding:", error);
+            });
+        }
+        return result;
       },
     },
   ],

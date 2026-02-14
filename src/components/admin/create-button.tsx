@@ -7,6 +7,13 @@ import { Link } from "react-router";
 export type CreateButtonProps = {
   label?: string;
   resource?: string;
+  variant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link";
 };
 
 /**
@@ -33,6 +40,7 @@ export type CreateButtonProps = {
 export const CreateButton = ({
   label,
   resource: targetResource,
+  variant = "outline",
 }: CreateButtonProps) => {
   const resource = useResourceContext();
   const createPath = useCreatePath();
@@ -42,7 +50,7 @@ export const CreateButton = ({
   });
   return (
     <Link
-      className={buttonVariants({ variant: "outline" })}
+      className={buttonVariants({ variant })}
       to={link}
       onClick={stopPropagation}
     >

@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Entity Embeddings**: Implemented automated background embedding for tasks, task notes, contacts, companies, and deals during creation and updates.
+- **AI Assistant Infrastructure**: Entity embeddings are now generated silently in the background to support future AI assistant features for semantic understanding of CRM data.
+
+### Changed
+- **Embedding Architecture**: Removed manual "Re-index All Tasks" button in favor of automatic incremental indexing. Embeddings now happen transparently during normal CRM operations.
+- **Search Strategy**: PostgreSQL full-text search remains the primary search method for users (fast, reliable, predictable). Embeddings are reserved for AI assistant context, not user-facing search.
+- **EmbeddingService**: Changed `embedRecord()` to return boolean (fire-and-forget safe) instead of throwing errors, improving reliability of background embedding operations.
+- **Embedding Performance**: Lifecycle hooks now only re-embed when semantic fields change (text, status, relationships). Updates to metadata-only fields (index, last_seen) no longer trigger unnecessary embeddings, drastically reducing API calls.
+
+### Fixed
+- **Task Embeddings**: Normalized task and task note date serialization to stable UTC format to avoid timezone-dependent vector drift across clients.
+- **Task Embeddings**: Hardened contact-name and bulk task embedding flows to avoid malformed names and null-task batch crashes.
+- **Data Provider**: Tasks now return enriched `tasks_summary` records after create/update, ensuring consistent UI metadata and higher-quality embedding payloads.
+
+### Removed
+- **Semantic Search UI**: Removed sparkle toggle buttons from Task List and Deal List. PostgreSQL full-text search is sufficient for user search needs.
+- **Manual Re-indexing**: Removed "Re-index All Tasks" button. System naturally builds embeddings incrementally as users work.
+
 ## [0.59.0] - 2026-02-11
 
 ### Added

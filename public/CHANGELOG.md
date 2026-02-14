@@ -12,12 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **Entity Embeddings**: Implemented automated background embedding for tasks, task notes, contacts, companies, and deals during creation and updates.
 - **AI Assistant Infrastructure**: Entity embeddings are now generated silently in the background to support future AI assistant features for semantic understanding of CRM data.
+- **Database**: Enhanced `tasks_summary` view to include related deal and contact metadata for richer embedding context.
 
 ### Changed
 - **Embedding Architecture**: Removed manual "Re-index All Tasks" button in favor of automatic incremental indexing. Embeddings now happen transparently during normal CRM operations.
 - **Search Strategy**: PostgreSQL full-text search remains the primary search method for users (fast, reliable, predictable). Embeddings are reserved for AI assistant context, not user-facing search.
 - **EmbeddingService**: Changed `embedRecord()` to return boolean (fire-and-forget safe) instead of throwing errors, improving reliability of background embedding operations.
 - **Embedding Performance**: Lifecycle hooks now only re-embed when semantic fields change (text, status, relationships). Updates to metadata-only fields (index, last_seen) no longer trigger unnecessary embeddings, drastically reducing API calls.
+- **SDK Integration**: Refactored `/api/sdk/embed` endpoint with robust error handling, 30-second timeouts, and support for both plural and singular embedding response formats from the SDK.
+- **Task UI**: Optimized `TaskCreate` component with memoized translations and improved form layout to prevent unnecessary re-renders.
 
 ### Fixed
 - **Task Embeddings**: Normalized task and task note date serialization to stable UTC format to avoid timezone-dependent vector drift across clients.

@@ -52,4 +52,4 @@ public/r/
 # Collaboration framework logs
 .collaboration/logs/
 
-.tests/
+tests/

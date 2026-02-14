@@ -688,20 +688,31 @@ app.post("/api/sdk/chat", async (req, res) => {
 app.post("/api/sdk/embed", async (req, res) => {
   try {
     const sdk = SDKService.getSDK();
-    if (!sdk)
-      return res.json({ success: false, message: "SDK not initialized" });
+    if (!sdk) {
+      return res.status(503).json({
+        success: false,
+        message: "RealTimeX SDK not initialized. Please ensure RealTimeX Desktop is running.",
+      });
+    }
 
     const { content, settings = {} } = req.body;
+
+    if (!content || typeof content !== "string") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid request: 'content' must be a non-empty string.",
+      });
+    }
 
     // Resolve provider/model
     const { provider, model } = await SDKService.resolveEmbedProvider(settings);
 
     console.log(
-      `[SDK/Embed] Calling embedding with provider=${provider}, model=${model}, content length=${content.length}`,
+      `[SDK/Embed] Request: provider=${provider}, model=${model}, content_length=${content.length}`,
     );
 
     // Wrap with timeout to prevent indefinite hangs if provider/desktop bridge stops responding
-    // 30 second timeout is reasonable for embeddings (collab finding: missing timeout wrapper)
+    // 30 second timeout is reasonable for embeddings
     const response = await SDKService.withTimeout(
       sdk.llm.embed(content, {
         provider,
@@ -711,28 +722,46 @@ app.post("/api/sdk/embed", async (req, res) => {
       "Embedding request timed out",
     );
 
-    console.log(
-      `[SDK/Embed] Got response, embeddings count=${response.embeddings?.length || (response.embedding ? 1 : 0)}`,
-    );
-
-    // Return embeddings[0] (plural) like alchemy does
-    const embedding = response.embeddings?.[0] || response.embedding || null;
-
-    if (!embedding) {
-      return res.json({
+    if (response.success === false) {
+      return res.status(502).json({
         success: false,
-        message: "No embedding returned from SDK",
+        message: response.error || response.message || "Embedding provider returned an error.",
       });
     }
 
+    // Extract embedding - handle both plural (new SDK) and singular (old SDK) formats
+    // Ensure we return a flat number array as per contract
+    let embedding = null;
+    if (response.embeddings && Array.isArray(response.embeddings)) {
+      embedding = response.embeddings[0];
+    } else if (response.embedding && Array.isArray(response.embedding)) {
+      embedding = response.embedding;
+    }
+
+    if (!embedding || !Array.isArray(embedding)) {
+      console.error("[SDK/Embed] Unexpected response format:", response);
+      return res.status(502).json({
+        success: false,
+        message: "Provider returned an invalid embedding format.",
+      });
+    }
+
+    console.log(
+      `[SDK/Embed] Success: model=${response.model || model}, dimensions=${embedding.length}`,
+    );
+
     res.json({
       success: true,
-      embedding,
+      embedding: embedding, // number[]
       model: response.model || model,
     });
   } catch (error) {
-    console.error("[SDK/Embed] Error:", error);
-    res.json({ success: false, message: error.message });
+    console.error("[SDK/Embed] Error:", error.message);
+    const status = error.message.includes("timed out") ? 504 : 500;
+    res.status(status).json({
+      success: false,
+      message: error.message || "An unexpected error occurred during embedding.",
+    });
   }
 });
 

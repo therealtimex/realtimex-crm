@@ -5,6 +5,7 @@ import { TextInput } from "@/components/ds/admin/text-input";
 import { Card, CardContent } from "@/components/ds/ui/card";
 import { Create } from "@/components/ds/admin/create";
 import { useQueryClient } from "@tanstack/react-query";
+import { useMemo } from "react";
 import {
   Form,
   required,
@@ -25,7 +26,7 @@ import { transformTaskEntityData } from "./taskEntityUtils";
 import type { Task } from "../types";
 
 export const TaskCreate = () => {
-  const { identity } = useGetIdentity();
+  const { identity, isPending: isIdentityPending } = useGetIdentity();
   const { taskTypes, taskPriorities, taskStatuses } = useConfigurationContext();
   const notify = useNotify();
   const redirect = useRedirect();
@@ -33,25 +34,42 @@ export const TaskCreate = () => {
   const queryClient = useQueryClient();
   const translate = useTranslate();
 
-  const translatedTaskTypes = taskTypes.map((type) => ({
-    id: type,
-    name: translateChoice(translate, "crm.task.type", type, type),
-  }));
+  const translatedTaskTypes = useMemo(
+    () =>
+      taskTypes.map((type) => ({
+        id: type,
+        name: translateChoice(translate, "crm.task.type", type, type),
+      })),
+    [taskTypes, translate],
+  );
 
-  const translatedTaskPriorities = taskPriorities.map((priority) => ({
-    ...priority,
-    name: translateChoice(
-      translate,
-      "crm.task.priority",
-      priority.id,
-      priority.name,
-    ),
-  }));
+  const translatedTaskPriorities = useMemo(
+    () =>
+      taskPriorities.map((priority) => ({
+        ...priority,
+        name: translateChoice(
+          translate,
+          "crm.task.priority",
+          priority.id,
+          priority.name,
+        ),
+      })),
+    [taskPriorities, translate],
+  );
 
-  const translatedTaskStatuses = taskStatuses.map((status) => ({
-    ...status,
-    name: translateChoice(translate, "crm.task.status", status.id, status.name),
-  }));
+  const translatedTaskStatuses = useMemo(
+    () =>
+      taskStatuses.map((status) => ({
+        ...status,
+        name: translateChoice(
+          translate,
+          "crm.task.status",
+          status.id,
+          status.name,
+        ),
+      })),
+    [taskStatuses, translate],
+  );
 
   const handleSuccess = async (task: Task) => {
     const taskStatus = task.status ?? "todo";
@@ -98,32 +116,38 @@ export const TaskCreate = () => {
     redirect("list", "tasks");
   };
 
+  const defaultValues = useMemo(
+    () => ({
+      due_date: new Date().toISOString().slice(0, 10),
+      type: taskTypes[0] || "None",
+      priority: "medium",
+      status: "todo",
+      assigned_to: identity?.id,
+      entity_type: "none",
+      index: 0,
+    }),
+    [identity?.id, taskTypes],
+  );
+
+  if (isIdentityPending) return null;
+
   return (
-    <div className="mt-4 max-w-2xl mx-auto">
-      <Card>
-        <CardContent className="pt-6">
-          <Create
-            resource="tasks"
-            redirect="list"
-            mutationOptions={{ onSuccess: handleSuccess }}
-            transform={(data) => ({
-              ...transformTaskEntityData(data),
-              sales_id: identity?.id,
-              index: 0,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            })}
-          >
-            <Form
-              defaultValues={{
-                due_date: new Date().toISOString().slice(0, 10),
-                priority: "medium",
-                status: "todo",
-                assigned_to: identity?.id,
-                entity_type: "none",
-                index: 0,
-              }}
-            >
+    <Create
+      resource="tasks"
+      redirect="list"
+      mutationOptions={{ onSuccess: handleSuccess }}
+      transform={(data) => ({
+        ...transformTaskEntityData(data),
+        sales_id: identity?.id,
+        index: 0,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })}
+    >
+      <div className="mt-4 max-w-2xl mx-auto">
+        <Card>
+          <CardContent className="pt-6">
+            <Form defaultValues={defaultValues}>
               <TextInput
                 autoFocus
                 source="text"
@@ -155,8 +179,13 @@ export const TaskCreate = () => {
                 <SelectInput
                   source="priority"
                   choices={translatedTaskPriorities}
+                  label={translate("crm.task.field.priority")}
                 />
-                <SelectInput source="status" choices={translatedTaskStatuses} />
+                <SelectInput
+                  source="status"
+                  choices={translatedTaskStatuses}
+                  label={translate("crm.task.field.status")}
+                />
                 <ReferenceInput source="assigned_to" reference="sales">
                   <SelectInput
                     optionText={(record) =>
@@ -168,9 +197,10 @@ export const TaskCreate = () => {
               </div>
               <FormToolbar />
             </Form>
-          </Create>
-        </CardContent>
-      </Card>
-    </div>
+          </CardContent>
+        </Card>
+      </div>
+    </Create>
   );
 };
+

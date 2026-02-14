@@ -212,7 +212,11 @@ const TaskActions = ({
       </div>
       <FilterButton />
       <ExportButton />
-      <CreateButton label={translate("crm.action.new_task")} />
+      <CreateButton 
+        resource="tasks" 
+        variant="default" 
+        label={translate("crm.action.new_task")} 
+      />
     </TopToolbar>
   );
 };

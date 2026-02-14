@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.61.1] - 2026-02-14
+
+### Fixed
+- **Deployment**: Corrected `buildCommand` in `vercel.json` to use standard Vite build instead of the non-existent `vite.demo.config.ts`, ensuring successful Vercel deployments after demo mode removal.
+
 ## [0.61.0] - 2026-02-14
 
 ### Removed

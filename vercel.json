@@ -1,7 +1,7 @@
 {
   "version": 2,
   "framework": "vite",
-  "buildCommand": "NODE_OPTIONS=--max-old-space-size=4096 npx vite build --config vite.demo.config",
+  "buildCommand": "NODE_OPTIONS=--max-old-space-size=4096 npx vite build",
   "outputDirectory": "dist",
   "rewrites": [
     {

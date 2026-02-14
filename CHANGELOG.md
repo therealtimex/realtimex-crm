@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.60.0] - 2026-02-14
+
 ### Added
 - **Entity Embeddings**: Implemented automated background embedding for tasks, task notes, contacts, companies, and deals during creation and updates.
 - **AI Assistant Infrastructure**: Entity embeddings are now generated silently in the background to support future AI assistant features for semantic understanding of CRM data.

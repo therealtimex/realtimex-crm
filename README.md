@@ -85,8 +85,7 @@ Access the app at [http://localhost:5173/](http://localhost:5173/)
 1. Setup wizard appears automatically
 2. Choose one of:
    - **Connect to Supabase**: Enter your project URL and API key
-   - **Try Demo Mode**: Use in-memory database (no signup required)
-3. If using Supabase, configure via:
+3. Configure via:
    - Setup wizard (recommended for users)
    - OR set environment variables in `.env.development.local`:
      ```env
@@ -117,8 +116,7 @@ To customize RealTimeX CRM, you will need TypeScript and React programming skill
 
 1. [Customizing the CRM](./doc/src/content/docs/developers/customizing.mdx)
 2. [Creating Migrations](./doc/src/content/docs/developers/migrations.mdx) *(optional)*
-3. [Using Fake Rest Data Provider for Development](./doc/src/content/docs/developers/data-providers.mdx) *(optional)*
-4. [Architecture Decisions](./doc/src/content/docs/developers/architecture-choices.mdx) *(optional)*
+3. [Architecture Decisions](./doc/src/content/docs/developers/architecture-choices.mdx) *(optional)*
 
 ## Testing Changes
 
@@ -135,7 +133,6 @@ You can add your own unit tests powered by Vitest anywhere in the `src` director
 ```sh
 npm install              # Install dependencies
 npm run dev              # Start development server
-npm run dev:demo         # Start with demo mode (no database)
 npm test                 # Run unit tests (vitest)
 npm run typecheck        # Run TypeScript type checking
 npm run lint             # Run ESLint and Prettier checks

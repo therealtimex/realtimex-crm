@@ -532,6 +532,49 @@ export class EmbeddingService {
     }
 
     /**
+     * Search tasks semantically
+     */
+    static async searchTasksSemantic(query: string, limit: number = 5) {
+        try {
+            // 1. Fetch user's AI settings
+            const settings = await this.fetchAISettings();
+
+            // 2. Get embedding for the query
+            const response = await axios.post('/api/sdk/embed', {
+                content: query,
+                settings
+            }, {
+                timeout: this.EMBEDDING_TIMEOUT_MS
+            });
+
+            if (!response.data.success) {
+                throw new Error(response.data.message || 'Query embedding failed');
+            }
+
+            const { embedding } = response.data;
+            const embeddingStr = `[${embedding.join(',')}]`;
+
+            // 3. Call RPC to match entities
+            const { data, error } = await supabase.rpc('match_entities', {
+                query_embedding: embeddingStr,
+                match_threshold: 0.5,
+                match_count: limit,
+                filter_entity_type: 'task'
+            });
+
+            if (error) {
+                console.error('[EmbeddingService] Semantic search RPC failed:', error);
+                return [];
+            }
+
+            return data || [];
+        } catch (error) {
+            console.error('[EmbeddingService] Semantic search failed:', error);
+            return [];
+        }
+    }
+
+    /**
      * Embed all tasks and task notes for a specific user/entity
      */
     static async embedAllTasks() {
@@ -627,13 +670,17 @@ export class EmbeddingService {
      * @throws Error if embedding fails
      */
     static async embedTask(task: any) {
+        if (!task || !task.id) {
+            console.warn('[EmbeddingService] Skipping embedTask - missing ID', task);
+            return;
+        }
         const success = await this.embedRecord('task', task);
         if (!success) {
-            const errorMsg = `Failed to embed task ${task.id || 'unknown'}`;
+            const errorMsg = `Failed to embed task ${task.id}`;
             console.error(`[EmbeddingService] ${errorMsg}`);
             throw new Error(errorMsg);
         }
-        console.log(`[EmbeddingService] Successfully embedded task ${task.id || 'unknown'}`);
+        console.log(`[EmbeddingService] Successfully embedded task ${task.id}`);
     }
 
 }

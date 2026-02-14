@@ -99,8 +99,7 @@
 
   - Hooks: src/hooks/, src/components/atomic-crm/*/use*.tsx
   - Edge Functions: supabase/functions/{users,updatePassword,mergeContacts,postmark}/
-  - Data Providers: src/components/atomic-crm/providers/{supabase,fakerest}/
-  - Auth Providers: src/components/atomic-crm/providers/{supabase,fakerest}/authProvider.ts
+  - Data Providers: src/components/atomic-crm/providers/supabase/
+  - Auth Providers: src/components/atomic-crm/providers/supabase/authProvider.ts
 
-  All APIs and hooks are fully typed with TypeScript and work with both Supabase (production) and FakeRest
-  (development) backends!
+  All APIs and hooks are fully typed with TypeScript.

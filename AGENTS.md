@@ -28,13 +28,9 @@ npm run dev          # Start app (configure database via setup wizard)
 **For Developers:**
 ```bash
 npm install          # Install dependencies
-# Option 1: Use remote Supabase (recommended)
-# - Create a free project at supabase.com
-# - Configure .env.development.local with your credentials
-# - Run: npm run dev
-
-# Option 2: Use demo mode (no database needed)
-npm run dev:demo     # Start with FakeRest data provider
+# Create a free project at supabase.com
+# Configure .env.development.local with your credentials
+npm run dev
 ```
 
 **First-Time Setup:**
@@ -419,7 +415,7 @@ src/
 │   │   ├── login/          # Authentication pages
 │   │   ├── misc/           # Shared utilities (includes DocumentViewer and EmailViewer)
 │   │   ├── notes/          # Note management with attachment support
-│   │   ├── providers/      # Data providers (Supabase + FakeRest)
+│   │   ├── providers/      # Data providers (Supabase)
 │   │   ├── root/           # Root CRM component
 │   │   ├── sales/          # Sales team management
 │   │   ├── settings/       # Settings page
@@ -506,11 +502,7 @@ The CRM includes a built-in document viewer (`src/components/atomic-crm/misc/Doc
 
 #### Data Providers
 
-Two data providers are available:
-1. **Supabase** (default): Production backend using PostgreSQL
-2. **FakeRest**: In-browser fake API for development/demos, resets on page reload
-
-When using FakeRest, database views are emulated in the frontend. Test data generators are in `src/components/atomic-crm/providers/fakerest/dataGenerator/`.
+The Supabase data provider handles all data access against the PostgreSQL backend.
 
 **Singleton Table Pattern:**
 
@@ -540,7 +532,7 @@ This pattern is production-ready and is the recommended approach for singleton t
 
 #### Filter Syntax
 
-List filters follow the `ra-data-postgrest` convention with operator concatenation: `field_name@operator` (e.g., `first_name@eq`). The FakeRest adapter maps these to FakeRest syntax at runtime.
+List filters follow the `ra-data-postgrest` convention with operator concatenation: `field_name@operator` (e.g., `first_name@eq`).
 
 ## Development Workflows
 
@@ -568,8 +560,7 @@ When modifying contact or company data structures:
 1. Create a migration: `npx supabase migration new <name>`
 2. Update the sample CSV: `src/components/atomic-crm/contacts/contacts_export.csv`
 3. Update the import function: `src/components/atomic-crm/contacts/useContactImport.tsx`
-4. If using FakeRest, update data generators in `src/components/atomic-crm/providers/fakerest/dataGenerator/`
-5. Don't forget to update the views
+4. Don't forget to update the views
 6. Don't forget the export functions
 7. Don't forget the contact merge logic
 
@@ -692,17 +683,12 @@ This is intentional to keep commits fast. CI/CD will catch linting errors, but i
 - REST API: https://YOUR_PROJECT_ID.supabase.co/rest/v1/
 - Storage: https://supabase.com/dashboard/project/YOUR_PROJECT_ID/storage/buckets
 
-**Demo Mode (FakeRest):**
-- All data stored in browser memory (resets on page reload)
-- No external services required
-
 ## Important Notes
 
 - The codebase is intentionally small (~15,000 LOC in `src/components/atomic-crm`) for easy customization
 - Modify files in `src/components/admin` and `src/components/ui` directly - they are meant to be customized
 - Unit tests can be added in the `src/` directory (test files are named `*.test.ts` or `*.test.tsx`)
 - User deletion is not supported to avoid data loss; use account disabling instead
-- Filter operators must be supported by the `supabaseAdapter` when using FakeRest
 
 ## Supabase Configuration
 

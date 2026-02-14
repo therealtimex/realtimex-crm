@@ -241,8 +241,11 @@ const dataProviderWithCustomMethods = {
         .eq("id", data.id)
         .single();
 
-      if (enrichError) {
-        console.warn("[DataProvider] Failed to fetch enriched contact data:", enrichError);
+      if (enrichError || !enrichedData || enrichedData.id !== data.id) {
+        console.warn(
+          "[DataProvider] Failed to fetch or verify enriched contact data. Falling back to base record.",
+          enrichError || "ID mismatch or missing data",
+        );
         return { data }; // Return base data if enriched fetch fails
       }
 
@@ -273,8 +276,11 @@ const dataProviderWithCustomMethods = {
         .eq("id", data.id)
         .single();
 
-      if (enrichError) {
-        console.warn("[DataProvider] Failed to fetch enriched company data:", enrichError);
+      if (enrichError || !enrichedData || enrichedData.id !== data.id) {
+        console.warn(
+          "[DataProvider] Failed to fetch or verify enriched company data. Falling back to base record.",
+          enrichError || "ID mismatch or missing data",
+        );
         return { data }; // Return base data if enriched fetch fails
       }
 
@@ -319,10 +325,10 @@ const dataProviderWithCustomMethods = {
         .eq("id", data.id)
         .single();
 
-      if (enrichError) {
+      if (enrichError || !enrichedData || enrichedData.id !== data.id) {
         console.warn(
-          "[DataProvider] Failed to fetch enriched task data:",
-          enrichError,
+          "[DataProvider] Failed to fetch or verify enriched task data:",
+          enrichError || "ID mismatch or missing data",
         );
         return { data }; // Return base data if enriched fetch fails
       }
@@ -359,10 +365,10 @@ const dataProviderWithCustomMethods = {
         .eq("id", data.id)
         .single();
 
-      if (enrichError) {
+      if (enrichError || !enrichedData || enrichedData.id !== data.id) {
         console.warn(
-          "[DataProvider] Failed to fetch enriched deal data:",
-          enrichError,
+          "[DataProvider] Failed to fetch or verify enriched deal data:",
+          enrichError || "ID mismatch or missing data",
         );
         return { data }; // Return base data if enriched fetch fails
       }
@@ -387,26 +393,49 @@ const dataProviderWithCustomMethods = {
         ...data
       } = params.data;
 
-      const result = await baseDataProvider.create(resource, {
-        ...params,
-        data: {
+      // Use direct Supabase insert to ensure proper response format
+      const { data: createdInvoice, error } = await supabase
+        .from("invoices")
+        .insert({
           ...data,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-        },
-      });
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error("[DataProvider] invoices create error:", error);
+        throw new Error(`Failed to create invoice: ${error.message}`);
+      }
 
       if (items && items.length > 0) {
         await Promise.all(
           items.map((item: any) => {
             const { id: _id, ...itemData } = item;
             return baseDataProvider.create("invoice_items", {
-              data: { ...itemData, invoice_id: result.data.id },
+              data: { ...itemData, invoice_id: createdInvoice.id },
             });
           }),
         );
       }
-      return result;
+
+      // Fetch enriched invoice from invoices_summary for UI consistency
+      const { data: enrichedData, error: enrichError } = await supabase
+        .from("invoices_summary")
+        .select("*")
+        .eq("id", createdInvoice.id)
+        .single();
+
+      if (enrichError || !enrichedData || enrichedData.id !== createdInvoice.id) {
+        console.warn(
+          "[DataProvider] Failed to fetch or verify enriched invoice data. Falling back to base record.",
+          enrichError || "ID mismatch or missing data",
+        );
+        return { data: createdInvoice };
+      }
+
+      return { data: enrichedData };
     }
     return baseDataProvider.create(resource, params);
   },
@@ -451,8 +480,11 @@ const dataProviderWithCustomMethods = {
         .eq("id", params.id)
         .single();
 
-      if (enrichError) {
-        console.warn("[DataProvider] Failed to fetch enriched contact data:", enrichError);
+      if (enrichError || !enrichedData || enrichedData.id !== params.id) {
+        console.warn(
+          "[DataProvider] Failed to fetch or verify enriched contact data. Falling back to base record.",
+          enrichError || "ID mismatch or missing data",
+        );
         return { data }; // Return base data if enriched fetch fails
       }
 
@@ -535,8 +567,11 @@ const dataProviderWithCustomMethods = {
         .eq("id", params.id)
         .single();
 
-      if (enrichError) {
-        console.warn("[DataProvider] Failed to fetch enriched company data:", enrichError);
+      if (enrichError || !enrichedData || enrichedData.id !== params.id) {
+        console.warn(
+          "[DataProvider] Failed to fetch or verify enriched company data. Falling back to base record.",
+          enrichError || "ID mismatch or missing data",
+        );
         return { data }; // Return base data if enriched fetch fails
       }
 
@@ -573,10 +608,10 @@ const dataProviderWithCustomMethods = {
         .eq("id", params.id)
         .single();
 
-      if (enrichError) {
+      if (enrichError || !enrichedData || enrichedData.id !== params.id) {
         console.warn(
-          "[DataProvider] Failed to fetch enriched task data:",
-          enrichError,
+          "[DataProvider] Failed to fetch or verify enriched task data:",
+          enrichError || "ID mismatch or missing data",
         );
         return result;
       }
@@ -612,10 +647,10 @@ const dataProviderWithCustomMethods = {
         .eq("id", params.id)
         .single();
 
-      if (enrichError) {
+      if (enrichError || !enrichedData || enrichedData.id !== params.id) {
         console.warn(
-          "[DataProvider] Failed to fetch enriched deal data:",
-          enrichError,
+          "[DataProvider] Failed to fetch or verify enriched deal data:",
+          enrichError || "ID mismatch or missing data",
         );
         return { data }; // Return base data if enriched fetch fails
       }

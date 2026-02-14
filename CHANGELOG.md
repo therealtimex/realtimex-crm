@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.61.0] - 2026-02-14
+
+### Removed
+- **Demo Mode**: Removed FakeRest provider and demo mode support. The application now focuses exclusively on Supabase as the backend to ensure data persistence and security.
+- **Dependencies**: Removed `faker` and `ra-data-fakerest` dependencies to reduce bundle size.
+
+### Added
+- **Semantic Search**: Implemented `searchTasksSemantic` in `EmbeddingService` to enable AI-powered semantic search capabilities.
+- **Background Embeddings**: Enhanced reliability of background embedding operations with better error handling.
+
+### Changed
+- **Data Provider**: Optimized Supabase data provider with improved verification of enriched data and robust fallback mechanisms.
+- **Documentation**: Updated `README.md`, `AGENTS.md`, and developer guides to reflect the removal of demo mode and the focus on Supabase integration.
+
 ## [0.60.0] - 2026-02-14
 
 ### Added

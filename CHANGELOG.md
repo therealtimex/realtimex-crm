@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Data Provider**: Refactored Supabase `dataProvider` CRUD internals into extracted modules (`data-provider/resourceCrudHandlers`, `data-provider/transforms`, `data-provider/enrichment`) while preserving the existing exported API and runtime behavior.
+- **Data Provider**: Extracted lifecycle callbacks, custom method implementations, avatar/logo preprocessing, and upload logic into focused modules (`data-provider/lifecycleCallbacks`, `data-provider/customMethods`, `data-provider/avatarProcessors`, `data-provider/upload`) while keeping the same exported `dataProvider` API.
+
+### Added
+- **Testing**: Added characterization tests for data-provider full-text filter mapping, summary-view read-only field stripping, and enriched-record fallback validation (including ID mismatch scenarios).
+- **Testing**: Added unit tests for extracted embedding callback decision logic and deal unarchive reindex payload generation.
+- **Testing**: Added module-level tests for extracted resource CRUD handlers (summary routing, payload sanitization, invoice item sync), lifecycle callback wiring, and custom method integration behavior.
+
 ## [0.61.1] - 2026-02-14
 
 ### Fixed

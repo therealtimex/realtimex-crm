@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.62.0] - 2026-02-17
+
+### Changed
+- **Architecture**: Major refactoring of the Data Provider for better modularity and maintainability. Split the monolithic `dataProvider.ts` into smaller, focused modules under `src/components/atomic-crm/providers/supabase/data-provider/`.
+- **Architecture**: Modularized CRUD handlers, custom methods, lifecycle callbacks, and file upload logic to improve testability and code organization.
+
+### Fixed
+- **Cleanup**: Removed `faker` from `tsconfig.app.json` types, completing the removal of demo mode dependencies.
+
 ## [0.61.1] - 2026-02-14
 
 ### Fixed

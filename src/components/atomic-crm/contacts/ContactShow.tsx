@@ -24,8 +24,74 @@ import { ActivityFeed } from "../activities/ActivityFeed";
 import { InvoiceCard } from "../invoices";
 import type { Contact, Invoice } from "../types";
 
+const isCanceledRequestError = (value: unknown) => {
+  if (!value) return false;
+
+  const pending: unknown[] = [value];
+  const seen = new Set<unknown>();
+
+  while (pending.length > 0) {
+    const current = pending.pop();
+    if (!current || seen.has(current)) continue;
+    seen.add(current);
+
+    if (typeof current === "string") {
+      const text = current.toLowerCase();
+      if (
+        text.includes("abort") ||
+        text.includes("canceled") ||
+        text.includes("cancelled") ||
+        text.includes("err_canceled")
+      ) {
+        return true;
+      }
+      continue;
+    }
+
+    if (typeof current !== "object") continue;
+
+    const maybeError = current as {
+      name?: unknown;
+      message?: unknown;
+      code?: unknown;
+      details?: unknown;
+      cause?: unknown;
+      error?: unknown;
+      reason?: unknown;
+    };
+
+    const text = [
+      maybeError.name,
+      maybeError.message,
+      maybeError.code,
+      maybeError.details,
+    ]
+      .filter((token): token is string => typeof token === "string")
+      .map((token) => token.toLowerCase())
+      .join(" ");
+
+    if (
+      text.includes("abort") ||
+      text.includes("canceled") ||
+      text.includes("cancelled") ||
+      text.includes("err_canceled")
+    ) {
+      return true;
+    }
+
+    if (maybeError.cause) pending.push(maybeError.cause);
+    if (maybeError.error) pending.push(maybeError.error);
+    if (maybeError.reason) pending.push(maybeError.reason);
+  }
+
+  return false;
+};
+
 export const ContactShow = () => (
-  <ShowBase>
+  <ShowBase
+    redirectOnError={false}
+    queryOptions={{ onError: () => undefined }}
+  >
     <ContactShowContent />
   </ShowBase>
 );
@@ -38,11 +104,10 @@ const ContactShowContent = () => {
 
   // Handle error (contact not found)
   useEffect(() => {
-    if (error) {
-      notify("Contact not found or has been deleted", { type: "error" });
-      redirect("/contacts");
-    }
-  }, [error, notify, redirect]);
+    if (isPending || record || !error || isCanceledRequestError(error)) return;
+    notify("Contact not found or has been deleted", { type: "error" });
+    redirect("/contacts");
+  }, [error, isPending, notify, record, redirect]);
 
   if (isPending || !record) return null;
 

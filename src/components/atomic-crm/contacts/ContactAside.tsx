@@ -34,7 +34,11 @@ export const ContactAside = ({ link = "edit" }: { link?: "edit" | "show" }) => {
     <div className="hidden sm:block w-64 min-w-64 text-sm">
       <div className="mb-4 -ml-1">
         {link === "edit" ? (
-          <EditButton label={translate("crm.contact.action.edit")} />
+          <EditButton
+            label={translate("crm.contact.action.edit")}
+            record={record}
+            resource="contacts"
+          />
         ) : (
           <ShowButton label={translate("crm.contact.action.show")} />
         )}

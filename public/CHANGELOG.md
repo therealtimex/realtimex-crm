@@ -5,7 +5,23 @@ All notable changes to RealTimeX CRM will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.63.0] - 2026-02-18
+
+### Changed
+- **Data Provider**: Optimized `getOne` to utilize enriched summary views (`contacts_summary`, `companies_summary`, etc.) for core resources. This ensures consistent data shapes between list and show views and prevents errors when accessing fields only present in the summary view.
+
+### Fixed
+- **Contacts**: Prevented transient/cancelled `ContactShow` fetch errors from redirecting to `/contacts`, ensuring the **Edit Contact** action consistently opens the edit form.
+- **Contacts**: Improved `EditButton` in `ContactAside` by passing explicit `record` and `resource` props, resolving potential navigation ambiguity.
+
+## [0.62.0] - 2026-02-17
+
+### Changed
+- **Architecture**: Major refactoring of the Data Provider for better modularity and maintainability. Split the monolithic `dataProvider.ts` into smaller, focused modules under `src/components/atomic-crm/providers/supabase/data-provider/`.
+- **Architecture**: Modularized CRUD handlers, custom methods, lifecycle callbacks, and file upload logic to improve testability and code organization.
+
+### Fixed
+- **Cleanup**: Removed `faker` from `tsconfig.app.json` types, completing the removal of demo mode dependencies.
 
 ## [0.61.1] - 2026-02-14
 

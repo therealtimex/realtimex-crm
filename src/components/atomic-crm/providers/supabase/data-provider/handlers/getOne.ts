@@ -5,11 +5,42 @@ import { supabase } from "../../supabase";
 // getOne overrides
 // ---------------------------------------------------------------------------
 
+// Resources that have enriched summary views used by getList.
+// getOne must query the same view so the data shape is consistent.
+const SUMMARY_VIEW_MAP: Record<string, string> = {
+  contacts: "contacts_summary",
+  companies: "companies_summary",
+  tasks: "tasks_summary",
+  deals: "deals_summary",
+};
+
 export const handleGetOne = async (
   baseDataProvider: DataProvider,
   resource: string,
   params: { id: Identifier },
 ) => {
+  // For resources with summary views, query the view so getOne always returns
+  // the same enriched shape as getList (avoids missing fields and id errors).
+  if (SUMMARY_VIEW_MAP[resource]) {
+    const view = SUMMARY_VIEW_MAP[resource];
+    const { data, error } = await supabase
+      .from(view)
+      .select("*")
+      .eq("id", params.id)
+      .maybeSingle();
+
+    if (error) {
+      console.error(`[DataProvider] ${view} getOne error:`, error);
+      throw new Error(`Failed to fetch ${resource}: ${error.message}`);
+    }
+
+    if (!data) {
+      throw new Error(`${resource} with id ${params.id} not found`);
+    }
+
+    return { data };
+  }
+
   if (resource === "invoices") {
     const { data, error } = await supabase
       .from("invoices_summary")

@@ -161,7 +161,7 @@ export const ContactAside = ({ link = "edit" }: { link?: "edit" | "show" }) => {
         >
           <TasksIterator />
         </ReferenceManyField>
-        <AddTask />
+        <AddTask resource="contacts" />
       </AsideSection>
 
       {link !== "edit" && (

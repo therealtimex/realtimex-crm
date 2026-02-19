@@ -5,6 +5,13 @@ All notable changes to RealTimeX CRM will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [0.63.3] - 2026-02-18
+
+### Fixed
+- **Tasks**: Fixed Add Task from Contact detail pages to preselect the current contact in the related-entity selector instead of defaulting to `None`.
+
 ## [0.63.2] - 2026-02-18
 
 ### Changed

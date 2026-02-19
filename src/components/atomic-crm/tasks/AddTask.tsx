@@ -7,6 +7,7 @@ import {
   useGetIdentity,
   useNotify,
   useRecordContext,
+  useResourceContext,
   useTranslate,
   useUpdate,
 } from "ra-core";
@@ -52,6 +53,7 @@ export const AddTask = ({
   const notify = useNotify();
   const { taskTypes, taskPriorities, taskStatuses } = useConfigurationContext();
   const record = useRecordContext();
+  const resourceContext = useResourceContext({ resource });
   const translate = useTranslate();
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -104,12 +106,30 @@ export const AddTask = ({
   const getInitialEntityData = () => {
     if (!record) return { entity_type: "none" };
 
-    if (resource === "contacts" || record.first_name) {
+    if (resourceContext === "contacts") {
       return { entity_type: "contact", contact_id: record.id };
-    } else if (resource === "companies" || record.name) {
+    }
+
+    if (resourceContext === "companies") {
       return { entity_type: "company", company_id: record.id };
-    } else if (resource === "deals") {
+    }
+
+    if (resourceContext === "deals") {
       return { entity_type: "deal", deal_id: record.id };
+    }
+
+    const inferredRecord = record as Record<string, unknown>;
+
+    if ("first_name" in inferredRecord || "last_name" in inferredRecord) {
+      return { entity_type: "contact", contact_id: record.id };
+    }
+
+    if ("category" in inferredRecord || "stage" in inferredRecord) {
+      return { entity_type: "deal", deal_id: record.id };
+    }
+
+    if ("name" in inferredRecord) {
+      return { entity_type: "company", company_id: record.id };
     }
 
     return { entity_type: "none" };
@@ -177,7 +197,7 @@ export const AddTask = ({
             <Form
               className="flex flex-col gap-4"
               defaultValues={{
-                entity_type: initialEntityData.entity_type,
+                ...initialEntityData,
                 priority: "medium",
                 status: "todo",
                 assigned_to: identity.id,

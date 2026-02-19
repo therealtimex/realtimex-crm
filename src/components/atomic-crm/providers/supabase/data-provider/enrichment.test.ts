@@ -57,4 +57,20 @@ describe("fetchEnrichedRecord", () => {
     expect(result).toBeNull();
     expect(consoleSpy).toHaveBeenCalled();
   });
+
+  it("returns enriched data when view returns numeric id but caller passes string id (update path)", async () => {
+    // React Admin passes params.id as a string; Supabase returns numeric id from the view.
+    // String("1") === String(1) so the check must not reject this case.
+    const mockData = { id: 1, name: "Enriched" };
+    (supabase.from as any).mockReturnValue({
+      select: () => ({
+        eq: () => ({
+          single: () => Promise.resolve({ data: mockData, error: null }),
+        }),
+      }),
+    });
+
+    const result = await fetchEnrichedRecord("some_view", "1");
+    expect(result).toEqual({ data: mockData });
+  });
 });

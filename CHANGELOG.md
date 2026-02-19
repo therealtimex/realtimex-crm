@@ -5,6 +5,11 @@ All notable changes to RealTimeX CRM will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.63.1] - 2026-02-18
+
+### Fixed
+- **Data Provider**: Fixed ID mismatch check in `fetchEnrichedRecord` by using string comparison, resolving issues where React Admin string IDs were compared against Supabase numeric IDs.
+
 ## [0.63.0] - 2026-02-18
 
 ### Changed

@@ -19,7 +19,7 @@ export const fetchEnrichedRecord = async (
     .eq("id", id)
     .single();
 
-  if (enrichError || !enrichedData || enrichedData.id !== id) {
+  if (enrichError || !enrichedData || String(enrichedData.id) !== String(id)) {
     console.warn(
       `[DataProvider] Failed to fetch or verify enriched record from ${view}. Falling back to base record.`,
       enrichError || "ID mismatch or missing data",

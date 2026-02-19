@@ -1,0 +1,43 @@
+name: 🚀 Deploy
+on:
+    push:
+        branches:
+            - main
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    pages: write
+    contents: write
+
+jobs:
+    deploy-doc:
+        name: 🚀 Deploy (doc)
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+
+        steps:
+            - name: 📥 Checkout repo
+              uses: actions/checkout@v4
+
+            - name: ⚙️ Setup node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+
+            - name: ⚙️ Setup git
+              run: |
+                git remote set-url origin https://git:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}
+                git config --global user.email support+actions@github.com
+                git config --global user.name github-actions-bot
+
+            - name: 📥 Download deps
+              run: |
+                npm install
+                make doc-install
+
+            - name: 🚀 Build and Deploy Documentation
+              run: make doc-deploy

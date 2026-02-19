@@ -1,0 +1,218 @@
+# This workflow automatically publishes a new version to npm on every push to main.
+#
+# Release Trigger Guide:
+# ---------------------
+# - Patch (0.13.x -> 0.13.y): Use 'fix: ...' prefix (e.g., fix: resolve bug)
+# - Minor (0.13.x -> 0.14.0): Use 'feat: ...' prefix (e.g., feat: add feature)
+# - Major (0.13.x -> 1.0.0):  Use 'feat!: ...' or include 'BREAKING CHANGE:' in body
+#
+# Skip Release: Add '[skip ci]' to the commit message.
+# Manual Release: Go to Actions -> Publish to npm -> Run workflow.
+
+name: Publish to npm
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.github/**'
+      # It is safer to check the commit message for [skip ci] than relying solely on path ignore
+      - '!.github/workflows/publish.yml'
+
+  workflow_dispatch:
+    inputs:
+      version_bump:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  publish:
+    # Check if the commit message contains [skip ci] to prevent loops if paths-ignore fails
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write # Required for npm provenance
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+
+      # Standardize on the specific ID for the GitHub Actions bot
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test --if-present
+
+      - name: Run typecheck
+        run: npm run typecheck
+
+      - name: Run linter
+        run: npm run lint --if-present
+
+      - name: Determine version bump
+        id: version
+        run: |
+          # Get the latest commit message
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+
+          # Determine version bump based on conventional commits
+          if [[ "$COMMIT_MSG" =~ ^feat(\(.*\))?!:|^fix(\(.*\))?!:|^BREAKING\ CHANGE: ]]; then
+            BUMP_TYPE="major"
+          elif [[ "$COMMIT_MSG" =~ ^feat(\(.*\))?: ]]; then
+            BUMP_TYPE="minor"
+          else
+            BUMP_TYPE="patch"
+          fi
+
+          # Override with manual input if workflow_dispatch
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            BUMP_TYPE="${{ inputs.version_bump }}"
+          fi
+
+          echo "bump_type=$BUMP_TYPE" >> $GITHUB_OUTPUT
+          echo "Version bump type: $BUMP_TYPE"
+
+      - name: Get current version
+        id: current_version
+        run: |
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Bump version
+        id: new_version
+        run: |
+          BUMP_TYPE="${{ steps.version.outputs.bump_type }}"
+          
+          # Bump version without creating a git tag yet
+          npm version $BUMP_TYPE --no-git-tag-version
+          
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "New version: $NEW_VERSION"
+
+          # Check if this version already exists as a tag to avoid failures
+          if git ls-remote --tags origin | grep -q "refs/tags/v$NEW_VERSION$"; then
+            echo "skip_publish=true" >> $GITHUB_OUTPUT
+            echo "::warning::Version v$NEW_VERSION already exists. Skipping publish."
+          else
+            echo "skip_publish=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update CHANGELOG.md
+        if: steps.new_version.outputs.skip_publish != 'true'
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+          TODAY=$(date +%Y-%m-%d)
+
+          # Check if CHANGELOG.md exists
+          if [ ! -f CHANGELOG.md ]; then
+            echo "::warning::CHANGELOG.md not found, skipping update"
+            exit 0
+          fi
+
+          # Check if [Unreleased] section exists
+          if ! grep -q "## \[Unreleased\]" CHANGELOG.md; then
+            echo "::warning::[Unreleased] section not found in CHANGELOG.md, skipping update"
+            exit 0
+          fi
+
+          # Create new version section after [Unreleased]
+          # This keeps [Unreleased] at the top and adds the new version below it
+          awk -v version="$NEW_VERSION" -v date="$TODAY" '
+            /^## \[Unreleased\]/ {
+              print $0
+              print ""
+              print "## [" version "] - " date
+              next
+            }
+            { print }
+          ' CHANGELOG.md > CHANGELOG.md.tmp && mv CHANGELOG.md.tmp CHANGELOG.md
+
+          echo "✅ Updated CHANGELOG.md with version $NEW_VERSION"
+
+      - name: Build
+        run: npm run build
+
+      - name: Commit and Tag
+        if: steps.new_version.outputs.skip_publish != 'true'
+        run: |
+          git add package.json package-lock.json CHANGELOG.md
+          git commit -m "chore: bump version to ${{ steps.new_version.outputs.version }} [skip ci]"
+          git tag "v${{ steps.new_version.outputs.version }}"
+
+      - name: Push changes
+        if: steps.new_version.outputs.skip_publish != 'true'
+        run: |
+          # Pull rebase to handle race conditions if other commits landed on main
+          git pull --rebase origin main
+          git push origin main
+          git push origin "v${{ steps.new_version.outputs.version }}"
+
+      - name: Check NPM_TOKEN
+        id: check_token
+        run: |
+          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+            echo "has_token=false" >> $GITHUB_OUTPUT
+            echo "::warning::NPM_TOKEN secret is not set. Skipping npm publish."
+          else
+            echo "has_token=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Publish to npm
+        if: steps.check_token.outputs.has_token == 'true' && steps.new_version.outputs.skip_publish != 'true'
+        # Added --provenance for supply chain security
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        if: steps.new_version.outputs.skip_publish != 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.new_version.outputs.version }}
+          name: Release v${{ steps.new_version.outputs.version }}
+          # Automatically generate release notes from PR titles/labels
+          generate_release_notes: true 
+          body: |
+            ## Release v${{ steps.new_version.outputs.version }}
+            
+            ### Installation
+            ```bash
+            npm install realtimex-crm@${{ steps.new_version.outputs.version }}
+            ```
+
+            ### Quick Start
+            ```bash
+            npx create-realtimex-crm my-crm
+            ```
+            
+            *(Automated Release Notes below)*
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

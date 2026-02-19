@@ -1,0 +1,4 @@
+# Disable JWT verification for this function
+# Webhooks from Twilio, Postmark, etc. don't have Supabase JWTs
+# Security is handled via ingestion_key parameter and provider-specific signatures
+verify_jwt = false

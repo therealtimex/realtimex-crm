@@ -1,0 +1,5 @@
+
+make registry-gen
+
+# Auto-stage registry.json if it was modified
+git add registry.json 2>/dev/null || true

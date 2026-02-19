@@ -64,63 +64,39 @@ describe("createEmbeddingCallbacks", () => {
   });
 
   describe("afterUpdate", () => {
-    it("triggers embedding when a semantic field changed for contact", async () => {
+    it("triggers embedding for contact when result.data has an id", async () => {
       const callbacks = createEmbeddingCallbacks("contact");
       const result = { data: { id: 1, first_name: "Alice" } };
-      const params = { data: { first_name: "Alicia" } };
 
-      await callbacks.afterUpdate(result, params);
+      await callbacks.afterUpdate(result);
 
       expect(EmbeddingService.embedRecord).toHaveBeenCalledWith("contact", result.data);
     });
 
-    it("does not trigger embedding when only non-semantic fields changed for contact", async () => {
-      const callbacks = createEmbeddingCallbacks("contact");
-      const result = { data: { id: 1, last_seen: "2025-01-01" } };
-      const params = { data: { last_seen: "2025-02-01" } };
-
-      await callbacks.afterUpdate(result, params);
-
-      expect(EmbeddingService.embedRecord).not.toHaveBeenCalled();
-    });
-
-    it("triggers embedding when a semantic field changed for deal", async () => {
+    it("triggers embedding for deal when result.data has an id", async () => {
       const callbacks = createEmbeddingCallbacks("deal");
-      const result = { data: { id: 2, name: "New Deal" } };
-      const params = { data: { name: "Updated Deal" } };
+      const result = { data: { id: 2, name: "Updated Deal" } };
 
-      await callbacks.afterUpdate(result, params);
+      await callbacks.afterUpdate(result);
 
       expect(EmbeddingService.embedRecord).toHaveBeenCalledWith("deal", result.data);
     });
 
-    it("does not trigger embedding when only stage changed for deal", async () => {
-      const callbacks = createEmbeddingCallbacks("deal");
-      const result = { data: { id: 2, stage: "proposal" } };
-      const params = { data: { stage: "won" } };
-
-      await callbacks.afterUpdate(result, params);
-
-      expect(EmbeddingService.embedRecord).not.toHaveBeenCalled();
-    });
-
-    it("returns result unchanged when result.data is invalid", async () => {
+    it("returns result unchanged when result.data is null", async () => {
       const callbacks = createEmbeddingCallbacks("task");
       const result = { data: null };
-      const params = { data: { text: "changed" } };
 
-      const returned = await callbacks.afterUpdate(result, params);
+      const returned = await callbacks.afterUpdate(result);
 
       expect(returned).toBe(result);
       expect(EmbeddingService.embedRecord).not.toHaveBeenCalled();
     });
 
-    it("returns result unchanged when params.data is missing", async () => {
+    it("returns result unchanged when result.data has no id", async () => {
       const callbacks = createEmbeddingCallbacks("task");
-      const result = { data: { id: 3 } };
-      const params = { data: null };
+      const result = { data: { text: "no id here" } };
 
-      const returned = await callbacks.afterUpdate(result, params);
+      const returned = await callbacks.afterUpdate(result);
 
       expect(returned).toBe(result);
       expect(EmbeddingService.embedRecord).not.toHaveBeenCalled();

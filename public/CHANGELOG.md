@@ -5,6 +5,11 @@ All notable changes to RealTimeX CRM will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.63.2] - 2026-02-18
+
+### Changed
+- **Data Provider**: Simplified `afterUpdate` in `createEmbeddingCallbacks` to always trigger re-embedding for any record update, removing the restrictive `SEMANTIC_FIELDS` filter. This ensures embeddings are always in sync with the latest data.
+
 ## [0.63.1] - 2026-02-18
 
 ### Fixed
